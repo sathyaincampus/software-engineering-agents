@@ -1,0 +1,150 @@
+Idea is to prepare a software engineering agentic AI based project
+- Orchestrator Agent
+- Idea Generator Agent
+    - If the user asks for generating an Idea
+- Product Requirements Generator Agent
+    - Based on the Idea given this agent has to generate the project requirements in detail
+- Requirement Analysis Agent
+    - Agent analyses Product requirements and creates multiple user stories
+- Software Architect Agent
+    - Based on the Product Requirements and user stories, create architecture and design including infrastructure required for the same
+- Engineering Manager Agent
+    - Plan for different milestones step by step based on a bunch of user stories and coordinate across the skills analyzer agent, determine how many frontend developer agents required, how many backend developer agents required, etc. (might be one each or more than one for each type of agent based on what is its skillset) and coordinate with the front end development team agents, backend development team agent, machine learning agents, data science agents, code review agent, qa team agents, data engineering team agents, data analytics team agents, devops team agents, product manager agent, UX designer agent, Integration testing agents, debugger agents, Operations agent, capacity planner agent, observability agent
+- Deployment Agent to deploy the code 
+- Presentation Agent to prepare the demo ppt
+- Demo Agent to prepare the demo Video
+- Code Walk through Agent to give a code walk through
+- Project Estimation Agent to estimate how much token estimate and cost estimate for end to end execution.
+- Data Analysis agent to prepare data dashboards
+- Monitoring dashboard preparation agent to prepare monitoring dashbaord
+- SRE and Production support agents to monitor dashboards and find any anomalies and trigger alert to team via pagerduties
+
+
+# PROJECT SPECIFICATION: "ZeroToOne AI" - The Autonomous Software Engineering Platform
+
+## 1. SYSTEM ROLE & OBJECTIVE
+You are the **Chief Architect and Lead Orchestrator** for "DevForce AI," a next-generation Agentic AI platform built using **Google ADK v1.19.0+**. 
+
+**Your Goal:** Build a comprehensive, multi-agent software engineering system that takes a vague user idea and autonomously delivers a fully deployed, production-ready application with all accompanying artifacts (documentation, diagrams, demo videos, and slide decks).
+
+**Core Philosophy:**
+- **NO CHATBOTS:** The interface must be a "Mission Control" visual dashboard (React/Tailwind).
+- **Agent-First Architecture:** Every function is handled by a specialized agent using the "Agent-to-Agent" (A2A) protocol.
+- **Transparency:** Every step must generate verifiable Artifacts (PRDs, Mermaid Diagrams, Logs, Videos).
+- **Framework Agnostic & Smart Selection:** You do not assume the stack; you analyze requirements to select the best languages/frameworks.
+
+## 2. KNOWLEDGE INGESTION (MANDATORY)
+Before generating code, you MUST browse and analyze the following Kaggle notebooks to internalize the architectural patterns. Implement their lessons into the core framework:
+
+* **Prompt & Action:** https://www.kaggle.com/code/kaggle5daysofai/day-1a-from-prompt-to-action
+* **Agent Architecture:** https://www.kaggle.com/code/kaggle5daysofai/day-1b-agent-architectures
+* **Tools & MCP:** https://www.kaggle.com/code/kaggle5daysofai/day-2a-agent-tools (Implement strict tool schemas)
+* **Session & Memory:** https://www.kaggle.com/code/kaggle5daysofai/day-3a-agent-sessions (Use Vector DB for long-term project memory)
+* **Observability:** https://www.kaggle.com/code/kaggle5daysofai/day-4a-agent-observability (Implement OpenTelemetry traces)
+* **A2A Communication:** https://www.kaggle.com/code/kaggle5daysofai/day-5a-agent2agent-communication (Use strict JSON Payloads for inter-agent talk)
+* **Deployment:** https://www.kaggle.com/code/kaggle5daysofai/day-5b-agent-deployment
+
+## 3. THE AGENT ROSTER (The "Employees")
+Implement the following agents using `adk.core.Agent`. Each must have distinct `system_instructions`, `tools`, and `output_types`.
+
+### **Phase 1: Strategy & Requirements**
+1.  **🤖 Orchestrator Agent (The CEO):** * Maintains the global state machine. Routes tasks to sub-agents. Updates the UI progress bar.
+    * *Lesson:* Uses "Session" objects to track project lifecycle.
+2.  **💡 Idea Generator Agent:**
+    * Input: Vague keywords. Output: 5 distinct, robust app ideas.
+3.  **📋 Product Requirements Agent (PM):**
+    * Generates detailed PRDs (Product Requirement Documents).
+    * **Tools:** File Reader (PDF/Word/Text), Web Reader (URL).
+    * Accepts free-form text or file attachments as context.
+4.  **🧐 Requirement Analysis Agent (BA):**
+    * Breaks PRDs into atomic **User Stories** (Jira style).
+    * Defines **Non-Functional Requirements** (Latency, Security, Scaling).
+5.  **💰 Project Estimation Agent:**
+    * Predicts Token usage, Cloud Cost ($), and Time-to-Market based on the PRD.
+
+### **Phase 2: Architecture & Design**
+6.  **🏗️ Software Architect Agent:**
+    * **Crucial Task - Framework Selection:** Must analyze requirements and suggest:
+        * *Backend:* Python (FastAPI/Django), Go, Node.js.
+        * *Frontend:* React, Vue, Angular.
+        * *Mobile:* React Native, Flutter.
+        * *Agentic Framework:* Google ADK, LangGraph, CrewAI.
+        * *Hosting:* AWS, GCP, Azure, On-Prem.
+        * *GenAI Models:* Gemini 1.5/2.0, GPT-4o, Claude 3.5 (User chooses via UI).
+    * **Output:** Generates **Mermaid** code for Sequence, Data Flow, and ER Diagrams as different mmd files and refer it in detailed Readme.md, implementation-guide.md, architecture.md etc.
+7.  **🖌️ UX Designer Agent:**
+    * Generates wireframes (via HTML/CSS mockups) and Component Libraries (Tailwind config) and Figma outputs.
+
+### **Phase 3: Engineering (The "Builder Squad")**
+8.  **👔 Engineering Manager Agent:**
+    * Parses User Stories and assigns them to specific "Worker Agents."
+    * Manages the "Git Flow" (Feature Branch -> PR -> Merge).
+    * Coordinates across skills: Frontend, Backend, Mobile, ML, Data.
+9.  **🔨 Specialized Worker Agents (Dynamic Spawning):**
+    * *Frontend Dev Agent* (React/Web).
+    * *Mobile Dev Agent* (React Native/Expo).
+    * *Backend Dev Agent* (API/DB).
+    * *Data Engineering Agent* (Pipelines/ETL).
+    * *Machine Learning Agent* (Model training/Fine-tuning).
+    * *GenAI Agent* (Integrating LLMs into the app).
+10. **🕵️ QA & Code Review Agent:**
+    * Reviews code against best practices (PEP8, ESLint).
+    * Writes Playwright/PyTest test suites.
+    * Performs Security Audits (SQLi, XSS checks).
+
+### **Phase 4: Post-Production & Media**
+11. **🚀 Deployment Agent:**
+    * Generates Terraform/Helm charts. Deploys to target cloud (GCP/AWS).
+12. **📊 Data Analysis Agent:**
+    * Builds Looker Studio or Streamlit dashboards for app analytics.
+13. **📢 Presentation Agent:**
+    * Uses `python-pptx` to generate a slide deck: Problem, Solution, Architecture, Tech Stack.
+14. **🎥 Demo Video Agent:**
+    * Uses **Playwright** (headless browser) to record a "Golden Path" user session. Saves as `.mp4`.
+15. **👨‍🏫 Code Walkthrough Agent:**
+    * Generates a script and uses Text-to-Speech + Code Scrolling video to explain *how* the code works.
+16. **🚨 SRE & Monitoring Agent:**
+    * Sets up Prometheus/Grafana dashboards.
+    * Simulates "PagerDuty" alerts for anomalies.
+
+## 4. THE "PHENOMENAL" UI SPECIFICATION
+**Do not build a chat interface.** Build a **"Visual Builder Platform"** (React + Tailwind + React Flow).
+
+* **Onboarding Wizard:** A multi-step form to collect requirements (Upload docs, select broad goals).
+* **The "Boardroom":**
+    * **Architecture Canvas:** Renders Mermaid diagrams interactively (Nodes are clickable).
+    * **Kanban Board:** Real-time view of User Stories moving across columns as agents work.
+    * **Approval Gates:** "Human-in-the-Loop" buttons. The user MUST approve the *Architecture* before *Coding* begins.
+    * **Model Selector:** A UI dropdown to choose which LLM powers which agent (e.g., "Use Gemini 2.0 Flash for coding, GPT-4 for critique").
+* **The "Showcase":** A media gallery tab to view the generated PPT, Demo Video, and Code Walkthrough.
+* **Artifact Viewer:** File explorer for listing files, commits, and reviews.
+
+## 5. AGENT-TO-AGENT PROTOCOL (Strict JSON)
+All agents must communicate using this Pydantic schema (derived from Kaggle Day 5).
+
+[PYTHON PROTOCOL DEFINITION START]
+class TaskDelegation(BaseModel):
+    sender: str
+    recipient: str
+    task_type: Literal["code", "review", "design", "test"]
+    payload: Dict[str, Any] # The actual work context
+    artifacts: List[str] # Paths to relevant files
+
+class TaskResult(BaseModel):
+    status: Literal["success", "failure", "blocked"]
+    output_files: List[str]
+    metrics: Dict[str, float] # Token cost, time taken
+[PYTHON PROTOCOL DEFINITION END]
+
+## 6. EXECUTION PLAN
+1.  **Browse & Learn:** Read the provided Kaggle URLs.
+2.  **Scaffold:** Create the `ZeroToOne` project structure (Backend: Python ADK, Frontend: React).
+3.  **Define Protocols:** Create `shared/protocols.py` with the Pydantic models.
+4.  **Implement Orchestrator:** The central brain.
+5.  **Implement UI:** The "Mission Control" dashboard.
+6.  **Implement Agents:** One by one, registered in the Orchestrator.
+
+Readme.md, implementation-guide.md, architecture.md etc. needs to be up to date at the end including all diagrams. Complete code documentation needs to be there
+
+**START NOW by analyzing the Kaggle notebooks and proposing the initial folder structure.**
+
