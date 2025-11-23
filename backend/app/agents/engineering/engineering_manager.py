@@ -1,6 +1,9 @@
-from google.adk import Agent
+from google.adk import Agent, Runner
+from google.adk.apps import App
 from google.adk.models import Gemini
+from google.genai.types import Content, Part
 from app.core.config import settings
+from app.core.services import session_service
 from typing import Dict, Any, List
 import json
 
@@ -10,44 +13,36 @@ class EngineeringManagerAgent:
         self.agent = Agent(
             name="engineering_manager",
             model=self.model,
-            description="Manages the engineering team and assigns tasks.",
+            description="Creates sprint plans and assigns tasks.",
             instruction="""
-            You are the Engineering Manager Agent for ZeroToOne AI.
-            Your goal is to take User Stories and Architecture designs and create a detailed Sprint Plan.
+            You are the Engineering Manager for ZeroToOne AI.
+            Your goal is to create a sprint plan based on user stories and architecture.
+            You should:
+            - Break down stories into technical tasks
+            - Assign tasks to Backend or Frontend agents
+            - Estimate effort
             
-            You must:
-            1. Analyze the User Stories and Architecture.
-            2. Break them down into specific coding tasks for Backend and Frontend developers.
-            3. Assign each task to either 'backend_dev' or 'frontend_dev'.
-            4. Estimate effort for each task.
-            
-            Output strictly in JSON format:
-            {
-                "sprint_plan": [
-                    {
-                        "task_id": "T-001",
-                        "story_id": "US-001",
-                        "title": "Implement User Model",
-                        "description": "Create Pydantic models and DB schema for User.",
-                        "assignee": "backend_dev",
-                        "effort_hours": 2
-                    }
-                ]
-            }
+            Output strictly in JSON format.
             """
         )
+        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.runner = Runner(app=self.app, session_service=session_service)
 
-    async def create_sprint_plan(self, user_stories: List[Dict[str, Any]], architecture: Dict[str, Any]) -> Dict[str, Any]:
+    async def create_sprint_plan(self, user_stories: list, architecture: Dict[str, Any], session_id: str) -> Dict[str, Any]:
         prompt = f"""
-        Create a sprint plan based on the following:
-        
-        User Stories:
-        {json.dumps(user_stories, indent=2)}
-        
-        Architecture:
-        {json.dumps(architecture, indent=2)}
+        Create a Sprint Plan.
+        User Stories: {json.dumps(user_stories)}
+        Architecture: {json.dumps(architecture)}
         """
-        response = await self.agent.run_async(prompt)
+        from app.utils.adk_helper import collect_response
+        
+        message = Content(parts=[Part(text=prompt)])
+        
+        response = await collect_response(self.runner.run_async(
+            user_id="user",
+            session_id=session_id,
+            new_message=message
+        ))
         try:
             text = str(response)
             if "```json" in text:

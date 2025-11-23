@@ -1,6 +1,9 @@
-from google.adk import Agent
+from google.adk import Agent, Runner
+from google.adk.apps import App
 from google.adk.models import Gemini
+from google.genai.types import Content, Part
 from app.core.config import settings
+from app.core.services import session_service
 from typing import Dict, Any
 import json
 
@@ -10,18 +13,33 @@ class UXDesignerAgent:
         self.agent = Agent(
             name="ux_designer",
             model=self.model,
-            description="Designs UI wireframes and themes.",
+            description="Designs UI/UX wireframes.",
             instruction="""
-            You are the UX Designer Agent for ZeroToOne AI.
-            Your goal is to generate wireframes and component libraries based on the PRD and User Stories.
+            You are the UX Designer for ZeroToOne AI.
+            Your goal is to design the user interface and user experience.
+            You should produce:
+            - Color Palette (Tailwind CSS classes)
+            - Typography
+            - Component Hierarchy
+            - Wireframe descriptions for key screens
             
-            Output strictly in JSON format with keys: "wireframes" (HTML/CSS), "theme" (Tailwind config).
+            Output strictly in JSON format.
             """
         )
+        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.runner = Runner(app=self.app, session_service=session_service)
 
-    async def design_ui(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
-        prompt = f"Design UI for the following requirements: {requirements}"
-        response = await self.agent.run_async(prompt)
+    async def design_ui(self, requirements: Dict[str, Any], session_id: str) -> Dict[str, Any]:
+        prompt = f"Design the UI/UX for these requirements: {json.dumps(requirements)}"
+        from app.utils.adk_helper import collect_response
+        
+        message = Content(parts=[Part(text=prompt)])
+        
+        response = await collect_response(self.runner.run_async(
+            user_id="user",
+            session_id=session_id,
+            new_message=message
+        ))
         try:
             text = str(response)
             if "```json" in text:

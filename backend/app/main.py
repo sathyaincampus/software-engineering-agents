@@ -85,7 +85,7 @@ async def run_engineering_manager(session_id: str, request: CreateSprintPlanRequ
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Creating Sprint Plan...")
-    result = await eng_manager_agent.create_sprint_plan(request.user_stories, request.architecture)
+    result = await eng_manager_agent.create_sprint_plan(request.user_stories, request.architecture, session_id)
     session.add_log("Sprint Plan created")
     return result
 
@@ -118,7 +118,7 @@ async def run_qa_agent(session_id: str, request: ReviewCodeRequest):
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Reviewing Code...")
-    result = await qa_agent.review_code(request.code_files)
+    result = await qa_agent.review_code(request.code_files, session_id)
     session.add_log("Code Review complete")
     return result
 
@@ -129,7 +129,7 @@ async def run_software_architect(session_id: str, request: DesignArchitectureReq
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Designing architecture...")
-    result = architect_agent.design_architecture(request.requirements)
+    result = await architect_agent.design_architecture(request.requirements, session_id)
     session.add_log("Architecture design complete")
     return result
 
@@ -140,7 +140,7 @@ async def run_ux_designer(session_id: str, request: DesignUIRequest):
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Designing UI...")
-    result = ux_agent.design_ui(request.requirements)
+    result = await ux_agent.design_ui(request.requirements, session_id)
     session.add_log("UI design complete")
     return result
 
@@ -169,7 +169,7 @@ async def run_idea_generator(session_id: str, request: GenerateIdeasRequest):
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log(f"Generating ideas for keywords: {request.keywords}")
-    result = await idea_agent.generate_ideas(request.keywords)
+    result = await idea_agent.generate_ideas(request.keywords, session_id)
     session.add_log("Ideas generated successfully")
     return result
 
@@ -180,7 +180,7 @@ async def run_product_requirements(session_id: str, request: GeneratePRDRequest)
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Generating PRD...")
-    result = await prd_agent.generate_prd(request.idea_context)
+    result = await prd_agent.generate_prd(request.idea_context, session_id)
     session.add_log("PRD generated successfully")
     return {"prd": result}
 
@@ -191,6 +191,6 @@ async def run_requirement_analysis(session_id: str, request: AnalyzePRDRequest):
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Analyzing PRD...")
-    result = await analysis_agent.analyze_prd(request.prd_content)
+    result = await analysis_agent.analyze_prd(request.prd_content, session_id)
     session.add_log("PRD analysis complete")
     return result

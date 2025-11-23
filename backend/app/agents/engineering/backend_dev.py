@@ -1,6 +1,9 @@
-from google.adk import Agent
+from google.adk import Agent, Runner
+from google.adk.apps import App
 from google.adk.models import Gemini
+from google.genai.types import Content, Part
 from app.core.config import settings
+from app.core.services import session_service
 from typing import Dict, Any
 import json
 
@@ -10,28 +13,16 @@ class BackendDevAgent:
         self.agent = Agent(
             name="backend_dev",
             model=self.model,
-            description="Writes backend code (Python/FastAPI).",
+            description="Writes backend code.",
             instruction="""
-            You are the Backend Developer Agent for ZeroToOne AI.
-            Your goal is to write production-ready Python code (FastAPI) based on assigned tasks.
+            You are the Backend Developer for ZeroToOne AI.
+            Your goal is to write clean, efficient, and scalable backend code (Python/FastAPI).
             
-            Rules:
-            - Use Pydantic for data validation.
-            - Follow PEP8.
-            - Include docstrings.
-            - Handle errors gracefully.
-            
-            Output strictly in JSON format:
-            {
-                "files": [
-                    {
-                        "path": "app/models/user.py",
-                        "content": "..."
-                    }
-                ]
-            }
+            Output strictly in JSON format with keys: "files" (list of {path, content}).
             """
         )
+        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.runner = Runner(app=self.app, session_service=session_service)
 
     async def write_code(self, task: Dict[str, Any], context: Dict[str, Any], session_id: str) -> Dict[str, Any]:
         prompt = f"""
@@ -41,7 +32,15 @@ class BackendDevAgent:
         Context (Architecture/Stack):
         {json.dumps(context, indent=2)}
         """
-        response = await self.agent.run_async(prompt)
+        from app.utils.adk_helper import collect_response
+        
+        message = Content(parts=[Part(text=prompt)])
+        
+        response = await collect_response(self.runner.run_async(
+            user_id="user",
+            session_id=session_id,
+            new_message=message
+        ))
         try:
             text = str(response)
             if "```json" in text:

@@ -1,6 +1,9 @@
-from google.adk import Agent
+from google.adk import Agent, Runner
+from google.adk.apps import App
 from google.adk.models import Gemini
+from google.genai.types import Content, Part
 from app.core.config import settings
+from app.core.services import session_service
 from typing import Dict, Any
 import json
 
@@ -10,34 +13,28 @@ class QAAgent:
         self.agent = Agent(
             name="qa_agent",
             model=self.model,
-            description="Reviews code and writes tests.",
+            description="Reviews code and suggests fixes.",
             instruction="""
-            You are the QA & Code Review Agent for ZeroToOne AI.
-            Your goal is to review code for bugs, security issues, and style violations, and to write test cases.
+            You are the QA Agent for ZeroToOne AI.
+            Your goal is to review code for bugs, security issues, and style violations.
             
-            Output strictly in JSON format:
-            {
-                "review": {
-                    "status": "approved" | "changes_requested",
-                    "comments": ["..."],
-                    "security_issues": ["..."]
-                },
-                "tests": [
-                    {
-                        "path": "tests/test_user.py",
-                        "content": "..."
-                    }
-                ]
-            }
+            Output strictly in JSON format.
             """
         )
+        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.runner = Runner(app=self.app, session_service=session_service)
 
-    async def review_code(self, code_files: Dict[str, Any]) -> Dict[str, Any]:
-        prompt = f"""
-        Review the following code files:
-        {json.dumps(code_files, indent=2)}
-        """
-        response = await self.agent.run_async(prompt)
+    async def review_code(self, code_files: Dict[str, Any], session_id: str) -> Dict[str, Any]:
+        prompt = f"Review the following code files: {json.dumps(code_files)}"
+        from app.utils.adk_helper import collect_response
+        
+        message = Content(parts=[Part(text=prompt)])
+        
+        response = await collect_response(self.runner.run_async(
+            user_id="user",
+            session_id=session_id,
+            new_message=message
+        ))
         try:
             text = str(response)
             if "```json" in text:

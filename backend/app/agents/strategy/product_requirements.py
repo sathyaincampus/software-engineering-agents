@@ -1,6 +1,9 @@
-from google.adk import Agent
+from google.adk import Agent, Runner
+from google.adk.apps import App
 from google.adk.models import Gemini
+from google.genai.types import Content, Part
 from app.core.config import settings
+from app.core.services import session_service
 from typing import Dict, Any
 
 class ProductRequirementsAgent:
@@ -23,8 +26,18 @@ class ProductRequirementsAgent:
             Output strictly in Markdown format.
             """
         )
+        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.runner = Runner(app=self.app, session_service=session_service)
 
-    async def generate_prd(self, idea_context: Dict[str, Any]) -> str:
+    async def generate_prd(self, idea_context: Dict[str, Any], session_id: str) -> str:
         prompt = f"Generate a PRD for the following idea context: {idea_context}"
-        response = await self.agent.run_async(prompt)
+        from app.utils.adk_helper import collect_response
+        
+        message = Content(parts=[Part(text=prompt)])
+        
+        response = await collect_response(self.runner.run_async(
+            user_id="user",
+            session_id=session_id,
+            new_message=message
+        ))
         return str(response)

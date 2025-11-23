@@ -22,6 +22,15 @@ class Orchestrator:
 
     def create_session(self) -> ProjectSession:
         session_id = str(uuid.uuid4())
+        
+        # Create ADK Session
+        from app.core.services import session_service
+        session_service.create_session_sync(
+            app_name="zero_to_one",
+            user_id="user",
+            session_id=session_id
+        )
+        
         session = ProjectSession(session_id=session_id)
         self.sessions[session_id] = session
         return session
