@@ -42,4 +42,4 @@ class FrontendDevAgent:
             new_message=message
         ))
         # Use robust JSON parsing
-        return parse_json_response(response)"}
+        return parse_json_response(response)

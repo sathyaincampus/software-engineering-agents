@@ -1,0 +1,129 @@
+{
+  "user_stories": [
+    {
+      "title": "Parent Account Creation and Management",
+      "description": "As a parent, I want to be able to create an account using my email and password or via Google Sign-In so that I can securely access the RoutineRally application.",
+      "acceptance_criteria": [
+        "User can sign up with email and password.",
+        "User can sign up using Google authentication.",
+        "User receives confirmation of successful account creation.",
+        "New parent profile is created upon successful sign-up."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Child Profile Creation",
+      "description": "As a parent, I want to create profiles for each of my children, including their name and age, so that I can assign activities and tasks to them individually.",
+      "acceptance_criteria": [
+        "Parent can add a new child profile.",
+        "Child profile includes fields for Name and Age.",
+        "Optional field for child's profile picture is available.",
+        "Multiple child profiles can be created under one parent account.",
+        "Parent can edit existing child profiles."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Add Recurring Class Schedule",
+      "description": "As a parent, I want to add recurring class schedules (e.g., weekly music lessons) to the family calendar, including details like title, time, location, and notes, so that I can keep track of my child's ongoing commitments.",
+      "acceptance_criteria": [
+        "User can initiate adding a new event.",
+        "User can select 'Class' as an activity type.",
+        "User can input event Title, Start Date/Time, End Date/Time, Location.",
+        "User can add Notes to the event.",
+        "User can select specific child(ren) for the event.",
+        "User can set recurrence to 'Weekly'.",
+        "User can define an end date for the recurrence or set it to 'No End Date'.",
+        "The saved event appears correctly on the calendar view.",
+        "Google Calendar syncs the newly added recurring event (if connected)."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Child Completes Assigned Task",
+      "description": "As a child, I want to easily view my assigned tasks and mark them as complete so that I can earn rewards and track my progress.",
+      "acceptance_criteria": [
+        "Child can access a dedicated 'My Tasks' section.",
+        "Assigned tasks are listed clearly with due dates/times.",
+        "Child can tap a button to mark a task as 'Completed'.",
+        "A visual confirmation message is displayed upon task completion.",
+        "Reward points associated with the task are credited to the child's profile."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Parent Creates a New '21-Day Kickstart' Program",
+      "description": "As a parent, I want to initiate a '21-Day Kickstart' program for a specific routine (e.g., 'Morning Routine') by selecting associated tasks, so that I can help my child establish or reinforce new habits over a structured period.",
+      "acceptance_criteria": [
+        "Parent can navigate to a 'Kickstart' or 'Routines' section.",
+        "Parent can start a new Kickstart program.",
+        "Parent can define a Program Title (e.g., 'Morning Routine').",
+        "Parent can select multiple existing tasks to be part of the daily program.",
+        "Parent can assign the program to one or more children.",
+        "Parent can select a Start Date for the 21-day program.",
+        "Upon initiation, the system generates the daily tasks for the 21-day duration and adds them to the child's task list.",
+        "A visual progress indicator for the Kickstart program is available."
+      ],
+      "priority": "Medium"
+    },
+    {
+      "title": "Google Calendar Synchronization",
+      "description": "As a user, I want to connect my Google Calendar to RoutineRally so that my family's schedule is automatically synced across both platforms.",
+      "acceptance_criteria": [
+        "User can initiate the Google Calendar connection process from settings.",
+        "User is prompted to authorize RoutineRally to access their Google Calendar.",
+        "RoutineRally events created by the parent are visible in the connected Google Calendar.",
+        "User has the option to import events from Google Calendar into RoutineRally."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Multi-Parent Family Sharing",
+      "description": "As a parent, I want to share the family calendar and task lists with my partner so that we can both manage our children's schedules and tasks collaboratively.",
+      "acceptance_criteria": [
+        "A 'family' can be established linking multiple parent accounts.",
+        "All parents within a family unit can view the shared family calendar.",
+        "All parents within a family unit can add, edit, and delete events on the shared calendar.",
+        "All parents within a family unit can view and assign tasks.",
+        "Task completion status is visible to all parents in the family."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Define and Assign Rewards",
+      "description": "As a parent, I want to define various rewards (points, custom rewards) and associate them with specific tasks so that my children are motivated to complete their responsibilities.",
+      "acceptance_criteria": [
+        "Parent can access a 'Rewards' management section.",
+        "Parent can create new rewards, specifying a name (e.g., 'Extra Game Time').",
+        "Parent can assign a point value to rewards.",
+        "Parent can associate specific tasks or task categories with rewards.",
+        "When a child completes an associated task, the defined reward is automatically granted (or queued for approval)."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Child Views Earned Rewards",
+      "description": "As a child, I want to see the rewards I have earned and the total points I have accumulated so that I can track my progress towards redeeming them.",
+      "acceptance_criteria": [
+        "Child can access a dedicated section to view earned rewards.",
+        "The list shows rewards previously earned.",
+        "The child's total accumulated points are clearly displayed.",
+        "A visual representation (e.g., progress bar, list) of rewards available for redemption is shown."
+      ],
+      "priority": "Medium"
+    },
+    {
+      "title": "Edit Existing Event",
+      "description": "As a parent, I want to edit existing events and activities in the calendar, including changing the time, date, or notes, so that I can easily manage schedule changes.",
+      "acceptance_criteria": [
+        "Parent can select an existing event on the calendar.",
+        "An option to 'Edit' the event is presented.",
+        "Parent can modify any of the event details (Title, Date, Time, Location, Notes, Assigned Child).",
+        "Recurring events can be edited for a single occurrence or all future occurrences.",
+        "Changes are saved and reflected immediately on the calendar.",
+        "Google Calendar sync reflects the updated event details."
+      ],
+      "priority": "High"
+    }
+  ]
+}

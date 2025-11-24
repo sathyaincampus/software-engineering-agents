@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ProjectProvider } from './context/ProjectContext';
 import DashboardLayout from './layouts/DashboardLayout';
 import Boardroom from './pages/Boardroom';
 import MissionControl from './pages/MissionControl';
@@ -10,17 +11,19 @@ const Showcase = () => <div>Showcase Gallery (Coming Soon)</div>;
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<DashboardLayout />}>
-          <Route index element={<MissionControl />} />
-          <Route path="boardroom" element={<Boardroom />} />
-          <Route path="projects" element={<ProjectHistory />} />
-          <Route path="artifacts" element={<Artifacts />} />
-          <Route path="showcase" element={<Showcase />} />
-        </Route>
-      </Routes>
-    </Router>
+    <ProjectProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<DashboardLayout />}>
+            <Route index element={<MissionControl />} />
+            <Route path="boardroom" element={<Boardroom />} />
+            <Route path="projects" element={<ProjectHistory />} />
+            <Route path="artifacts" element={<Artifacts />} />
+            <Route path="showcase" element={<Showcase />} />
+          </Route>
+        </Routes>
+      </Router>
+    </ProjectProvider>
   );
 }
 
