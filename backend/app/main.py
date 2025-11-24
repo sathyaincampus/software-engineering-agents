@@ -2,6 +2,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from app.core.orchestrator import orchestrator
+from app.core.config import settings
+from app.core.model_config import ModelConfig, AppSettings
+from app.core.model_factory import ModelFactory
 from app.agents.strategy.idea_generator import IdeaGeneratorAgent
 from app.agents.strategy.product_requirements import ProductRequirementsAgent
 from app.agents.strategy.requirement_analysis import RequirementAnalysisAgent
@@ -13,6 +16,12 @@ from app.agents.engineering.frontend_dev import FrontendDevAgent
 from app.agents.engineering.qa_agent import QAAgent
 from typing import Dict, Any, List
 import json
+import asyncio
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="ZeroToOne AI API", version="1.0")
 
@@ -22,6 +31,15 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# Global settings (must be initialized before agents)
+app_settings = AppSettings(
+    ai_model_config=ModelConfig(
+        provider="google",
+        model_name=settings.MODEL_NAME,
+        api_key=settings.GOOGLE_API_KEY
+    )
 )
 
 # Register Agents
@@ -169,9 +187,35 @@ async def run_idea_generator(session_id: str, request: GenerateIdeasRequest):
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log(f"Generating ideas for keywords: {request.keywords}")
-    result = await idea_agent.generate_ideas(request.keywords, session_id)
-    session.add_log("Ideas generated successfully")
-    return result
+    logger.info(f"[IdeaGenerator] Starting for session {session_id}, keywords: {request.keywords}")
+    
+    try:
+        # Add timeout to prevent hanging
+        result = await asyncio.wait_for(
+            idea_agent.generate_ideas(request.keywords, session_id),
+            timeout=app_settings.ai_model_config.timeout
+        )
+        
+        session.add_log("Ideas generated successfully")
+        logger.info(f"[IdeaGenerator] Success for session {session_id}")
+        
+        # Debug logging
+        logger.debug(f"[DEBUG] Result type: {type(result)}")
+        logger.debug(f"[DEBUG] Result content: {str(result)[:500]}")
+        
+        return result
+        
+    except asyncio.TimeoutError:
+        error_msg = f"Idea generation timed out after {app_settings.ai_model_config.timeout}s"
+        logger.error(f"[IdeaGenerator] {error_msg}")
+        session.add_log(f"ERROR: {error_msg}")
+        raise HTTPException(status_code=504, detail=error_msg)
+    
+    except Exception as e:
+        error_msg = f"Error generating ideas: {str(e)}"
+        logger.error(f"[IdeaGenerator] {error_msg}", exc_info=True)
+        session.add_log(f"ERROR: {error_msg}")
+        raise HTTPException(status_code=500, detail=error_msg)
 
 @app.post("/agent/product_requirements/run")
 async def run_product_requirements(session_id: str, request: GeneratePRDRequest):
@@ -183,6 +227,55 @@ async def run_product_requirements(session_id: str, request: GeneratePRDRequest)
     result = await prd_agent.generate_prd(request.idea_context, session_id)
     session.add_log("PRD generated successfully")
     return {"prd": result}
+
+class SettingsRequest(BaseModel):
+    provider: str
+    model_name: str
+    api_key: str
+    temperature: float = 0.7
+    timeout: int = 120
+
+@app.get("/settings")
+async def get_settings():
+    """Get current application settings (API key masked)"""
+    return {
+        "provider": app_settings.ai_model_config.provider,
+        "model_name": app_settings.ai_model_config.model_name,
+        "temperature": app_settings.ai_model_config.temperature,
+        "timeout": app_settings.ai_model_config.timeout,
+        "debug_mode": app_settings.debug_mode,
+        "api_key_set": bool(app_settings.ai_model_config.api_key)
+    }
+
+@app.post("/settings")
+async def update_settings(request: SettingsRequest):
+    """Update application settings"""
+    global app_settings
+    app_settings.ai_model_config = ModelConfig(
+        provider=request.provider,
+        model_name=request.model_name,
+        api_key=request.api_key,
+        temperature=request.temperature,
+        timeout=request.timeout
+    )
+    logger.info(f"Settings updated: {request.provider} / {request.model_name}")
+    return {"status": "success", "message": "Settings updated. Please restart agents for changes to take effect."}
+
+@app.get("/models/{provider}")
+async def get_available_models(provider: str):
+    """Get available models for a provider"""
+    return ModelFactory.get_available_models(provider)
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint with detailed status"""
+    return {
+        "status": "healthy",
+        "active_sessions": len(orchestrator.sessions),
+        "model_provider": app_settings.ai_model_config.provider,
+        "model_name": app_settings.ai_model_config.model_name,
+        "debug_mode": app_settings.debug_mode
+    }
 
 @app.post("/agent/requirement_analysis/run")
 async def run_requirement_analysis(session_id: str, request: AnalyzePRDRequest):

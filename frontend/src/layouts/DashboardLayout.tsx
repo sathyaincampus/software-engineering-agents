@@ -7,11 +7,12 @@ import {
     FileText,
     Moon,
     Sun,
-    Settings,
+    Settings as SettingsIcon,
     LogOut,
     Cpu,
     Command
 } from 'lucide-react';
+import Settings from '../components/Settings';
 
 const DashboardLayout: React.FC = () => {
     const location = useLocation();
@@ -22,6 +23,7 @@ const DashboardLayout: React.FC = () => {
         }
         return true;
     });
+    const [settingsOpen, setSettingsOpen] = useState(false);
 
     useEffect(() => {
         if (darkMode) {
@@ -39,8 +41,8 @@ const DashboardLayout: React.FC = () => {
             <Link
                 to={to}
                 className={`group flex items-center px-3 py-2.5 mx-3 rounded-lg transition-all duration-200 ${isActive
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200'
                     }`}
             >
                 <Icon className={`w-5 h-5 mr-3 transition-transform group-hover:scale-110 ${isActive ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200'}`} />
@@ -108,7 +110,7 @@ const DashboardLayout: React.FC = () => {
                 <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none" />
 
                 {/* Header */}
-                <header className="h-16 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))/80] backdrop-blur-md flex items-center justify-between px-8 z-10 sticky top-0">
+                <header className="h-16 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))/80 backdrop-blur-md flex items-center justify-between px-8 z-10 sticky top-0">
                     <div className="flex items-center text-gray-500 text-sm">
                         <Command size={14} className="mr-2" />
                         <span className="font-mono">Cmd + K</span>
@@ -120,8 +122,11 @@ const DashboardLayout: React.FC = () => {
                             <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse mr-2"></div>
                             System Operational
                         </div>
-                        <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-                            <Settings size={18} />
+                        <button
+                            onClick={() => setSettingsOpen(true)}
+                            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                        >
+                            <SettingsIcon size={18} />
                         </button>
                     </div>
                 </header>
@@ -133,6 +138,9 @@ const DashboardLayout: React.FC = () => {
                     </div>
                 </div>
             </main>
+
+            {/* Settings Modal */}
+            <Settings isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
         </div>
     );
 };

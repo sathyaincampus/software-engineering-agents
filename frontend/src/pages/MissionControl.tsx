@@ -148,9 +148,29 @@ const MissionControl: React.FC = () => {
         try {
             addLog(`Agent [IdeaGenerator] activated for: "${keywords}"`);
             const res = await axios.post(`${API_BASE_URL}/agent/idea_generator/run?session_id=${sessionId}`, { keywords });
-            setIdeas(res.data.ideas);
+
+            console.log("Raw response from backend:", res.data);
+
+            // Handle different response formats
+            if (res.data.ideas) {
+                setIdeas(res.data.ideas);
+            } else if (Array.isArray(res.data)) {
+                setIdeas(res.data);
+            } else if (res.data.raw_output) {
+                // If there's a parsing error, show it
+                addLog(`Warning: ${res.data.error || 'Response format issue'}`);
+                addLog(`Raw output: ${res.data.raw_output.substring(0, 200)}...`);
+            } else {
+                // Try to use the response directly
+                console.log("Unexpected format, trying to parse:", res.data);
+                addLog("Ideas generated (check console for details)");
+            }
+
             addLog("Ideas generated successfully.");
-        } catch (e) { console.error(e); addLog("Error generating ideas"); }
+        } catch (e) {
+            console.error("Error generating ideas:", e);
+            addLog("Error generating ideas");
+        }
         finally { setLoading(false); }
     };
 
