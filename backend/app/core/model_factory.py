@@ -53,7 +53,9 @@ class ModelFactory:
         """Get list of available models for a provider"""
         models = {
             "google": [
+                {"id": "gemini-2.5-flash-lite", "name": "Gemini 2.5 Flash Lite", "description": "Lightweight, fast model"},
                 {"id": "gemini-2.0-flash-exp", "name": "Gemini 2.0 Flash (Experimental)", "description": "Latest experimental model"},
+                {"id": "gemini-2.0-flash-lite", "name": "Gemini 2.0 Flash Lite", "description": "Lightweight, fast model"},
                 {"id": "gemini-1.5-pro", "name": "Gemini 1.5 Pro", "description": "Most capable model"},
                 {"id": "gemini-1.5-flash", "name": "Gemini 1.5 Flash", "description": "Fast and efficient"},
             ],

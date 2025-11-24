@@ -152,24 +152,37 @@ const MissionControl: React.FC = () => {
             console.log("Raw response from backend:", res.data);
 
             // Handle different response formats
+            let ideasArray = null;
+
             if (res.data.ideas) {
-                setIdeas(res.data.ideas);
+                ideasArray = res.data.ideas;
+            } else if (res.data.app_ideas) {
+                // Map app_ideas format to expected format
+                ideasArray = res.data.app_ideas.map((idea: any) => ({
+                    title: idea.title,
+                    pitch: idea.one_line_pitch || idea.pitch,
+                    features: idea.core_features || idea.features || [],
+                    audience: idea.target_audience || idea.audience,
+                    monetization: idea.monetization_strategy || idea.monetization
+                }));
             } else if (Array.isArray(res.data)) {
-                setIdeas(res.data);
+                ideasArray = res.data;
             } else if (res.data.raw_output) {
-                // If there's a parsing error, show it
                 addLog(`Warning: ${res.data.error || 'Response format issue'}`);
                 addLog(`Raw output: ${res.data.raw_output.substring(0, 200)}...`);
-            } else {
-                // Try to use the response directly
-                console.log("Unexpected format, trying to parse:", res.data);
-                addLog("Ideas generated (check console for details)");
             }
 
-            addLog("Ideas generated successfully.");
+            if (ideasArray) {
+                setIdeas(ideasArray);
+                addLog(`✓ Generated ${ideasArray.length} ideas successfully`);
+            } else {
+                console.log("Unexpected format, trying to parse:", res.data);
+                addLog("⚠ Ideas generated but format unexpected (check console)");
+            }
+
         } catch (e) {
             console.error("Error generating ideas:", e);
-            addLog("Error generating ideas");
+            addLog("✗ Error generating ideas");
         }
         finally { setLoading(false); }
     };
