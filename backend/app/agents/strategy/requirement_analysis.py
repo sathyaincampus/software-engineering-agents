@@ -31,7 +31,7 @@ class RequirementAnalysisAgent:
 
     async def analyze_prd(self, prd_content: str, session_id: str) -> Dict[str, Any]:
         prompt = f"Analyze the following PRD and extract user stories: {prd_content}"
-        from app.utils.adk_helper import collect_response
+        from app.utils.adk_helper import collect_response, parse_json_response
         
         message = Content(parts=[Part(text=prompt)])
         
@@ -41,13 +41,5 @@ class RequirementAnalysisAgent:
             new_message=message
         ))
         # Attempt to parse JSON from response
-        try:
-            text = str(response)
-            # Simple cleanup if markdown code blocks are present
-            if "```json" in text:
-                text = text.split("```json")[1].split("```")[0]
-            elif "```" in text:
-                text = text.split("```")[1].split("```")[0]
-            return json.loads(text)
-        except Exception:
-            return {"raw_output": str(response), "error": "Failed to parse JSON"}
+        # Use robust JSON parsing
+        return parse_json_response(response)

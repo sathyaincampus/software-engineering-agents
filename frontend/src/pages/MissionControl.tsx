@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import MarkdownViewer from '../components/MarkdownViewer';
 import {
     Lightbulb,
     FileText,
@@ -370,9 +371,7 @@ const MissionControl: React.FC = () => {
                         </button>
                     )}
                 >
-                    <div className="bg-gray-50 dark:bg-gray-950 p-6 rounded-xl border border-[hsl(var(--border))] font-mono text-sm overflow-y-auto max-h-96 shadow-inner">
-                        <pre className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">{prd}</pre>
-                    </div>
+                    <MarkdownViewer content={prd || ''} title="Product Requirements Document" />
                 </StepCard>
 
                 {/* Step 3: Analysis */}

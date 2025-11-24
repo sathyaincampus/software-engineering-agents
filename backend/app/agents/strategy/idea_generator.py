@@ -32,7 +32,7 @@ class IdeaGeneratorAgent:
 
     async def generate_ideas(self, keywords: str, session_id: str) -> Dict[str, Any]:
         prompt = f"Generate 5 app ideas for the following keywords: {keywords}"
-        from app.utils.adk_helper import collect_response
+        from app.utils.adk_helper import collect_response, parse_json_response
         
         # Create Content object for the prompt
         message = Content(parts=[Part(text=prompt)])
@@ -42,12 +42,6 @@ class IdeaGeneratorAgent:
             session_id=session_id,
             new_message=message
         ))
-        try:
-            text = str(response)
-            if "```json" in text:
-                text = text.split("```json")[1].split("```")[0]
-            elif "```" in text:
-                text = text.split("```")[1].split("```")[0]
-            return json.loads(text)
-        except Exception as e:
-            return {"raw_output": str(response), "error": f"Failed to parse JSON: {str(e)}"}
+        
+        # Use robust JSON parsing
+        return parse_json_response(response)

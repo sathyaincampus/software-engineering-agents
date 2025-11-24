@@ -31,7 +31,7 @@ class ProductRequirementsAgent:
 
     async def generate_prd(self, idea_context: Dict[str, Any], session_id: str) -> str:
         prompt = f"Generate a PRD for the following idea context: {idea_context}"
-        from app.utils.adk_helper import collect_response
+        from app.utils.adk_helper import collect_response, parse_json_response
         
         message = Content(parts=[Part(text=prompt)])
         

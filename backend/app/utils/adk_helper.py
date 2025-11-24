@@ -1,3 +1,6 @@
+import json
+import re
+
 async def collect_response(async_gen):
     """
     Consumes an async generator from ADK Runner.run_async() and returns the full string response.
@@ -18,3 +21,51 @@ async def collect_response(async_gen):
             full_response += event.text
             
     return full_response
+
+def extract_json_from_markdown(text: str) -> str:
+    """
+    Extract JSON from markdown code blocks.
+    Handles formats like:
+    - ```json\n{...}\n```
+    - ```\n{...}\n```
+    - Plain JSON
+    """
+    # Try to find JSON in markdown code blocks
+    patterns = [
+        r'```json\s*\n(.*?)\n```',  # ```json ... ```
+        r'```\s*\n(.*?)\n```',       # ``` ... ```
+    ]
+    
+    for pattern in patterns:
+        match = re.search(pattern, text, re.DOTALL)
+        if match:
+            return match.group(1).strip()
+    
+    # If no code block found, return original text
+    return text.strip()
+
+def parse_json_response(response: str) -> dict:
+    """
+    Parse JSON response, handling markdown code blocks and errors.
+    
+    Returns:
+        dict: Parsed JSON or error dict with raw_output
+    """
+    try:
+        # First, try to extract JSON from markdown
+        json_text = extract_json_from_markdown(response)
+        
+        # Try to parse
+        return json.loads(json_text)
+    
+    except json.JSONDecodeError as e:
+        # Return error with raw output for debugging
+        return {
+            "error": f"Failed to parse JSON: {str(e)}",
+            "raw_output": response[:1000]  # Limit to first 1000 chars
+        }
+    except Exception as e:
+        return {
+            "error": f"Unexpected error: {str(e)}",
+            "raw_output": response[:1000]
+        }

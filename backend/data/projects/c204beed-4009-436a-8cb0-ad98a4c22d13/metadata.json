@@ -1,0 +1,11 @@
+{
+  "session_id": "c204beed-4009-436a-8cb0-ad98a4c22d13",
+  "created_at": "2025-11-24T00:14:43.250939",
+  "steps_completed": [
+    "ideas",
+    "prd",
+    "user_stories",
+    "architecture"
+  ],
+  "last_updated": "2025-11-24T00:18:19.503018"
+}

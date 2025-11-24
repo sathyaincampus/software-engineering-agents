@@ -32,7 +32,7 @@ class BackendDevAgent:
         Context (Architecture/Stack):
         {json.dumps(context, indent=2)}
         """
-        from app.utils.adk_helper import collect_response
+        from app.utils.adk_helper import collect_response, parse_json_response
         
         message = Content(parts=[Part(text=prompt)])
         
@@ -41,24 +41,5 @@ class BackendDevAgent:
             session_id=session_id,
             new_message=message
         ))
-        try:
-            text = str(response)
-            if "```json" in text:
-                text = text.split("```json")[1].split("```")[0]
-            elif "```" in text:
-                text = text.split("```")[1].split("```")[0]
-            
-            result = json.loads(text)
-            
-            # Save files to disk
-            from app.utils.file_manager import file_manager
-            saved_files = []
-            for file in result.get("files", []):
-                path = file_manager.save_code(session_id, file["path"], file["content"])
-                saved_files.append(path)
-            
-            result["saved_paths"] = saved_files
-            return result
-            
-        except Exception as e:
-            return {"raw_output": str(response), "error": f"Failed to parse JSON or save files: {str(e)}"}
+        # Use robust JSON parsing
+        return parse_json_response(response)"}

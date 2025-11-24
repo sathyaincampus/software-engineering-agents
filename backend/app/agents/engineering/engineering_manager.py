@@ -34,7 +34,7 @@ class EngineeringManagerAgent:
         User Stories: {json.dumps(user_stories)}
         Architecture: {json.dumps(architecture)}
         """
-        from app.utils.adk_helper import collect_response
+        from app.utils.adk_helper import collect_response, parse_json_response
         
         message = Content(parts=[Part(text=prompt)])
         
@@ -43,12 +43,5 @@ class EngineeringManagerAgent:
             session_id=session_id,
             new_message=message
         ))
-        try:
-            text = str(response)
-            if "```json" in text:
-                text = text.split("```json")[1].split("```")[0]
-            elif "```" in text:
-                text = text.split("```")[1].split("```")[0]
-            return json.loads(text)
-        except Exception:
-            return {"raw_output": str(response), "error": "Failed to parse JSON"}
+        # Use robust JSON parsing
+        return parse_json_response(response)
