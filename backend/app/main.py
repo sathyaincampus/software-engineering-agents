@@ -14,6 +14,7 @@ from app.agents.engineering.engineering_manager import EngineeringManagerAgent
 from app.agents.engineering.backend_dev import BackendDevAgent
 from app.agents.engineering.frontend_dev import FrontendDevAgent
 from app.agents.engineering.qa_agent import QAAgent
+from app.services.project_storage import project_storage
 from typing import Dict, Any, List
 import json
 import asyncio
@@ -149,6 +150,14 @@ async def run_software_architect(session_id: str, request: DesignArchitectureReq
     session.add_log("Designing architecture...")
     result = await architect_agent.design_architecture(request.requirements, session_id)
     session.add_log("Architecture design complete")
+    
+    # Save to filesystem
+    try:
+        file_path = project_storage.save_step(session_id, "architecture", result)
+        session.add_log(f"💾 Saved architecture to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save architecture: {e}")
+    
     return result
 
 @app.post("/agent/ux_designer/run")
@@ -199,6 +208,14 @@ async def run_idea_generator(session_id: str, request: GenerateIdeasRequest):
         session.add_log("Ideas generated successfully")
         logger.info(f"[IdeaGenerator] Success for session {session_id}")
         
+        # Save to filesystem
+        try:
+            file_path = project_storage.save_step(session_id, "ideas", result)
+            logger.info(f"[IdeaGenerator] Saved to {file_path}")
+            session.add_log(f"💾 Saved ideas to {file_path}")
+        except Exception as e:
+            logger.error(f"[IdeaGenerator] Failed to save: {e}")
+        
         # Debug logging
         logger.debug(f"[DEBUG] Result type: {type(result)}")
         logger.debug(f"[DEBUG] Result content: {str(result)[:500]}")
@@ -226,6 +243,14 @@ async def run_product_requirements(session_id: str, request: GeneratePRDRequest)
     session.add_log("Generating PRD...")
     result = await prd_agent.generate_prd(request.idea_context, session_id)
     session.add_log("PRD generated successfully")
+    
+    # Save to filesystem
+    try:
+        file_path = project_storage.save_step(session_id, "prd", result)
+        session.add_log(f"💾 Saved PRD to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save PRD: {e}")
+    
     return {"prd": result}
 
 class SettingsRequest(BaseModel):
@@ -286,4 +311,46 @@ async def run_requirement_analysis(session_id: str, request: AnalyzePRDRequest):
     session.add_log("Analyzing PRD...")
     result = await analysis_agent.analyze_prd(request.prd_content, session_id)
     session.add_log("PRD analysis complete")
+    
+    # Save to filesystem
+    try:
+        file_path = project_storage.save_step(session_id, "user_stories", result)
+        session.add_log(f"💾 Saved user stories to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save user stories: {e}")
+    
     return result
+
+# Project Management Endpoints
+@app.get("/projects")
+async def list_projects():
+    """List all projects"""
+    return project_storage.list_projects()
+
+@app.get("/projects/{session_id}")
+async def get_project_summary(session_id: str):
+    """Get project summary and file list"""
+    return project_storage.get_project_summary(session_id)
+
+@app.get("/projects/{session_id}/export")
+async def export_project(session_id: str):
+    """Export project as ZIP file"""
+    from fastapi.responses import FileResponse
+    
+    zip_path = project_storage.export_project(session_id)
+    if not zip_path:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    return FileResponse(
+        path=str(zip_path),
+        media_type="application/zip",
+        filename=f"project-{session_id}.zip"
+    )
+
+@app.get("/projects/{session_id}/{step_name}")
+async def get_project_step(session_id: str, step_name: str):
+    """Get a specific step's output"""
+    result = project_storage.load_step(session_id, step_name)
+    if result is None:
+        raise HTTPException(status_code=404, detail=f"Step '{step_name}' not found")
+    return {"step": step_name, "data": result}

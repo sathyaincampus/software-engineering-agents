@@ -1,0 +1,264 @@
+[
+    {
+        "title": "User Authentication and Family Setup",
+        "description": "As a parent, I want to be able to sign up and log in to the application, and create/join a family account so that I can manage my family's schedule and tasks.",
+        "acceptance_criteria": [
+            "User can sign up using email/password.",
+            "User can sign up/log in using Google Sign-In.",
+            "User can create a new family account.",
+            "User can invite another parent to join their family account via email.",
+            "Invited parent can accept the invitation and join the family account.",
+            "Multiple parent accounts can be linked to a single family account.",
+            "A primary parent account can be designated."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Child Profile Management",
+        "description": "As a parent, I want to create and manage profiles for each of my children so that I can assign tasks and track their activities individually.",
+        "acceptance_criteria": [
+            "Parent can create a profile for a child, including their name.",
+            "Parent can add an optional profile picture for a child.",
+            "Parent can specify the child's age.",
+            "Parent can edit existing child profiles.",
+            "Parent can delete child profiles."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Shared Family Calendar Management",
+        "description": "As a parent, I want to view and manage a shared family calendar so that all family members are aware of scheduled activities and I can easily coordinate.",
+        "acceptance_criteria": [
+            "A central calendar view is accessible to all linked parent users.",
+            "The calendar displays all scheduled events for the family.",
+            "Parents can add new events to the calendar.",
+            "When adding an event, parents can specify Title, Date, Start Time, End Time, Location.",
+            "Parents can assign an event to one or more specific children.",
+            "Parents can select a category for the event (pre-defined or customizable).",
+            "Parents can add free-text notes to any calendar event.",
+            "Parents can edit existing events.",
+            "Parents can delete existing events.",
+            "Changes made by one parent are reflected for all linked parents."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Recurring Schedule Creation",
+        "description": "As a parent, I want to create recurring schedules for regular activities like classes or study sessions so that I don't have to manually add them each time.",
+        "acceptance_criteria": [
+            "Users can create events that repeat on a daily basis.",
+            "Users can create events that repeat on a weekly basis.",
+            "Users can create events that repeat on a monthly basis.",
+            "For weekly recurrence, users can select specific days of the week.",
+            "Users can set an end date for recurring events.",
+            "Users can choose to have recurring events with no end date."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Google Calendar Integration",
+        "description": "As a parent, I want the app to sync with my Google Calendar so that all my family's activities are in one place and I don't miss any events.",
+        "acceptance_criteria": [
+            "Users can connect their Google Calendar account.",
+            "Events created in Parental Planner Pro are pushed to the user's Google Calendar.",
+            "Events from the user's Google Calendar (within the family context) are pulled into Parental Planner Pro.",
+            "Users can configure the direction of synchronization (two-way, one-way push, one-way pull).",
+            "Synchronization handles updates and deletions correctly."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Kid's Task Management and Completion",
+        "description": "As a child, I want to see my assigned tasks and be able to mark them as complete so that I can track my responsibilities and earn rewards.",
+        "acceptance_criteria": [
+            "Each child profile has a dedicated task list view.",
+            "Tasks assigned by parents (e.g., homework, chores) are displayed clearly with their due dates/times.",
+            "Children can mark their tasks as completed.",
+            "Parents can also mark tasks as completed on behalf of their child.",
+            "Task completion updates the parent's view.",
+            "Completed tasks are visually distinguished from pending tasks."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Points-Based Reward System",
+        "description": "As a parent, I want to assign points to tasks and allow my children to earn rewards for completing them, so that they are motivated to be responsible.",
+        "acceptance_criteria": [
+            "Parents can define specific tasks and assign a point value to each.",
+            "When a task is marked as complete, the assigned child automatically earns the designated points.",
+            "A reward catalog can be created by parents, defining rewards and their point costs.",
+            "Children can view the available rewards and their point costs.",
+            "Children can initiate a request to 'purchase' a reward using their earned points.",
+            "Parents receive notifications for reward redemption requests.",
+            "Parents can approve or deny reward redemption requests."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Kid-Friendly Interface for Task Management",
+        "description": "As a child, I want an easy-to-understand and engaging interface to view my tasks and rewards, so that I am motivated to use the app.",
+        "acceptance_criteria": [
+            "The child's interface is visually appealing and intuitive.",
+            "Navigation for viewing tasks and rewards is simple.",
+            "Clear visual cues indicate pending tasks, completed tasks, and earned points.",
+            "Animations or sounds provide positive feedback upon task completion or reward redemption.",
+            "Children can easily see their current point balance."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Basic Reporting for Parents",
+        "description": "As a parent, I want to see a summary of my children's completed tasks and earned points, so that I can track their progress and effort.",
+        "acceptance_criteria": [
+            "Parents can view a report summarizing completed tasks for each child.",
+            "The report includes the total points earned by each child over a selected period (e.g., week, month).",
+            "The report displays the number of tasks completed by each child."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Cross-Platform Availability",
+        "description": "As a user (parent or child), I want to access the application on various devices (web, mobile), so that I can manage schedules and tasks conveniently from anywhere.",
+        "acceptance_criteria": [
+            "The application is available as a web application.",
+            "The application is available as a native iOS application.",
+            "The application is available as a native Android application.",
+            "User experience is consistent across all supported platforms."
+        ],
+        "priority": "High"
+    },
+    {
+        "title": "Event Categories and Color Coding",
+        "description": "As a parent, I want to categorize events and assign colors to them, so that I can quickly identify different types of activities on the calendar.",
+        "acceptance_criteria": [
+            "Pre-defined categories for events are available (e.g., Sports, Academics, Arts, Health, Play, Chores).",
+            "Parents can create custom categories.",
+            "Parents can assign a unique color to each category.",
+            "Events on the calendar are displayed with their assigned category color."
+        ],
+        "priority": "Medium"
+    },
+    {
+        "title": "Flexible Task Assignment Options",
+        "description": "As a parent, I want flexibility in assigning tasks, so that I can manage them according to my family's needs.",
+        "acceptance_criteria": [
+            "A single task can be assigned to multiple children simultaneously.",
+            "Tasks can be set up to be completed by a specific child but checked off by any parent.",
+            "Tasks can be assigned without a specific recurrence, allowing for one-off assignments."
+        ],
+        "priority": "Medium"
+    },
+    {
+        "title": "Push Notifications for Key Events",
+        "description": "As a user, I want to receive timely notifications for important events and updates, so that I stay informed and don't miss anything.",
+        "acceptance_criteria": [
+            "Parents receive push notifications for upcoming events.",
+            "Parents receive push notifications for task reminders.",
+            "Children receive push notifications when a new task is assigned to them.",
+            "Children receive push notifications when a reward redemption request is approved or denied.",
+            "Users can configure which notifications they receive."
+        ],
+        "priority": "Medium"
+    },
+    {
+        "title": "21-Day Habit Building Module",
+        "description": "As a parent, I want a feature to help establish new routines or habits with my children, so that we can build positive daily practices.",
+        "acceptance_criteria": [
+            "A dedicated '21-Day Challenge' section is available.",
+            "Parents can define a specific habit or routine to track (e.g., 'Morning Routine').",
+            "Users can track daily adherence to the habit for 21 consecutive days.",
+            "Visual progress is shown for the 21-day streak.",
+            "Optional bonus rewards can be configured for completing the 21-day challenge."
+        ],
+        "priority": "Medium"
+    },
+    {
+        "title": "Visual Progress Tracking for Kids",
+        "description": "As a child, I want to see my progress in a visual and motivating way beyond just points, so that I feel accomplished and encouraged.",
+        "acceptance_criteria": [
+            "Progress bars are displayed for tasks that are in progress or for overall completion goals.",
+            "Virtual badges or achievements are awarded for reaching milestones or completing challenges.",
+            "A visual representation of the child's 'reward level' or standing is shown."
+        ],
+        "priority": "Medium"
+    },
+    {
+        "title": "Customizable Child Interface Themes",
+        "description": "As a child, I want to personalize my app experience, so that it feels more like my own and is more engaging.",
+        "acceptance_criteria": [
+            "Children can choose from a selection of pre-defined avatars for their profile.",
+            "Children can select from a few different visual themes for their task and reward views."
+        ],
+        "priority": "Medium"
+    },
+    {
+        "title": "Optional Schedule Sharing with External Contacts",
+        "description": "As a parent, I want to be able to share specific events or schedules with others (e.g., grandparents, babysitters), so that they are informed about relevant family activities.",
+        "acceptance_criteria": [
+            "Parents can generate a shareable link for specific events or a read-only view of a subset of the family calendar.",
+            "Sharing can be temporary (e.g., for a specific date range).",
+            "The shared view is read-only."
+        ],
+        "priority": "Medium"
+    },
+    {
+        "title": "Tiered Subscription Model",
+        "description": "As a user, I want to have options for subscription plans, so that I can choose the features that best suit my family's needs and budget.",
+        "acceptance_criteria": [
+            "A free tier with basic functionality is available.",
+            "Premium subscription tiers offer enhanced features (e.g., unlimited children, advanced reporting, more customization).",
+            "Users can upgrade or downgrade their subscription.",
+            "Payment processing is secure and reliable."
+        ],
+        "priority": "Low"
+    },
+    {
+        "title": "Advanced Reporting and Analytics",
+        "description": "As a parent, I want detailed insights into my children's activity and productivity, so that I can better understand their habits and needs.",
+        "acceptance_criteria": [
+            "Reports show time spent on different activity categories.",
+            "Analytics track reward redemption patterns.",
+            "Reports visualize habit formation trends over time.",
+            "Data can be exported (e.g., CSV)."
+        ],
+        "priority": "Low"
+    },
+    {
+        "title": "Family Goal Setting Feature",
+        "description": "As a family, we want to set collective goals, so that we can work together towards shared achievements.",
+        "acceptance_criteria": [
+            "Parents can define family-wide goals.",
+            "Goals can require contributions from multiple children.",
+            "Progress towards family goals is visually tracked."
+        ],
+        "priority": "Low"
+    },
+    {
+        "title": "Integration with Other Calendar Services",
+        "description": "As a user, I want the option to sync with other popular calendar services, so that I can consolidate my digital planning.",
+        "acceptance_criteria": [
+            "Integration with Outlook Calendar is available.",
+            "Potential future integrations with other task management or calendar tools are considered."
+        ],
+        "priority": "Low"
+    },
+    {
+        "title": "Advanced Chore Scheduling Logic",
+        "description": "As a parent, I want more sophisticated options for scheduling chores, so that household tasks are managed efficiently and fairly.",
+        "acceptance_criteria": [
+            "Chore rotation among siblings can be configured.",
+            "Chores can be assigned based on child availability or specific time blocks."
+        ],
+        "priority": "Low"
+    },
+    {
+        "title": "Health and Wellness Tracking Module",
+        "description": "As a parent, I want to track important health-related information for my children, so that their well-being is managed effectively.",
+        "acceptance_criteria": [
+            "Ability to log and track appointments (doctor, dentist, etc.).",
+            "Option to set medication reminders.",
+            "Feature to log physical activity or wellness-related data."
+        ],
+        "priority": "Low"
+    }
+]

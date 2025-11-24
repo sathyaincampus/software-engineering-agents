@@ -206,10 +206,19 @@ const MissionControl: React.FC = () => {
         try {
             addLog("Agent [BusinessAnalyst] analyzing requirements...");
             const res = await axios.post(`${API_BASE_URL}/agent/requirement_analysis/run?session_id=${sessionId}`, { prd_content: prd });
-            setUserStories(res.data.stories);
-            addLog("User Stories extracted.");
+
+            console.log("User stories response:", res.data);
+
+            // Handle both array and object formats
+            const stories = Array.isArray(res.data) ? res.data : (res.data.stories || res.data.user_stories || []);
+
+            setUserStories(stories);
+            addLog(`✓ Extracted ${stories.length} user stories`);
             setActiveStep(3);
-        } catch (e) { console.error(e); addLog("Error analyzing PRD"); }
+        } catch (e) {
+            console.error("Error analyzing PRD:", e);
+            addLog("✗ Error analyzing PRD");
+        }
         finally { setLoading(false); }
     };
 
@@ -219,10 +228,16 @@ const MissionControl: React.FC = () => {
         try {
             addLog("Agent [SoftwareArchitect] designing system...");
             const res = await axios.post(`${API_BASE_URL}/agent/software_architect/run?session_id=${sessionId}`, { requirements: { stories: userStories } });
+
+            console.log("Architecture response:", res.data);
+
             setArchitecture(res.data);
-            addLog("Architecture design complete.");
+            addLog("✓ Architecture design complete");
             setActiveStep(4);
-        } catch (e) { console.error(e); addLog("Error designing architecture"); }
+        } catch (e) {
+            console.error("Error designing architecture:", e);
+            addLog("✗ Error designing architecture");
+        }
         finally { setLoading(false); }
     };
 

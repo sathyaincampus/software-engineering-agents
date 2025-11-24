@@ -10,7 +10,8 @@ import {
     Settings as SettingsIcon,
     LogOut,
     Cpu,
-    Command
+    Command,
+    Folder
 } from 'lucide-react';
 import Settings from '../components/Settings';
 
@@ -74,6 +75,7 @@ const DashboardLayout: React.FC = () => {
                     </div>
                     <NavItem to="/" icon={LayoutDashboard} label="Mission Control" />
                     <NavItem to="/boardroom" icon={Layers} label="Boardroom" />
+                    <NavItem to="/projects" icon={Folder} label="Projects" />
 
                     <div className="px-6 pb-2 pt-6">
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Assets</p>
