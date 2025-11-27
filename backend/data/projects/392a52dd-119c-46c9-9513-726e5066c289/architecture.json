@@ -1,0 +1,520 @@
+{
+  "tech_stack": {
+    "frontend": {
+      "framework": "React Native",
+      "language": "TypeScript",
+      "state_management": "Redux Toolkit",
+      "ui_library": "React Native Paper"
+    },
+    "backend": {
+      "language": "Node.js",
+      "framework": "Express.js",
+      "authentication": "JWT with OAuth for Google Sign-In",
+      "realtime": "WebSockets (Socket.IO)",
+      "cloud_provider": "AWS",
+      "deployment": "Docker on EC2 with RDS"
+    },
+    "database": {
+      "primary": "PostgreSQL",
+      "caching": "Redis"
+    },
+    "devops": {
+      "ci_cd": "GitHub Actions",
+      "containerization": "Docker",
+      "cloud_infrastructure": "AWS (EC2, RDS, S3, CloudWatch)",
+      "monitoring": "CloudWatch, Sentry",
+      "testing": "Jest, React Testing Library, Cypress"
+    }
+  },
+  "system_diagram": {
+    "format": "mermaid",
+    "code": "flowchart TD\n    ClientApps[Client Apps - Mobile]\n    APIGateway[API Gateway]\n    AuthService[Auth Service]\n    UserService[User Service]\n    CalendarService[Calendar Service]\n    TaskService[Task Service]\n    RewardService[Reward Service]\n    NotificationService[Notification Service]\n    SyncService[Sync Service]\n    PaymentService[Payment Service]\n    PrimaryDB[(PostgreSQL Database)]\n    Cache[(Redis Cache)]\n    CloudStorage[(AWS S3 for Avatars)]\n    GoogleAPI[Google API]\n    PaymentGateway[Payment Gateway]\n\n    ClientApps --> APIGateway\n    APIGateway --> AuthService\n    APIGateway --> UserService\n    APIGateway --> CalendarService\n    APIGateway --> TaskService\n    APIGateway --> RewardService\n    APIGateway --> NotificationService\n    APIGateway --> SyncService\n    APIGateway --> PaymentService\n\n    AuthService --> PrimaryDB\n    AuthService --> Cache\n    AuthService --> GoogleAPI\n\n    UserService --> PrimaryDB\n    UserService --> Cache\n    UserService --> CloudStorage\n\n    CalendarService --> PrimaryDB\n    CalendarService --> Cache\n    CalendarService --> SyncService\n\n    TaskService --> PrimaryDB\n    TaskService --> Cache\n    TaskService --> NotificationService\n\n    RewardService --> PrimaryDB\n    RewardService --> Cache\n    RewardService --> NotificationService\n\n    NotificationService --> ClientApps\n\n    SyncService --> PrimaryDB\n    SyncService --> GoogleAPI\n\n    PaymentService --> PaymentGateway\n    PaymentService --> PrimaryDB\n    PaymentService --> UserService\n"
+  },
+  "sequence_diagram": {
+    "format": "mermaid",
+    "code": "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant AuthService\n    participant PrimaryDB\n    participant Cache\n\n    Client->>+APIGateway: POST /auth/login\n    APIGateway->>+AuthService: Login Request\n    AuthService->>+PrimaryDB: Find User by Email\n    PrimaryDB-->>-AuthService: User Record\n    AuthService->>+Cache: Store Session Token\n    Cache-->>-AuthService: Success\n    AuthService-->>-APIGateway: JWT Token\n    APIGateway-->>-Client: Login Success Response"
+  },
+  "api_design_principles": [
+    {
+      "principle": "RESTful Design",
+      "description": "Use standard HTTP methods (GET, POST, PUT, DELETE) and resource-based URLs. Ensure responses are in JSON format."
+    },
+    {
+      "principle": "Statelessness",
+      "description": "Each request from a client to the server must contain all of the information necessary to understand and complete the request. Server should not store client context between requests."
+    },
+    {
+      "principle": "Authentication and Authorization",
+      "description": "Implement JWT for session management. Use OAuth 2.0 for third-party authentication (Google Sign-In). Ensure proper authorization checks for all endpoints."
+    },
+    {
+      "principle": "Versioning",
+      "description": "Implement API versioning (e.g., /api/v1/...) to allow for future modifications without breaking existing clients."
+    },
+    {
+      "principle": "Error Handling",
+      "description": "Provide consistent and informative error responses with appropriate HTTP status codes and error messages."
+    },
+    {
+      "principle": "Idempotency",
+      "description": "Design critical operations (e.g., task completion, reward redemption) to be idempotent where possible to prevent duplicate actions."
+    }
+  ],
+  "data_model": {
+    "schema": [
+      {
+        "table": "users",
+        "columns": [
+          {
+            "name": "user_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true
+          },
+          {
+            "name": "email",
+            "type": "VARCHAR(255)",
+            "unique": true,
+            "not_null": true
+          },
+          {
+            "name": "password_hash",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "google_id",
+            "type": "VARCHAR(255)",
+            "unique": true
+          },
+          {
+            "name": "display_name",
+            "type": "VARCHAR(100)",
+            "not_null": true
+          },
+          {
+            "name": "avatar_url",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "role",
+            "type": "VARCHAR(50)",
+            "not_null": true,
+            "default": "'child'"
+          },
+          {
+            "name": "parent_id",
+            "type": "UUID",
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          }
+        ]
+      },
+      {
+        "table": "family_members",
+        "columns": [
+          {
+            "name": "family_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true
+          },
+          {
+            "name": "member_id",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "role_in_family",
+            "type": "VARCHAR(50)",
+            "not_null": true
+          }
+        ]
+      },
+      {
+        "table": "events",
+        "columns": [
+          {
+            "name": "event_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true
+          },
+          {
+            "name": "family_id",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "family_members(family_id)"
+          },
+          {
+            "name": "title",
+            "type": "VARCHAR(255)",
+            "not_null": true
+          },
+          {
+            "name": "description",
+            "type": "TEXT"
+          },
+          {
+            "name": "start_time",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true
+          },
+          {
+            "name": "end_time",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true
+          },
+          {
+            "name": "assigned_to",
+            "type": "UUID",
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "event_category_id",
+            "type": "UUID",
+            "foreign_key": "event_categories(category_id)"
+          },
+          {
+            "name": "location",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "is_recurring",
+            "type": "BOOLEAN",
+            "default": false
+          },
+          {
+            "name": "recurrence_rule",
+            "type": "TEXT"
+          },
+          {
+            "name": "recurring_end_date",
+            "type": "DATE"
+          },
+          {
+            "name": "original_event_id",
+            "type": "UUID",
+            "foreign_key": "events(event_id)"
+          },
+          {
+            "name": "created_by",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          }
+        ]
+      },
+      {
+        "table": "event_categories",
+        "columns": [
+          {
+            "name": "category_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true
+          },
+          {
+            "name": "family_id",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "family_members(family_id)"
+          },
+          {
+            "name": "name",
+            "type": "VARCHAR(100)",
+            "not_null": true
+          },
+          {
+            "name": "color",
+            "type": "VARCHAR(7)",
+            "not_null": true
+          }
+        ]
+      },
+      {
+        "table": "tasks",
+        "columns": [
+          {
+            "name": "task_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true
+          },
+          {
+            "name": "family_id",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "family_members(family_id)"
+          },
+          {
+            "name": "title",
+            "type": "VARCHAR(255)",
+            "not_null": true
+          },
+          {
+            "name": "description",
+            "type": "TEXT"
+          },
+          {
+            "name": "assigned_to",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "due_date",
+            "type": "DATE"
+          },
+          {
+            "name": "points",
+            "type": "INTEGER",
+            "default": 0
+          },
+          {
+            "name": "status",
+            "type": "VARCHAR(50)",
+            "not_null": true,
+            "default": "'pending'"
+          },
+          {
+            "name": "created_by",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          }
+        ]
+      },
+      {
+        "table": "rewards",
+        "columns": [
+          {
+            "name": "reward_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true
+          },
+          {
+            "name": "family_id",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "family_members(family_id)"
+          },
+          {
+            "name": "name",
+            "type": "VARCHAR(100)",
+            "not_null": true
+          },
+          {
+            "name": "description",
+            "type": "TEXT"
+          },
+          {
+            "name": "point_cost",
+            "type": "INTEGER",
+            "default": 0
+          },
+          {
+            "name": "requires_approval",
+            "type": "BOOLEAN",
+            "default": false
+          },
+          {
+            "name": "created_by",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          }
+        ]
+      },
+      {
+        "table": "reward_redemptions",
+        "columns": [
+          {
+            "name": "redemption_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true
+          },
+          {
+            "name": "reward_id",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "rewards(reward_id)"
+          },
+          {
+            "name": "user_id",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "redeemed_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          },
+          {
+            "name": "status",
+            "type": "VARCHAR(50)",
+            "not_null": true,
+            "default": "'pending'"
+          },
+          {
+            "name": "approved_by",
+            "type": "UUID",
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "approved_at",
+            "type": "TIMESTAMP WITH TIME ZONE"
+          }
+        ]
+      },
+      {
+        "table": "user_points",
+        "columns": [
+          {
+            "name": "user_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true,
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "current_points",
+            "type": "INTEGER",
+            "not_null": true,
+            "default": 0
+          }
+        ]
+      },
+      {
+        "table": "notifications",
+        "columns": [
+          {
+            "name": "notification_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true
+          },
+          {
+            "name": "user_id",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "message",
+            "type": "TEXT",
+            "not_null": true
+          },
+          {
+            "name": "type",
+            "type": "VARCHAR(50)",
+            "not_null": true
+          },
+          {
+            "name": "read_status",
+            "type": "BOOLEAN",
+            "default": false
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true,
+            "default": "NOW()"
+          }
+        ]
+      },
+      {
+        "table": "subscriptions",
+        "columns": [
+          {
+            "name": "subscription_id",
+            "type": "UUID",
+            "primary_key": true,
+            "not_null": true
+          },
+          {
+            "name": "user_id",
+            "type": "UUID",
+            "not_null": true,
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "plan_name",
+            "type": "VARCHAR(100)",
+            "not_null": true
+          },
+          {
+            "name": "start_date",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "not_null": true
+          },
+          {
+            "name": "end_date",
+            "type": "TIMESTAMP WITH TIME ZONE"
+          },
+          {
+            "name": "status",
+            "type": "VARCHAR(50)",
+            "not_null": true,
+            "default": "'active'"
+          },
+          {
+            "name": "payment_gateway_subscription_id",
+            "type": "VARCHAR(255)"
+          }
+        ]
+      }
+    ]
+  }
+}

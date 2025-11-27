@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import MarkdownViewer from '../components/MarkdownViewer';
+import ArchitectureViewer from '../components/ArchitectureViewer';
+import { useProject } from '../context/ProjectContext';
 import {
     Lightbulb,
     FileText,
@@ -14,7 +16,8 @@ import {
     ArrowRight,
     Sparkles,
     Layout,
-    Server
+    Server,
+    RefreshCw
 } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:8050';
@@ -69,7 +72,7 @@ const StatusBadge = ({ status }: { status: 'pending' | 'loading' | 'complete' | 
     );
 };
 
-const StepCard = ({ title, icon: Icon, isActive, isComplete, children, action }: any) => {
+const StepCard = ({ title, icon: Icon, isActive, isComplete, children, action, onRegenerate }: any) => {
     if (!isActive && !isComplete) return null;
 
     return (
@@ -89,7 +92,19 @@ const StepCard = ({ title, icon: Icon, isActive, isComplete, children, action }:
                             <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Phase {isActive ? 'Active' : 'Complete'}</p>
                         </div>
                     </div>
-                    <StatusBadge status={isActive ? 'active' : 'complete'} />
+                    <div className="flex items-center gap-2">
+                        {(isActive || isComplete) && onRegenerate && (
+                            <button
+                                onClick={onRegenerate}
+                                className="px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg flex items-center gap-1.5 transition-colors"
+                                title="Regenerate this step"
+                            >
+                                <RefreshCw size={14} />
+                                Regenerate
+                            </button>
+                        )}
+                        <StatusBadge status={isActive ? 'active' : 'complete'} />
+                    </div>
                 </div>
 
                 <div className={`space-y-4 ${!isActive && 'grayscale-[0.5]'}`}>
@@ -109,20 +124,35 @@ const StepCard = ({ title, icon: Icon, isActive, isComplete, children, action }:
 const MissionControl: React.FC = () => {
     // --- State ---
     const [projectName, setProjectName] = useState('');
-    const [sessionId, setSessionId] = useState<string | null>(null);
-    const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [logs, setLogs] = useState<string[]>([]);
     const logsEndRef = useRef<HTMLDivElement>(null);
 
-    // Data
-    const [keywords, setKeywords] = useState('');
-    const [ideas, setIdeas] = useState<Idea[] | null>(null);
-    const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
-    const [prd, setPrd] = useState<string | null>(null);
-    const [userStories, setUserStories] = useState<UserStory[] | null>(null);
-    const [architecture, setArchitecture] = useState<Architecture | null>(null);
-    const [sprintPlan, setSprintPlan] = useState<SprintPlan | null>(null);
+    // Use ProjectContext instead of local state
+    const {
+        sessionId: contextSessionId,
+        setSessionId: setContextSessionId,
+        keywords,
+        setKeywords,
+        ideas,
+        setIdeas,
+        selectedIdea,
+        setSelectedIdea,
+        prd,
+        setPrd,
+        userStories,
+        setUserStories,
+        architecture,
+        setArchitecture,
+        sprintPlan,
+        setSprintPlan,
+        activeStep,
+        setActiveStep
+    } = useProject();
+
+    // Local session ID for backward compatibility
+    const [localSessionId, setLocalSessionId] = useState<string | null>(null);
+    const sessionId = contextSessionId || localSessionId;
 
     // --- Helpers ---
     const addLog = (msg: string) => setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
@@ -137,7 +167,8 @@ const MissionControl: React.FC = () => {
         setLoading(true);
         try {
             const res = await axios.post(`${API_BASE_URL}/session/start`, { project_name: projectName });
-            setSessionId(res.data.session_id);
+            setContextSessionId(res.data.session_id);
+            setLocalSessionId(res.data.session_id);
             addLog(`Session initialized: ${res.data.session_id}`);
             setActiveStep(1);
         } catch (e) { console.error(e); addLog("Error starting session"); }
@@ -365,6 +396,7 @@ const MissionControl: React.FC = () => {
                     icon={FileText}
                     isActive={activeStep === 2}
                     isComplete={activeStep > 2}
+                    onRegenerate={() => generatePRD()}
                     action={activeStep === 2 && (
                         <button onClick={analyzePRD} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
                             Analyze Requirements <ArrowRight size={18} />
@@ -380,6 +412,7 @@ const MissionControl: React.FC = () => {
                     icon={Search}
                     isActive={activeStep === 3}
                     isComplete={activeStep > 3}
+                    onRegenerate={() => analyzePRD()}
                     action={activeStep === 3 && (
                         <button onClick={designArchitecture} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
                             Design Architecture <ArrowRight size={18} />
@@ -406,6 +439,7 @@ const MissionControl: React.FC = () => {
                     icon={Cpu}
                     isActive={activeStep === 4}
                     isComplete={activeStep > 4}
+                    onRegenerate={() => designArchitecture()}
                     action={activeStep === 4 && (
                         <button onClick={createSprintPlan} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
                             Create Sprint Plan <ArrowRight size={18} />
@@ -413,21 +447,7 @@ const MissionControl: React.FC = () => {
                     )}
                 >
                     {architecture && (
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="p-5 rounded-xl border border-[hsl(var(--border))] bg-gray-50 dark:bg-gray-900/50">
-                                <h4 className="font-bold mb-4 flex items-center gap-2"><Layout size={16} /> Frontend</h4>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex justify-between"><span className="text-gray-500">Framework</span> <span className="font-medium">{architecture.stack?.frontend}</span></div>
-                                </div>
-                            </div>
-                            <div className="p-5 rounded-xl border border-[hsl(var(--border))] bg-gray-50 dark:bg-gray-900/50">
-                                <h4 className="font-bold mb-4 flex items-center gap-2"><Server size={16} /> Backend</h4>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex justify-between"><span className="text-gray-500">Language</span> <span className="font-medium">{architecture.stack?.backend}</span></div>
-                                    <div className="flex justify-between"><span className="text-gray-500">Database</span> <span className="font-medium">{architecture.stack?.database}</span></div>
-                                </div>
-                            </div>
-                        </div>
+                        <ArchitectureViewer data={architecture} />
                     )}
                 </StepCard>
 

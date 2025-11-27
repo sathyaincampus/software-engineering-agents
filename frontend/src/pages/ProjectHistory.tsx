@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FileText, Download, Clock, Folder, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useProject } from '../context/ProjectContext';
+import { FileText, Download, Clock, Folder, ChevronRight, FolderOpen } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:8050';
 
@@ -23,6 +25,9 @@ const ProjectHistory: React.FC = () => {
     const [projectFiles, setProjectFiles] = useState<ProjectFile[]>([]);
     const [loading, setLoading] = useState(false);
 
+    const navigate = useNavigate();
+    const { loadProject } = useProject();
+
     useEffect(() => {
         loadProjects();
     }, []);
@@ -44,6 +49,19 @@ const ProjectHistory: React.FC = () => {
             setSelectedProject(sessionId);
         } catch (e) {
             console.error('Failed to load project details:', e);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const loadProjectIntoMissionControl = async (sessionId: string) => {
+        try {
+            setLoading(true);
+            await loadProject(sessionId);
+            navigate('/');
+        } catch (e) {
+            console.error('Failed to load project:', e);
+            alert('Failed to load project. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -98,8 +116,8 @@ const ProjectHistory: React.FC = () => {
                                 key={project.session_id}
                                 onClick={() => loadProjectDetails(project.session_id)}
                                 className={`p-4 rounded-xl border cursor-pointer transition-all ${selectedProject === project.session_id
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                        : 'border-[hsl(var(--border))] hover:border-gray-400 bg-[hsl(var(--card))]'
+                                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                                    : 'border-[hsl(var(--border))] hover:border-gray-400 bg-[hsl(var(--card))]'
                                     }`}
                             >
                                 <div className="flex items-start justify-between mb-2">
@@ -143,13 +161,22 @@ const ProjectHistory: React.FC = () => {
                                     <h3 className="text-xl font-bold">Project Files</h3>
                                     <p className="text-sm text-gray-500 font-mono">{selectedProject}</p>
                                 </div>
-                                <button
-                                    onClick={() => downloadProject(selectedProject)}
-                                    className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2"
-                                >
-                                    <Download size={16} />
-                                    Download ZIP
-                                </button>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => loadProjectIntoMissionControl(selectedProject)}
+                                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                                    >
+                                        <FolderOpen size={16} />
+                                        Load Project
+                                    </button>
+                                    <button
+                                        onClick={() => downloadProject(selectedProject)}
+                                        className="btn-primary px-4 py-2 rounded-lg flex items-center gap-2"
+                                    >
+                                        <Download size={16} />
+                                        Download ZIP
+                                    </button>
+                                </div>
                             </div>
 
                             {loading ? (

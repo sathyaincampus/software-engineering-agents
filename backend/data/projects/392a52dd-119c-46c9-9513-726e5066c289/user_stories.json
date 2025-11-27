@@ -1,0 +1,185 @@
+[
+  {
+    "title": "User Authentication and Profile Setup",
+    "description": "As a new user (parent or child), I want to be able to sign up and log in securely so that I can access my personalized FamilyFlow account.",
+    "acceptance_criteria": [
+      "User can sign up using email and password.",
+      "User can sign up using Google Sign-In.",
+      "Existing users can log in using their credentials or Google Sign-In.",
+      "Users can create and manage their profile including name, age, and avatar.",
+      "Parents can control permissions and access for child accounts."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Shared Family Calendar Management",
+    "description": "As a parent, I want to manage a shared family calendar where I can add, edit, and view all family events, assign them to specific members, and categorize them with colors, so that I can have a clear overview of everyone's schedule.",
+    "acceptance_criteria": [
+      "Users can add new events to the calendar.",
+      "Users can edit existing events.",
+      "Users can delete events.",
+      "Events can be assigned to specific family members.",
+      "Event types can be customized with unique names and color-coding.",
+      "The calendar displays daily, weekly, and monthly views.",
+      "All changes made by one parent are reflected in real-time for the other shared parent."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Recurring Schedule Creation and Management",
+    "description": "As a parent, I want to easily set up recurring schedules for classes, activities, or study times (daily, weekly, monthly) with specified end dates, so that I don't have to manually add the same events repeatedly.",
+    "acceptance_criteria": [
+      "Users can create events that repeat daily, weekly, or monthly.",
+      "Users can specify the end date for recurring events or set them to repeat indefinitely.",
+      "Users can edit individual instances or all future occurrences of a recurring event.",
+      "The system automatically populates recurring events on the calendar based on the set schedule."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Task Management for Kids",
+    "description": "As a parent, I want to create and assign tasks (like homework or chores) to my children, and as a child, I want to easily see and mark my tasks as completed, so that responsibilities are clear and trackable.",
+    "acceptance_criteria": [
+      "Parents can create tasks including descriptions.",
+      "Parents can assign tasks to specific children.",
+      "Children can view a list of their assigned tasks.",
+      "Children can mark tasks as completed.",
+      "Parents can see which tasks have been completed by their children."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Gamified Rewards System for Kids",
+    "description": "As a parent, I want to set up a reward system where my children earn points for completing tasks and can redeem these points for predefined rewards, so that I can motivate them to fulfill their responsibilities.",
+    "acceptance_criteria": [
+      "Parents can assign point values to tasks.",
+      "Parents can define redeemable rewards with associated point costs.",
+      "Children can view their current point balance.",
+      "Children can browse and select available rewards to redeem.",
+      "The system deducts points when a child redeems a reward.",
+      "Parents can optionally approve reward redemptions.",
+      "Children have a clear and engaging interface to interact with the rewards system."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Google Calendar Synchronization",
+    "description": "As a parent, I want to seamlessly sync my FamilyFlow calendar with my Google Calendar, so that all my important events are in one place and accessible across devices.",
+    "acceptance_criteria": [
+      "Users can log in to FamilyFlow using their Google account.",
+      "Users can choose to import events from their connected Google Calendar into FamilyFlow.",
+      "Users can choose to export events from FamilyFlow to their connected Google Calendar.",
+      "FamilyFlow events automatically sync to Google Calendar (and vice versa) in near real-time."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Add Notes and Details to Events",
+    "description": "As a parent, I want to add specific notes, locations, or instructions to calendar events, so that all necessary information is readily available for any scheduled activity.",
+    "acceptance_criteria": [
+      "Users can add a text field for notes when creating or editing an event.",
+      "Users can specify a location for an event.",
+      "The added notes and location are visible when viewing event details.",
+      "This information is synced across shared parent accounts."
+    ],
+    "priority": "Medium"
+  },
+  {
+    "title": "Parental Dashboard Overview",
+    "description": "As a parent, I want a dedicated dashboard that provides a quick overview of upcoming family events, pending tasks for my children, and their progress on completed tasks and earned points, so that I can stay informed at a glance.",
+    "acceptance_criteria": [
+      "A dashboard screen is accessible to parents.",
+      "The dashboard displays a summary of the next few upcoming family events.",
+      "The dashboard shows a list of pending tasks for each child.",
+      "The dashboard provides a summary of children's completed tasks and accumulated points."
+    ],
+    "priority": "Medium"
+  },
+  {
+    "title": "21-Day Routine Builder",
+    "description": "As a parent, I want to utilize a '21-Day Routine Builder' feature to help establish new habits or get back on track with schedules, so that I can guide my children through structured transitions.",
+    "acceptance_criteria": [
+      "Users can access a '21-Day Routine Builder' feature.",
+      "The feature offers pre-defined templates or a guided setup process for routines.",
+      "The system visually tracks the child's progress through the 21-day routine.",
+      "Completed days within the routine are clearly marked."
+    ],
+    "priority": "Medium"
+  },
+  {
+    "title": "Sharing Calendar with Co-Parent",
+    "description": "As a parent, I want to share my FamilyFlow calendar and task management view with my partner, so that we can both stay updated and coordinate family responsibilities effectively.",
+    "acceptance_criteria": [
+      "A parent can invite another parent/guardian to join their family account.",
+      "The invited parent can sign up/log in and accept the invitation.",
+      "Once connected, both parents have access to the shared family calendar and task lists.",
+      "Updates made by one parent are visible to the other in real-time."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Basic Reminder Notifications",
+    "description": "As a user (parent or child), I want to receive timely notifications for upcoming events and assigned tasks, so that I don't miss important activities or deadlines.",
+    "acceptance_criteria": [
+      "Users receive push notifications for events starting soon.",
+      "Users receive push notifications for newly assigned tasks.",
+      "Users receive push notifications for upcoming task deadlines.",
+      "Notification preferences can be managed (e.g., enable/disable)."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Customizable Event and Task Categories",
+    "description": "As a parent, I want the ability to create my own custom event types and task categories, beyond the defaults, so that the app can be tailored to my family's specific activities and needs.",
+    "acceptance_criteria": [
+      "Parents can add new custom event categories with associated colors.",
+      "Parents can add new custom task categories.",
+      "These custom categories are available when creating new events or tasks."
+    ],
+    "priority": "Low"
+  },
+  {
+    "title": "In-App Messaging (Parent-to-Child)",
+    "description": "As a parent, I want to send simple messages or encouragement directly to my child's profile within the app, so that I can communicate with them conveniently about their schedule or tasks.",
+    "acceptance_criteria": [
+      "Parents can access a messaging interface linked to their child's profile.",
+      "Parents can type and send short messages.",
+      "Children can see messages sent by their parent on their profile.",
+      "The messaging system is simple and easy to use."
+    ],
+    "priority": "Low"
+  },
+  {
+    "title": "Advanced Reward Customization",
+    "description": "As a parent, I want more advanced options for customizing rewards, such as setting specific conditions or approval workflows, so that I can have greater control over the reward system.",
+    "acceptance_criteria": [
+      "Parents can set different point values for different types of tasks.",
+      "Parents can configure rewards that require manual approval after redemption.",
+      "Parents can set up rewards that are not tied to a point cost but are granted manually."
+    ],
+    "priority": "Low"
+  },
+  {
+    "title": "Advanced Family Analytics",
+    "description": "As a parent using the premium subscription, I want access to detailed reports on family time allocation, task completion trends, and reward spending, so that I can gain deeper insights into our family's productivity and habits.",
+    "acceptance_criteria": [
+      "A dedicated 'Analytics' section is available for premium users.",
+      "Reports show time spent on different categories (e.g., classes, homework, play).",
+      "Reports display task completion rates over selected periods.",
+      "Reports visualize reward redemption history and patterns."
+    ],
+    "priority": "Low"
+  },
+  {
+    "title": "Subscription Payment Gateway Integration",
+    "description": "As an administrator, I want to integrate a secure payment gateway, so that users can subscribe to premium features via monthly payments.",
+    "acceptance_criteria": [
+      "Integration with a selected payment gateway (e.g., Stripe, Braintree).",
+      "Users can select a monthly subscription plan.",
+      "Secure processing of payment details.",
+      "Subscription status is managed and reflected in user accounts.",
+      "Automated billing for recurring subscriptions."
+    ],
+    "priority": "Low"
+  }
+]

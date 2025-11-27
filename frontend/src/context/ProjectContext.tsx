@@ -50,7 +50,13 @@ interface ProjectProviderProps {
 }
 
 export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) => {
-    const [sessionId, setSessionId] = useState<string | null>(null);
+    // Initialize state from localStorage if available
+    const [sessionId, setSessionIdState] = useState<string | null>(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('currentProjectId');
+        }
+        return null;
+    });
     const [projectName, setProjectName] = useState('');
     const [keywords, setKeywords] = useState('');
     const [ideas, setIdeas] = useState<any[]>([]);
@@ -64,6 +70,27 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
     const [frontendCode, setFrontendCode] = useState<any | null>(null);
     const [qaReview, setQaReview] = useState<any | null>(null);
     const [activeStep, setActiveStep] = useState(0);
+
+    // Wrapper for setSessionId that also updates localStorage
+    const setSessionId = (id: string | null) => {
+        setSessionIdState(id);
+        if (typeof window !== 'undefined') {
+            if (id) {
+                localStorage.setItem('currentProjectId', id);
+            } else {
+                localStorage.removeItem('currentProjectId');
+            }
+        }
+    };
+
+    // Auto-load project on mount if sessionId exists
+    // DISABLED: Causing race condition issues with ideas.map
+    // Users should manually click project in sidebar to load
+    // useEffect(() => {
+    //     if (sessionId) {
+    //         loadProject(sessionId).catch(console.error);
+    //     }
+    // }, []); // Only run on mount
 
     const loadProject = async (sessionId: string) => {
         try {
@@ -80,13 +107,15 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
 
                         switch (step) {
                             case 'ideas':
-                                setIdeas(data.data);
+                                // Ensure it's an array
+                                setIdeas(Array.isArray(data.data) ? data.data : []);
                                 break;
                             case 'prd':
                                 setPrd(data.data);
                                 break;
                             case 'user_stories':
-                                setUserStories(data.data);
+                                // Ensure it's an array
+                                setUserStories(Array.isArray(data.data) ? data.data : []);
                                 break;
                             case 'architecture':
                                 setArchitecture(data.data);
@@ -108,9 +137,10 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
                                 break;
                         }
                     }
+                    // Silently skip if step doesn't exist (404)
                 } catch (e) {
-                    // Step doesn't exist yet, skip
-                    console.log(`Step ${step} not found, skipping`);
+                    // Silently skip errors for individual steps
+                    console.warn(`Failed to load step ${step}:`, e);
                 }
             }
 
@@ -128,6 +158,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
 
         } catch (error) {
             console.error('Failed to load project:', error);
+            throw error; // Re-throw so the UI can show an error
         }
     };
 

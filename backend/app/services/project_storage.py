@@ -116,7 +116,7 @@ class ProjectStorage:
         metadata_path = project_dir / "metadata.json"
         
         if not metadata_path.exists():
-            return {"exists": False}
+            return None
         
         with open(metadata_path, 'r') as f:
             metadata = json.load(f)
@@ -131,9 +131,14 @@ class ProjectStorage:
                     "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat()
                 })
         
+        # Return flattened structure for easier access
         return {
             "exists": True,
-            "metadata": metadata,
+            "session_id": metadata.get("session_id"),
+            "project_name": metadata.get("project_name", "Untitled Project"),
+            "created_at": metadata.get("created_at"),
+            "last_modified": metadata.get("last_updated"),
+            "steps_completed": metadata.get("steps_completed", []),
             "files": files,
             "total_files": len(files)
         }
@@ -170,11 +175,11 @@ class ProjectStorage:
                     projects.append({
                         "session_id": project_dir.name,
                         "created_at": metadata.get("created_at"),
-                        "last_updated": metadata.get("last_updated"),
-                        "steps_completed": len(metadata.get("steps_completed", []))
+                        "last_modified": metadata.get("last_updated"),
+                        "steps_completed": metadata.get("steps_completed", [])
                     })
         
-        return sorted(projects, key=lambda x: x.get("last_updated", ""), reverse=True)
+        return sorted(projects, key=lambda x: x.get("last_modified", ""), reverse=True)
 
 # Global instance
 project_storage = ProjectStorage()

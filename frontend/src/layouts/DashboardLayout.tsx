@@ -14,6 +14,7 @@ import {
     Folder
 } from 'lucide-react';
 import Settings from '../components/Settings';
+import ProjectSidebar from '../components/ProjectSidebar';
 
 const DashboardLayout: React.FC = () => {
     const location = useLocation();
@@ -133,10 +134,16 @@ const DashboardLayout: React.FC = () => {
                     </div>
                 </header>
 
-                {/* Content Scroll Area */}
-                <div className="flex-1 overflow-auto p-8 scroll-smooth">
-                    <div className="max-w-7xl mx-auto">
-                        <Outlet />
+                {/* Content Area with Project Sidebar */}
+                <div className="flex-1 flex overflow-hidden">
+                    {/* Project Sidebar */}
+                    <ProjectSidebar />
+
+                    {/* Content Scroll Area */}
+                    <div className="flex-1 overflow-auto p-8 scroll-smooth">
+                        <div className="max-w-7xl mx-auto">
+                            <Outlet />
+                        </div>
                     </div>
                 </div>
             </main>
