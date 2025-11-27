@@ -33,7 +33,22 @@ class EngineeringManagerAgent:
         Create a Sprint Plan.
         User Stories: {json.dumps(user_stories)}
         Architecture: {json.dumps(architecture)}
+        
+        Output strictly in JSON format with the following structure:
+        {{
+            "sprint_plan": [
+                {{
+                    "task_id": "TASK-001",
+                    "title": "Task Title",
+                    "description": "Task Description",
+                    "assignee": "Frontend|Backend|DevOps",
+                    "story_id": "STORY-001",
+                    "effort": "High|Medium|Low"
+                }}
+            ]
+        }}
         """
+        
         from app.utils.adk_helper import collect_response, parse_json_response
         
         message = Content(parts=[Part(text=prompt)])

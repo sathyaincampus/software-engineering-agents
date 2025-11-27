@@ -1,0 +1,460 @@
+{
+    "sprint_plan": [
+        {
+            "task_id": "TASK-001",
+            "title": "Implement User Signup with Email/Password",
+            "description": "Develop backend API endpoints and frontend components for user registration using email and password. Include input validation and secure password hashing.",
+            "assignee": "Backend",
+            "story_id": "STORY-001",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-002",
+            "title": "Implement User Login with Email/Password",
+            "description": "Develop backend API endpoints and frontend components for user login using email and password. Implement JWT token generation upon successful authentication.",
+            "assignee": "Backend",
+            "story_id": "STORY-001",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-003",
+            "title": "Implement Google Sign-In Integration",
+            "description": "Integrate Google OAuth 2.0 for user signup and login. This involves backend setup for OAuth flow and frontend components for the Google Sign-In button.",
+            "assignee": "Backend",
+            "story_id": "STORY-001",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-004",
+            "title": "Develop User Profile Creation and Management UI",
+            "description": "Create React Native components for users to set up and manage their profile information (name, age, avatar).",
+            "assignee": "Frontend",
+            "story_id": "STORY-001",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-005",
+            "title": "Develop Backend API for User Profile Management",
+            "description": "Implement backend API endpoints for creating, retrieving, updating, and deleting user profile information, including avatar upload to AWS S3.",
+            "assignee": "Backend",
+            "story_id": "STORY-001",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-006",
+            "title": "Implement Parent Control for Child Account Permissions",
+            "description": "Design and implement backend logic and API endpoints to manage permissions and access for child accounts, linking them to parent accounts.",
+            "assignee": "Backend",
+            "story_id": "STORY-001",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-007",
+            "title": "Develop UI for Parent Control of Child Permissions",
+            "description": "Create frontend components for parents to view and manage permissions for their child accounts.",
+            "assignee": "Frontend",
+            "story_id": "STORY-001",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-008",
+            "title": "Implement Shared Family Calendar - Add Event API",
+            "description": "Develop backend API endpoint for adding new events to the shared family calendar. Ensure real-time updates via WebSockets.",
+            "assignee": "Backend",
+            "story_id": "STORY-002",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-009",
+            "title": "Implement Shared Family Calendar - Edit Event API",
+            "description": "Develop backend API endpoint for editing existing events in the shared family calendar. Ensure real-time updates via WebSockets.",
+            "assignee": "Backend",
+            "story_id": "STORY-002",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-010",
+            "title": "Implement Shared Family Calendar - Delete Event API",
+            "description": "Develop backend API endpoint for deleting events from the shared family calendar. Ensure real-time updates via WebSockets.",
+            "assignee": "Backend",
+            "story_id": "STORY-002",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-011",
+            "title": "Implement Shared Family Calendar - Event Assignment API",
+            "description": "Develop backend logic to support assigning events to specific family members.",
+            "assignee": "Backend",
+            "story_id": "STORY-002",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-012",
+            "title": "Implement Event Categorization with Color Coding",
+            "description": "Design and implement database schema and backend APIs for custom event categories with color coding. Ensure real-time updates.",
+            "assignee": "Backend",
+            "story_id": "STORY-002",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-013",
+            "title": "Develop Calendar UI with Daily, Weekly, Monthly Views",
+            "description": "Create React Native components for displaying the family calendar in daily, weekly, and monthly views. Integrate with Redux Toolkit for state management.",
+            "assignee": "Frontend",
+            "story_id": "STORY-002",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-014",
+            "title": "Implement Real-time Calendar Updates using WebSockets",
+            "description": "Integrate Socket.IO on both frontend and backend to ensure real-time synchronization of calendar events between shared parent accounts.",
+            "assignee": "Backend",
+            "story_id": "STORY-002",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-015",
+            "title": "Implement Recurring Schedule Creation API",
+            "description": "Develop backend API to handle the creation of recurring events (daily, weekly, monthly) with specified end dates or indefinite recurrence.",
+            "assignee": "Backend",
+            "story_id": "STORY-003",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-016",
+            "title": "Implement Recurring Schedule Editing API",
+            "description": "Develop backend API to allow editing of individual instances or all future occurrences of recurring events.",
+            "assignee": "Backend",
+            "story_id": "STORY-003",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-017",
+            "title": "Develop UI for Recurring Schedule Setup",
+            "description": "Create frontend components for users to define recurrence rules, end dates, and other options when creating or editing events.",
+            "assignee": "Frontend",
+            "story_id": "STORY-003",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-018",
+            "title": "Implement Task Creation and Assignment API",
+            "description": "Develop backend API endpoints for parents to create tasks, add descriptions, and assign them to specific children.",
+            "assignee": "Backend",
+            "story_id": "STORY-004",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-019",
+            "title": "Implement Task Viewing and Completion API",
+            "description": "Develop backend API endpoints for children to view their assigned tasks and mark them as completed. Include parent view for completed tasks.",
+            "assignee": "Backend",
+            "story_id": "STORY-004",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-020",
+            "title": "Develop UI for Task Management (Parent and Child Views)",
+            "description": "Create React Native components for parents to create/assign tasks and for children to view and mark tasks as complete.",
+            "assignee": "Frontend",
+            "story_id": "STORY-004",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-021",
+            "title": "Implement Task Point Assignment API",
+            "description": "Develop backend API to allow parents to assign point values to tasks.",
+            "assignee": "Backend",
+            "story_id": "STORY-005",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-022",
+            "title": "Implement Reward Definition and Point Cost API",
+            "description": "Develop backend API endpoints for parents to define rewards and their associated point costs.",
+            "assignee": "Backend",
+            "story_id": "STORY-005",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-023",
+            "title": "Implement User Point Balance Tracking",
+            "description": "Develop backend logic to track and update user point balances when tasks are completed and rewards are redeemed.",
+            "assignee": "Backend",
+            "story_id": "STORY-005",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-024",
+            "title": "Implement Reward Redemption API",
+            "description": "Develop backend API endpoints for children to browse rewards, redeem them, and deduct points. Include optional approval workflow.",
+            "assignee": "Backend",
+            "story_id": "STORY-005",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-025",
+            "title": "Develop UI for Gamified Rewards System",
+            "description": "Create engaging React Native components for children to view points, browse rewards, and redeem them. Also, parent UI for reward setup and approval.",
+            "assignee": "Frontend",
+            "story_id": "STORY-005",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-026",
+            "title": "Implement Google Calendar Import API",
+            "description": "Develop backend API to handle the import of events from a connected Google Calendar into FamilyFlow.",
+            "assignee": "Backend",
+            "story_id": "STORY-006",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-027",
+            "title": "Implement Google Calendar Export API",
+            "description": "Develop backend API to handle the export of events from FamilyFlow to a connected Google Calendar.",
+            "assignee": "Backend",
+            "story_id": "STORY-006",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-028",
+            "title": "Implement Real-time Google Calendar Synchronization Logic",
+            "description": "Develop backend services to synchronize events between FamilyFlow and Google Calendar in near real-time.",
+            "assignee": "Backend",
+            "story_id": "STORY-006",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-029",
+            "title": "Develop UI for Google Calendar Connection and Sync Settings",
+            "description": "Create frontend components for users to connect their Google account and configure calendar synchronization preferences.",
+            "assignee": "Frontend",
+            "story_id": "STORY-006",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-030",
+            "title": "Add Notes and Location Fields to Event API",
+            "description": "Modify backend API endpoints for events to include fields for notes and location. Ensure data is saved and retrieved correctly.",
+            "assignee": "Backend",
+            "story_id": "STORY-007",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-031",
+            "title": "Update Calendar UI to Display Notes and Location",
+            "description": "Enhance React Native components for event viewing to display the added notes and location information.",
+            "assignee": "Frontend",
+            "story_id": "STORY-007",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-032",
+            "title": "Develop Parental Dashboard API",
+            "description": "Create backend API endpoints to fetch aggregated data for the parental dashboard: upcoming events, pending tasks, and points summary.",
+            "assignee": "Backend",
+            "story_id": "STORY-008",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-033",
+            "title": "Develop Parental Dashboard UI",
+            "description": "Create React Native components for the parent dashboard, displaying summaries of events, tasks, and points.",
+            "assignee": "Frontend",
+            "story_id": "STORY-008",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-034",
+            "title": "Implement 21-Day Routine Builder Backend Logic",
+            "description": "Design and implement backend logic and database schema for the 21-Day Routine Builder, including progress tracking.",
+            "assignee": "Backend",
+            "story_id": "STORY-009",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-035",
+            "title": "Develop UI for 21-Day Routine Builder",
+            "description": "Create React Native components for the 21-Day Routine Builder, allowing setup, visualization of progress, and marking of completed days.",
+            "assignee": "Frontend",
+            "story_id": "STORY-009",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-036",
+            "title": "Implement Co-Parent Invitation and Connection API",
+            "description": "Develop backend API endpoints for a parent to invite another parent and for the invited parent to accept the invitation, establishing a shared family account.",
+            "assignee": "Backend",
+            "story_id": "STORY-010",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-037",
+            "title": "Update Real-time Sync for Co-Parent Access",
+            "description": "Ensure that all real-time updates (calendar, tasks) are correctly broadcast and received by all connected parents in a family.",
+            "assignee": "Backend",
+            "story_id": "STORY-010",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-038",
+            "title": "Develop UI for Co-Parent Invitation and Management",
+            "description": "Create frontend components for managing co-parent invitations and displaying connected family members.",
+            "assignee": "Frontend",
+            "story_id": "STORY-010",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-039",
+            "title": "Implement Notification Service - Event Reminders",
+            "description": "Develop backend logic for the Notification Service to send push notifications for upcoming events.",
+            "assignee": "Backend",
+            "story_id": "STORY-011",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-040",
+            "title": "Implement Notification Service - Task Reminders",
+            "description": "Develop backend logic for the Notification Service to send push notifications for newly assigned tasks and upcoming deadlines.",
+            "assignee": "Backend",
+            "story_id": "STORY-011",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-041",
+            "title": "Develop Frontend Notification Handling",
+            "description": "Implement React Native components and Redux logic to receive and display push notifications. Include notification preference management.",
+            "assignee": "Frontend",
+            "story_id": "STORY-011",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-042",
+            "title": "Implement Custom Event Category Management API",
+            "description": "Develop backend API endpoints for parents to create, view, update, and delete custom event categories with associated colors.",
+            "assignee": "Backend",
+            "story_id": "STORY-012",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-043",
+            "title": "Implement Custom Task Category Management API",
+            "description": "Develop backend API endpoints for parents to create, view, update, and delete custom task categories.",
+            "assignee": "Backend",
+            "story_id": "STORY-012",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-044",
+            "title": "Update Event and Task Forms to Use Custom Categories",
+            "description": "Modify frontend components for creating/editing events and tasks to allow selection from custom categories.",
+            "assignee": "Frontend",
+            "story_id": "STORY-012",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-045",
+            "title": "Implement In-App Messaging API (Parent-to-Child)",
+            "description": "Develop backend API endpoints for parents to send and children to receive messages associated with their profiles.",
+            "assignee": "Backend",
+            "story_id": "STORY-013",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-046",
+            "title": "Develop UI for In-App Messaging",
+            "description": "Create React Native components for parents to send messages and for children to view messages from their parent.",
+            "assignee": "Frontend",
+            "story_id": "STORY-013",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-047",
+            "title": "Implement Advanced Reward Customization - Manual Approval API",
+            "description": "Extend backend logic and API for rewards to support a manual approval status for redemptions.",
+            "assignee": "Backend",
+            "story_id": "STORY-014",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-048",
+            "title": "Implement Advanced Reward Customization - Manual Grant API",
+            "description": "Develop backend API for parents to manually grant rewards that are not tied to point costs.",
+            "assignee": "Backend",
+            "story_id": "STORY-014",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-049",
+            "title": "Update UI for Advanced Reward Options",
+            "description": "Enhance frontend components for reward management to include options for manual approval and manual granting.",
+            "assignee": "Frontend",
+            "story_id": "STORY-014",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-050",
+            "title": "Develop Backend API for Advanced Family Analytics",
+            "description": "Create backend API endpoints to aggregate and provide data for detailed analytics reports (time allocation, task trends, reward spending).",
+            "assignee": "Backend",
+            "story_id": "STORY-015",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-051",
+            "title": "Develop UI for Advanced Family Analytics Dashboard",
+            "description": "Create React Native components for the analytics section, visualizing reports for premium users.",
+            "assignee": "Frontend",
+            "story_id": "STORY-015",
+            "effort": "Low"
+        },
+        {
+            "task_id": "TASK-052",
+            "title": "Integrate Payment Gateway API (e.g., Stripe)",
+            "description": "Integrate with a chosen payment gateway for processing subscription payments. Set up webhooks for payment status updates.",
+            "assignee": "Backend",
+            "story_id": "STORY-016",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-053",
+            "title": "Implement Subscription Management Logic",
+            "description": "Develop backend logic to manage subscription plans, track subscription status, and apply premium features based on subscription status.",
+            "assignee": "Backend",
+            "story_id": "STORY-016",
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-054",
+            "title": "Develop UI for Subscription Plans and Payment",
+            "description": "Create React Native components for users to view subscription plans, initiate payments, and manage their subscription.",
+            "assignee": "Frontend",
+            "story_id": "STORY-016",
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-055",
+            "title": "Setup CI/CD Pipeline for New Features",
+            "description": "Configure GitHub Actions to automate testing, building, and deployment for the new features implemented in this sprint.",
+            "assignee": "DevOps",
+            "story_id": null,
+            "effort": "Medium"
+        },
+        {
+            "task_id": "TASK-056",
+            "title": "Implement Unit and Integration Tests",
+            "description": "Write comprehensive unit and integration tests for all new backend API endpoints and critical frontend components using Jest and React Testing Library.",
+            "assignee": "Backend",
+            "story_id": null,
+            "effort": "High"
+        },
+        {
+            "task_id": "TASK-057",
+            "title": "Implement End-to-End Tests",
+            "description": "Write end-to-end tests using Cypress to cover key user flows, ensuring seamless integration of the new features.",
+            "assignee": "Frontend",
+            "story_id": null,
+            "effort": "High"
+        }
+    ]
+}

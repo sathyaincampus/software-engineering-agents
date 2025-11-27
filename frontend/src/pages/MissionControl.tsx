@@ -279,6 +279,13 @@ const MissionControl: React.FC = () => {
         try {
             addLog("Agent [EngineeringManager] creating sprint plan...");
             const res = await axios.post(`${API_BASE_URL}/agent/engineering_manager/run?session_id=${sessionId}`, { user_stories: userStories, architecture: architecture });
+            console.log("Sprint plan response:", res.data);
+
+            if (res.data.error) {
+                addLog(`Error: ${res.data.error}`);
+                return;
+            }
+
             setSprintPlan(res.data);
             addLog("Sprint Plan ready.");
             setActiveStep(5);
@@ -459,7 +466,7 @@ const MissionControl: React.FC = () => {
                     isComplete={activeStep > 5}
                 >
                     <div className="space-y-3">
-                        {sprintPlan?.sprint_plan?.map((task: any, i: number) => (
+                        {(Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).map((task: any, i: number) => (
                             <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))]">
                                 <div className="flex items-center gap-4">
                                     <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-mono text-gray-500">
