@@ -46,35 +46,57 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
     }, []);
 
     useEffect(() => {
+        let isMounted = true;
+
         const renderDiagrams = async () => {
+            // Small delay to ensure DOM refs are attached
+            await new Promise(resolve => setTimeout(resolve, 100));
+            if (!isMounted) return;
+
             // Render system diagram
             if (data.system_diagram?.code && systemDiagramRef.current) {
                 try {
-                    const id = `system-diagram-${Date.now()}`;
+                    // Clear previous content
+                    systemDiagramRef.current.innerHTML = '';
+                    const id = `system-diagram-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
                     const { svg } = await mermaid.render(id, data.system_diagram.code);
-                    systemDiagramRef.current.innerHTML = svg;
-                    setSystemError(null);
+                    if (isMounted && systemDiagramRef.current) {
+                        systemDiagramRef.current.innerHTML = svg;
+                        setSystemError(null);
+                    }
                 } catch (e: any) {
                     console.error('Mermaid rendering error:', e);
-                    setSystemError(e.message || 'Failed to render diagram');
+                    if (isMounted) {
+                        setSystemError(e.message || 'Failed to render diagram');
+                    }
                 }
             }
 
             // Render sequence diagram
             if (data.sequence_diagram?.code && sequenceDiagramRef.current) {
                 try {
-                    const id = `sequence-diagram-${Date.now()}`;
+                    // Clear previous content
+                    sequenceDiagramRef.current.innerHTML = '';
+                    const id = `sequence-diagram-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
                     const { svg } = await mermaid.render(id, data.sequence_diagram.code);
-                    sequenceDiagramRef.current.innerHTML = svg;
-                    setSequenceError(null);
+                    if (isMounted && sequenceDiagramRef.current) {
+                        sequenceDiagramRef.current.innerHTML = svg;
+                        setSequenceError(null);
+                    }
                 } catch (e: any) {
                     console.error('Mermaid rendering error:', e);
-                    setSequenceError(e.message || 'Failed to render diagram');
+                    if (isMounted) {
+                        setSequenceError(e.message || 'Failed to render diagram');
+                    }
                 }
             }
         };
 
         renderDiagrams();
+
+        return () => {
+            isMounted = false;
+        };
     }, [data.system_diagram, data.sequence_diagram]);
 
     useEffect(() => {
@@ -259,31 +281,6 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                         <button
                             onClick={() => setZoomedDiagram('system')}
                             className="absolute top-4 right-4 p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                            title="Zoom diagram"
-                        >
-                            <Maximize2 size={16} />
-                        </button>
-                        <div ref={systemDiagramRef} className="mermaid-container" />
-                    </div>
-                </div>
-            )}
-
-            {/* Sequence Diagram */}
-            {data.sequence_diagram?.code && (
-                <div>
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-3xl font-bold">Sequence Diagram</h2>
-                        <button
-                            onClick={copySequenceDiagram}
-                            className="flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-lg transition-colors">
-                            {copiedSequence ? <Check size={16} /> : <Copy size={16} />}
-                            {copiedSequence ? 'Copied!' : 'Copy Mermaid Code'}
-                        </button>
-                    </div>
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-700 overflow-x-auto relative group">
-                        <button
-                            onClick={() => setZoomedDiagram('sequence')}
-                            className="absolute top-4 right-4 p-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
                             title="Zoom diagram"
                         >
                             <Maximize2 size={16} />
