@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FamilyFlow UI Mockups</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .screenshot-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .screenshot-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease-in-out;
+        }
+        .screenshot-item:hover {
+            transform: translateY(-5px);
+        }
+        .screenshot-item img {
+            width: 100%;
+            height: 250px; /* Fixed height for consistency */
+            display: block;
+            object-fit: cover; /* Ensures image covers the area */
+        }
+        .screenshot-item figcaption {
+            padding: 15px;
+            background-color: #f8f9fa;
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+        }
+        .notes {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+            text-align: center;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .screenshot-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FamilyFlow UI Mockups</h1>
+
+        <h2>Parent Dashboard</h2>
+        <div class="screenshot-gallery">
+            <figure class="screenshot-item">
+                <img src="https://via.placeholder.com/600x400/ADD8E6/000000?text=Parent+Dashboard" alt="Parent Dashboard">
+                <figcaption>Parent Dashboard</figcaption>
+                <p class="notes">Overview of upcoming events, tasks, and points.</p>
+            </figure>
+        </div>
+
+        <h2>Child View (Tasks & Rewards)</h2>
+        <div class="screenshot-gallery">
+            <figure class="screenshot-item">
+                <img src="https://via.placeholder.com/600x400/90EE90/000000?text=Child+Tasks+Screen" alt="Child Tasks Screen">
+                <figcaption>Child Tasks Screen</figcaption>
+                <p class="notes">Shows assigned tasks and allows marking as complete.</p>
+            </figure>
+            <figure class="screenshot-item">
+                <img src="https://via.placeholder.com/600x400/FFB6C1/000000?text=Child+Rewards+Screen" alt="Child Rewards Screen">
+                <figcaption>Child Rewards Screen</figcaption>
+                <p class="notes">Displays available rewards and point balance for redemption.</p>
+            </figure>
+        </div>
+
+        <h2>Family Calendar</h2>
+        <div class="screenshot-gallery">
+            <figure class="screenshot-item">
+                <img src="https://via.placeholder.com/600x400/FFFFE0/000000?text=Family+Calendar+View" alt="Family Calendar View">
+                <figcaption>Family Calendar View</figcaption>
+                <p class="notes">Monthly view of family events with color-coding.</p>
+            </figure>
+            <figure class="screenshot-item">
+                <img src="https://via.placeholder.com/600x400/E6E6FA/000000?text=Event+Details" alt="Event Details Modal">
+                <figcaption>Event Details Modal</figcaption>
+                <p class="notes">Shows full details of a specific event, including notes and location.</p>
+            </figure>
+        </div>
+
+        <h2>Task Creation (Parent)</h2>
+        <div class="screenshot-gallery">
+            <figure class="screenshot-item">
+                <img src="https://via.placeholder.com/600x400/FFA07A/000000?text=Create+New+Task" alt="Create New Task Screen">
+                <figcaption>Create New Task Screen</figcaption>
+                <p class="notes">Interface for parents to create and assign tasks to children.</p>
+            </figure>
+        </div>
+
+        <h2>Reward Management (Parent)</h2>
+        <div class="screenshot-gallery">
+            <figure class="screenshot-item">
+                <img src="https://via.placeholder.com/600x400/FFDAB9/000000?text=Manage+Rewards" alt="Manage Rewards Screen">
+                <figcaption>Manage Rewards Screen</figcaption>
+                <p class="notes">Allows parents to define rewards and their point costs.</p>
+            </figure>
+        </div>
+
+        <h2>Onboarding / Login Screens</h2>
+        <div class="screenshot-gallery">
+            <figure class="screenshot-item">
+                <img src="https://via.placeholder.com/600x400/ADD8E6/000000?text=Signup+Screen" alt="Signup Screen">
+                <figcaption>Signup Screen</figcaption>
+                <p class="notes">Options for email/password signup or Google Sign-In.</p>
+            </figure>
+            <figure class="screenshot-item">
+                <img src="https://via.placeholder.com/600x400/DDA0DD/000000?text=Login+Screen" alt="Login Screen">
+                <figcaption>Login Screen</figcaption>
+                <p class="notes">Options for email/password login or Google Sign-In.</p>
+            </figure>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId          String         @id @default(cuid())
+  email           String         @unique
+  passwordHash    String?        
+  googleId        String?        @unique 
+  displayName     String
+  avatarUrl       String?
+  role            UserRole       @default(CHILD)
+  parentId        String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  parent          User?          @relation("ParentChildRelation", references: [userId], map: "fk_parent_id")
+  children        User[]         @relation("ParentChildRelation", map: "fk_user_id")
+  familyMembers   FamilyMember[]
+  eventsCreated   Event[]        @relation("EventCreatedByRelation", map: "fk_created_by_user_id")
+  eventsAssigned  Event[]        @relation("EventAssignedToRelation", fields: [assignedToId], references: [userId], map: "fk_assigned_to_user_id")
+  assignedToId    String?
+  category        EventCategory? @relation(fields: [eventCategoryId], references: [categoryId], map: "fk_event_category_id")
+  eventCategoryId String?
+  tasksAssigned   Task[]         @relation("TaskAssignedToRelation", map: "fk_assigned_to_user_id")
+  tasksCreated    Task[]         @relation("TaskCreatedByRelation", map: "fk_created_by_user_id")
+  rewardsCreated  Reward[]       @relation("RewardCreatedByRelation", map: "fk_created_by_user_id")
+  rewardRedemptions RewardRedemption[] @relation("RewardRedemptionUserRelation", map: "fk_user_id")
+  rewardApprovals RewardRedemption[] @relation("RewardRedemptionApprovedByRelation", map: "fk_approved_by_user_id")
+  notifications   Notification[]
+  subscriptions   Subscription[]
+}
+
+enum UserRole {
+  PARENT
+  CHILD
+}
+
+model FamilyMember {
+  familyId     String @id @default(cuid())
+  member       User   @relation(fields: [memberId], references: [userId], map: "fk_member_id")
+  memberId     String @unique
+  roleInFamily String 
+  family       Family?
+}
+
+model Event {
+  eventId          String         @id @default(cuid())
+  title            String
+  description      String?
+  startTime        DateTime
+  endTime          DateTime
+  location         String?
+  isRecurring      Boolean        @default(false)
+  recurrenceRule   String?        
+  recurringEndDate String?
+  originalEventId  String?
+  event            Event?         @relation("EventRecurrenceRelation", references: [eventId], map: "fk_original_event_id")
+  occurrences      Event[]        @relation("EventRecurrenceRelation", map: "fk_event_id")
+  assignedTo       User?          @relation("EventAssignedToRelation", fields: [assignedToId], references: [userId], map: "fk_assigned_to_user_id")
+  assignedToId     String?
+  category         EventCategory? @relation(fields: [eventCategoryId], references: [categoryId], map: "fk_event_category_id")
+  eventCategoryId  String?
+  createdBy        User           @relation("EventCreatedByRelation", fields: [createdById], references: [userId], map: "fk_created_by_user_id")
+  createdById      String
+  familyId         String
+}
+
+model EventCategory {
+  categoryId String @id @default(cuid())
+  name       String
+  color      String 
+  familyId   String
+  events     Event[]
+}
+
+model Task {
+  taskId       String   @id @default(cuid())
+  title        String
+  description  String?
+  dueDate      String?  
+  points       Int      @default(0)
+  status       TaskStatus @default(PENDING)
+  assignedTo   User     @relation("TaskAssignedToRelation", fields: [assignedToId], references: [userId], map: "fk_assigned_to_user_id")
+  assignedToId String
+  createdBy    User     @relation("TaskCreatedByRelation", fields: [createdById], references: [userId], map: "fk_created_by_user_id")
+  createdById  String
+  familyId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum TaskStatus {
+  PENDING
+  COMPLETED
+  IN_PROGRESS
+}
+
+model Reward {
+  rewardId         String @id @default(cuid())
+  name             String
+  description      String?
+  pointCost        Int    @default(0)
+  requiresApproval Boolean @default(false)
+  createdBy        User   @relation("RewardCreatedByRelation", fields: [createdById], references: [userId], map: "fk_created_by_user_id")
+  createdById      String
+  familyId         String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  redemptions      RewardRedemption[]
+}
+
+model RewardRedemption {
+  redemptionId String         @id @default(cuid())
+  reward       Reward         @relation("RewardRedemptionRewardRelation", fields: [rewardId], references: [rewardId], map: "fk_reward_id")
+  rewardId     String
+  user         User           @relation("RewardRedemptionUserRelation", fields: [userId], references: [userId], map: "fk_user_id")
+  userId       String
+  redeemedAt   DateTime       @default(now())
+  status       RedemptionStatus @default(PENDING)
+  approvedBy   User?          @relation("RewardRedemptionApprovedByRelation", fields: [approvedById], references: [userId], map: "fk_approved_by_user_id")
+  approvedById String?
+}
+
+enum RedemptionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Notification {
+  notificationId String     @id @default(cuid())
+  message        String
+  type           String 
+  readStatus     Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  user           User       @relation(fields: [userId], references: [userId], map: "fk_user_id")
+  userId         String
+}
+
+model Subscription {
+  subscriptionId            String         @id @default(cuid())
+  user                      User           @relation(fields: [userId], references: [userId], map: "fk_user_id")
+  userId                    String
+  planName                  String
+  startDate                 DateTime
+  endDate                   DateTime?
+  status                    SubscriptionStatus @default(ACTIVE)
+  paymentGatewaySubscriptionId String?
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+  TRIALING
+}

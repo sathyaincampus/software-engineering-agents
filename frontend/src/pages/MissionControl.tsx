@@ -324,18 +324,27 @@ const MissionControl: React.FC = () => {
         finally { setLoading(false); }
     };
 
-    const runSprint = async () => {
+    const runSprint = async (resumeFromCurrent = false) => {
         const tasks = Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || []);
         if (!tasks.length) return;
 
-        // Initialize statuses
-        const initialStatuses: Record<string, any> = {};
-        tasks.forEach((t: any) => initialStatuses[t.task_id] = 'pending');
-        setTaskStatuses(initialStatuses);
+        // If resuming, keep existing statuses; otherwise initialize
+        if (!resumeFromCurrent) {
+            const initialStatuses: Record<string, any> = {};
+            tasks.forEach((t: any) => initialStatuses[t.task_id] = 'pending');
+            setTaskStatuses(initialStatuses);
+        }
 
         addLog("🚀 Starting Engineering Sprint...");
 
         for (const task of tasks) {
+            // Skip tasks that are already complete
+            const currentStatus = taskStatuses[task.task_id];
+            if (currentStatus === 'complete') {
+                addLog(`⏭️  Skipping ${task.task_id} (already complete)`);
+                continue;
+            }
+
             setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'loading' }));
             addLog(`Assigning ${task.task_id} to [${task.assignee}]...`);
 
@@ -365,6 +374,35 @@ const MissionControl: React.FC = () => {
         }
 
         addLog("🏁 Sprint completed. All tasks executed.");
+    };
+
+    const retryTask = async (task: any) => {
+        setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'loading' }));
+        addLog(`🔄 Retrying ${task.task_id}...`);
+
+        try {
+            const endpoint = task.assignee.toLowerCase().includes('frontend')
+                ? '/agent/frontend_dev/run'
+                : '/agent/backend_dev/run';
+
+            const context = {
+                architecture,
+                user_stories: userStories,
+                prd
+            };
+
+            await axios.post(`${API_BASE_URL}${endpoint}?session_id=${sessionId}`, {
+                task,
+                context
+            });
+
+            setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'complete' }));
+            addLog(`✓ ${task.task_id} completed on retry.`);
+        } catch (e) {
+            console.error(`Error retrying task ${task.task_id}:`, e);
+            setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+            addLog(`✗ ${task.task_id} failed again.`);
+        }
     };
 
     const fetchProjectFiles = async () => {
@@ -551,86 +589,153 @@ const MissionControl: React.FC = () => {
                     icon={Code}
                     isActive={activeStep === 5}
                     isComplete={activeStep > 5}
+                    onRegenerate={() => createSprintPlan()}
                 >
-                    <div className="space-y-3">
-                        {(Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).map((task: any, i: number) => (
-                            <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))]">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-mono text-gray-500">
-                                        {i + 1}
+                    <div className="space-y-6">
+                        <div className="space-y-3">
+                            {(Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).map((task: any, i: number) => {
+                                const status = taskStatuses[task.task_id] || 'pending';
+                                return (
+                                    <div key={i} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${status === 'error' ? 'border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-900/10' :
+                                        status === 'complete' ? 'border-green-300 dark:border-green-800 bg-green-50 dark:bg-green-900/10' :
+                                            status === 'loading' ? 'border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/10' :
+                                                'border-[hsl(var(--border))] bg-[hsl(var(--background))]'
+                                        }`}>
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-mono text-gray-500">
+                                                {i + 1}
+                                            </div>
+                                            <div>
+                                                <h5 className="font-medium text-sm">{task.title}</h5>
+                                                <span className="text-xs text-gray-500">{task.task_id}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-xs px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300 border border-purple-100 dark:border-purple-800">
+                                                {task.assignee}
+                                            </span>
+                                            <StatusBadge status={status} />
+                                            {/* Retry button for failed tasks */}
+                                            {status === 'error' && (
+                                                <button
+                                                    onClick={() => retryTask(task)}
+                                                    className="px-3 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
+                                                    title="Retry this task"
+                                                >
+                                                    <RefreshCw size={12} />
+                                                    Retry
+                                                </button>
+                                            )}
+                                            {/* Run button for pending tasks */}
+                                            {status === 'pending' && Object.keys(taskStatuses).length > 0 && (
+                                                <button
+                                                    onClick={() => retryTask(task)}
+                                                    className="px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
+                                                    title="Run this task"
+                                                >
+                                                    <Play size={12} />
+                                                    Run
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h5 className="font-medium text-sm">{task.title}</h5>
-                                        <span className="text-xs text-gray-500">{task.task_id}</span>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xs px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300 border border-purple-100 dark:border-purple-800">
-                                        {task.assignee}
-                                    </span>
-                                    <StatusBadge status={taskStatuses[task.task_id] || 'pending'} />
-                                </div>
+                                );
+                            })}
+                        </div>
+
+                        {Object.values(taskStatuses).some(s => s === 'loading') && (
+                            <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 flex items-center justify-center gap-3 text-blue-600 dark:text-blue-400">
+                                <Loader2 className="animate-spin" />
+                                <span className="font-medium">Agents are actively coding...</span>
                             </div>
-                        ))}
+                        )}
+
+                        {Object.values(taskStatuses).every(s => s === 'complete') && Object.keys(taskStatuses).length > 0 && (
+                            <div className="mt-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-800 flex items-center justify-center gap-3 text-green-600 dark:text-green-400">
+                                <CheckCircle />
+                                <span className="font-medium">Sprint successfully completed!</span>
+                            </div>
+                        )}
+
+                        {/* Sprint Control Buttons */}
+                        {Object.keys(taskStatuses).length === 0 && (Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).length > 0 && (
+                            <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800">
+                                <button
+                                    onClick={() => runSprint(false)}
+                                    disabled={loading}
+                                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                                >
+                                    <Play size={18} />
+                                    Start Sprint Execution
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Resume Sprint Button - shows when there are incomplete tasks */}
+                        {Object.keys(taskStatuses).length > 0 &&
+                            !Object.values(taskStatuses).every(s => s === 'complete') &&
+                            !Object.values(taskStatuses).some(s => s === 'loading') && (
+                                <div className="mt-6 p-4 rounded-xl bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-800">
+                                    <div className="mb-3 text-sm text-orange-700 dark:text-orange-300 text-center">
+                                        {Object.values(taskStatuses).filter(s => s === 'error').length} failed, {' '}
+                                        {Object.values(taskStatuses).filter(s => s === 'pending').length} pending
+                                    </div>
+                                    <button
+                                        onClick={() => runSprint(true)}
+                                        disabled={loading}
+                                        className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                                    >
+                                        <RefreshCw size={18} />
+                                        Resume Sprint (Continue from where it left off)
+                                    </button>
+                                </div>
+                            )}
+
+
+                        {/* Code Browser Button */}
+                        {Object.values(taskStatuses).some(s => s === 'complete') && (
+                            <div className="mt-6 pt-6 border-t border-[hsl(var(--border))]">
+                                <button
+                                    onClick={fetchProjectFiles}
+                                    className="w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                                >
+                                    <Layout size={18} />
+                                    {showCodeBrowser ? 'Refresh Project Files' : 'View & Debug Code'}
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Code Viewer with Debugging */}
+                        {showCodeBrowser && projectFiles.length > 0 && (
+                            <div className="mt-6">
+                                <CodeViewer
+                                    sessionId={sessionId || ''}
+                                    files={projectFiles}
+                                    onRefresh={fetchProjectFiles}
+                                />
+                            </div>
+                        )}
+
+                        {/* Code Walkthrough Button */}
+                        {Object.values(taskStatuses).some(s => s === 'complete') && (
+                            <div className="mt-4">
+                                <button
+                                    onClick={() => setShowWalkthrough(!showWalkthrough)}
+                                    className="w-full py-3 bg-purple-100 dark:bg-purple-900/20 hover:bg-purple-200 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-xl flex items-center justify-center gap-2 transition-colors font-semibold"
+                                >
+                                    <FileText size={18} />
+                                    {showWalkthrough ? 'Hide Walkthrough Generator' : 'Generate Code Walkthrough'}
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Code Walkthrough */}
+                        {showWalkthrough && sessionId && (
+                            <div className="mt-6">
+                                <CodeWalkthrough sessionId={sessionId} />
+                            </div>
+                        )}
                     </div>
-
-                    {Object.values(taskStatuses).some(s => s === 'loading') && (
-                        <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 flex items-center justify-center gap-3 text-blue-600 dark:text-blue-400">
-                            <Loader2 className="animate-spin" />
-                            <span className="font-medium">Agents are actively coding...</span>
-                        </div>
-                    )}
-
-                    {Object.values(taskStatuses).every(s => s === 'complete') && Object.keys(taskStatuses).length > 0 && (
-                        <div className="mt-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-800 flex items-center justify-center gap-3 text-green-600 dark:text-green-400">
-                            <CheckCircle />
-                            <span className="font-medium">Sprint successfully completed!</span>
-                        </div>
-                    )}
-
-                    {/* Code Browser Button */}
-                    {Object.values(taskStatuses).some(s => s === 'complete') && (
-                        <div className="mt-6 pt-6 border-t border-[hsl(var(--border))]">
-                            <button
-                                onClick={fetchProjectFiles}
-                                className="w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl flex items-center justify-center gap-2 transition-colors"
-                            >
-                                <Layout size={18} />
-                                {showCodeBrowser ? 'Refresh Project Files' : 'View & Debug Code'}
-                            </button>
-                        </div>
-                    )}
-
-                    {/* Code Viewer with Debugging */}
-                    {showCodeBrowser && projectFiles.length > 0 && (
-                        <div className="mt-6">
-                            <CodeViewer
-                                sessionId={sessionId || ''}
-                                files={projectFiles}
-                                onRefresh={fetchProjectFiles}
-                            />
-                        </div>
-                    )}
-
-                    {/* Code Walkthrough Button */}
-                    {Object.values(taskStatuses).some(s => s === 'complete') && (
-                        <div className="mt-4">
-                            <button
-                                onClick={() => setShowWalkthrough(!showWalkthrough)}
-                                className="w-full py-3 bg-purple-100 dark:bg-purple-900/20 hover:bg-purple-200 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-xl flex items-center justify-center gap-2 transition-colors font-semibold"
-                            >
-                                <FileText size={18} />
-                                {showWalkthrough ? 'Hide Walkthrough Generator' : 'Generate Code Walkthrough'}
-                            </button>
-                        </div>
-                    )}
-
-                    {/* Code Walkthrough */}
-                    {showWalkthrough && sessionId && (
-                        <div className="mt-6">
-                            <CodeWalkthrough sessionId={sessionId} />
-                        </div>
-                    )}
                 </StepCard>
 
             </div>
