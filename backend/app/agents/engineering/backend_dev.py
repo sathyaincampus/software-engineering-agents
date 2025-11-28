@@ -16,7 +16,7 @@ class BackendDevAgent:
             description="Writes backend code.",
             instruction="""
             You are the Backend Developer for ZeroToOne AI.
-            Your goal is to write clean, efficient, and scalable backend code (Python/FastAPI).
+            Your goal is to write clean, efficient, and scalable backend code (Python/FastAPI) and comprehensive documentation.
             
             Output strictly in JSON format with keys: "files" (list of {path, content}).
             """

@@ -13,6 +13,7 @@ from app.agents.architecture.ux_designer import UXDesignerAgent
 from app.agents.engineering.engineering_manager import EngineeringManagerAgent
 from app.agents.engineering.backend_dev import BackendDevAgent
 from app.agents.engineering.frontend_dev import FrontendDevAgent
+from app.agents.engineering.debugger_agent import DebuggerAgent
 from app.agents.engineering.qa_agent import QAAgent
 from app.services.project_storage import project_storage
 from typing import Dict, Any, List
@@ -53,6 +54,7 @@ eng_manager_agent = EngineeringManagerAgent()
 backend_dev_agent = BackendDevAgent()
 frontend_dev_agent = FrontendDevAgent()
 qa_agent = QAAgent()
+debugger_agent = DebuggerAgent()
 
 orchestrator.register_agent("idea_generator", idea_agent)
 orchestrator.register_agent("product_requirements", prd_agent)
@@ -63,6 +65,7 @@ orchestrator.register_agent("engineering_manager", eng_manager_agent)
 orchestrator.register_agent("backend_dev", backend_dev_agent)
 orchestrator.register_agent("frontend_dev", frontend_dev_agent)
 orchestrator.register_agent("qa_agent", qa_agent)
+orchestrator.register_agent("debugger_agent", debugger_agent)
 
 # ... (previous models)
 
@@ -95,7 +98,16 @@ class WriteCodeRequest(BaseModel):
 class ReviewCodeRequest(BaseModel):
     code_files: Dict[str, Any]
 
+class DebugCodeRequest(BaseModel):
+    error_message: str
+    code_files: Dict[str, str]
+    context: Dict[str, Any]
+
+class LintCodeRequest(BaseModel):
+    code_files: Dict[str, str]
+
 # ... (previous endpoints)
+
 
 @app.post("/agent/engineering_manager/run")
 async def run_engineering_manager(session_id: str, request: CreateSprintPlanRequest):
@@ -106,6 +118,14 @@ async def run_engineering_manager(session_id: str, request: CreateSprintPlanRequ
     session.add_log("Creating Sprint Plan...")
     result = await eng_manager_agent.create_sprint_plan(request.user_stories, request.architecture, session_id)
     session.add_log("Sprint Plan created")
+    
+    # Save to filesystem
+    try:
+        file_path = project_storage.save_step(session_id, "sprint_plan", result)
+        session.add_log(f"💾 Saved sprint plan to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save sprint plan: {e}")
+        
     return result
 
 @app.post("/agent/backend_dev/run")
@@ -117,6 +137,16 @@ async def run_backend_dev(session_id: str, request: WriteCodeRequest):
     session.add_log(f"Writing Backend Code for task: {request.task.get('title')}...")
     result = await backend_dev_agent.write_code(request.task, request.context, session_id)
     session.add_log("Backend Code written")
+    
+    # Save code files
+    if "files" in result:
+        for file in result["files"]:
+            try:
+                file_path = project_storage.save_code_file(session_id, file["path"], file["content"])
+                session.add_log(f"💾 Saved {file['path']}")
+            except Exception as e:
+                logger.error(f"Failed to save file {file.get('path')}: {e}")
+    
     return result
 
 @app.post("/agent/frontend_dev/run")
@@ -128,6 +158,16 @@ async def run_frontend_dev(session_id: str, request: WriteCodeRequest):
     session.add_log(f"Writing Frontend Code for task: {request.task.get('title')}...")
     result = await frontend_dev_agent.write_code(request.task, request.context, session_id)
     session.add_log("Frontend Code written")
+    
+    # Save code files
+    if "files" in result:
+        for file in result["files"]:
+            try:
+                file_path = project_storage.save_code_file(session_id, file["path"], file["content"])
+                session.add_log(f"💾 Saved {file['path']}")
+            except Exception as e:
+                logger.error(f"Failed to save file {file.get('path')}: {e}")
+                
     return result
 
 @app.post("/agent/qa_agent/run")
@@ -354,3 +394,73 @@ async def get_project_step(session_id: str, step_name: str):
     if result is None:
         raise HTTPException(status_code=404, detail=f"Step '{step_name}' not found")
     return {"step": step_name, "data": result}
+
+@app.get("/projects/{session_id}/code/{file_path:path}")
+async def get_code_file(session_id: str, file_path: str):
+    """Get a specific code file's content"""
+    project_dir = project_storage.get_project_dir(session_id)
+    code_file = project_dir / "code" / file_path
+    
+    if not code_file.exists():
+        raise HTTPException(status_code=404, detail=f"File '{file_path}' not found")
+    
+    with open(code_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    return {
+        "path": file_path,
+        "content": content,
+        "size": code_file.stat().st_size
+    }
+
+@app.post("/agent/debugger/debug")
+async def debug_code(session_id: str, request: DebugCodeRequest):
+    """Debug code based on error messages"""
+    session = orchestrator.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    session.add_log(f"Debugger analyzing error: {request.error_message[:100]}...")
+    
+    result = await debugger_agent.debug_code(
+        error_message=request.error_message,
+        code_files=request.code_files,
+        context=request.context,
+        session_id=session_id
+    )
+    
+    session.add_log("Debugger analysis complete")
+    
+    # Save fixed files if provided
+    if "fixes" in result:
+        for fix in result.get("fixes", []):
+            try:
+                file_path = project_storage.save_code_file(
+                    session_id, 
+                    fix["path"], 
+                    fix["content"]
+                )
+                session.add_log(f"💾 Applied fix to {fix['path']}")
+            except Exception as e:
+                logger.error(f"Failed to save fix for {fix.get('path')}: {e}")
+    
+    return result
+
+@app.post("/agent/debugger/lint")
+async def lint_code(session_id: str, request: LintCodeRequest):
+    """Perform static analysis and linting"""
+    session = orchestrator.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    session.add_log("Running static analysis...")
+    
+    result = await debugger_agent.lint_code(
+        code_files=request.code_files,
+        session_id=session_id
+    )
+    
+    session.add_log("Static analysis complete")
+    
+    return result
+

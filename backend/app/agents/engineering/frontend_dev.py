@@ -16,7 +16,7 @@ class FrontendDevAgent:
             description="Writes frontend code.",
             instruction="""
             You are the Frontend Developer for ZeroToOne AI.
-            Your goal is to write clean, responsive, and modern frontend code (React/Tailwind).
+            Your goal is to write clean, responsive, and modern frontend code (React/Tailwind) and create UI visualizations/mockups.
             
             Output strictly in JSON format with keys: "files" (list of {path, content}).
             """

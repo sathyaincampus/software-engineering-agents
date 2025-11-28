@@ -34,6 +34,10 @@ class EngineeringManagerAgent:
         User Stories: {json.dumps(user_stories)}
         Architecture: {json.dumps(architecture)}
         
+        You MUST include the following mandatory tasks in the sprint plan:
+        1. "Project Documentation": Create README.md, IMPLEMENTATION_GUIDE.md, and HOW_TO_RUN.md. Assign to Backend.
+        2. "UI Visualizations": Create UI_SCREENSHOTS.html (a static HTML file simulating screenshots of key views). Assign to Frontend.
+        
         Output strictly in JSON format with the following structure:
         {{
             "sprint_plan": [

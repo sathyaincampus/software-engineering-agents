@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import MarkdownViewer from '../components/MarkdownViewer';
 import ArchitectureViewer from '../components/ArchitectureViewer';
+import CodeViewer from '../components/CodeViewer';
 import { useProject } from '../context/ProjectContext';
 import {
     Lightbulb,
@@ -49,12 +50,13 @@ interface SprintPlan {
 
 // --- Components ---
 
-const StatusBadge = ({ status }: { status: 'pending' | 'loading' | 'complete' | 'active' }) => {
+const StatusBadge = ({ status }: { status: 'pending' | 'loading' | 'complete' | 'active' | 'error' }) => {
     const styles = {
         pending: 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 border-gray-200 dark:border-gray-700',
         loading: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-blue-200 dark:border-blue-800 animate-pulse',
         active: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border-blue-300 dark:border-blue-700',
         complete: 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800',
+        error: 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-800',
     };
 
     const icons = {
@@ -62,6 +64,7 @@ const StatusBadge = ({ status }: { status: 'pending' | 'loading' | 'complete' | 
         loading: <Loader2 size={12} className="animate-spin" />,
         active: <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />,
         complete: <CheckCircle size={12} />,
+        error: <div className="w-2 h-2 rounded-full bg-red-500" />,
     };
 
     return (
@@ -127,6 +130,9 @@ const MissionControl: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [logs, setLogs] = useState<string[]>([]);
     const logsEndRef = useRef<HTMLDivElement>(null);
+    const [taskStatuses, setTaskStatuses] = useState<Record<string, 'pending' | 'loading' | 'complete' | 'error'>>({});
+    const [projectFiles, setProjectFiles] = useState<any[]>([]);
+    const [showCodeBrowser, setShowCodeBrowser] = useState(false);
 
     // Use ProjectContext instead of local state
     const {
@@ -160,6 +166,13 @@ const MissionControl: React.FC = () => {
     useEffect(() => {
         logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [logs]);
+
+    // Trigger sprint execution when step 5 is active
+    useEffect(() => {
+        if (activeStep === 5 && sprintPlan && Object.keys(taskStatuses).length === 0) {
+            runSprint();
+        }
+    }, [activeStep, sprintPlan]);
 
     // --- API Calls ---
     const startSession = async () => {
@@ -293,6 +306,62 @@ const MissionControl: React.FC = () => {
         finally { setLoading(false); }
     };
 
+    const runSprint = async () => {
+        const tasks = Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || []);
+        if (!tasks.length) return;
+
+        // Initialize statuses
+        const initialStatuses: Record<string, any> = {};
+        tasks.forEach((t: any) => initialStatuses[t.task_id] = 'pending');
+        setTaskStatuses(initialStatuses);
+
+        addLog("🚀 Starting Engineering Sprint...");
+
+        for (const task of tasks) {
+            setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'loading' }));
+            addLog(`Assigning ${task.task_id} to [${task.assignee}]...`);
+
+            try {
+                const endpoint = task.assignee.toLowerCase().includes('frontend')
+                    ? '/agent/frontend_dev/run'
+                    : '/agent/backend_dev/run';
+
+                const context = {
+                    architecture,
+                    user_stories: userStories,
+                    prd
+                };
+
+                await axios.post(`${API_BASE_URL}${endpoint}?session_id=${sessionId}`, {
+                    task,
+                    context
+                });
+
+                setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'complete' }));
+                addLog(`✓ ${task.task_id} completed.`);
+            } catch (e) {
+                console.error(`Error executing task ${task.task_id}:`, e);
+                setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+                addLog(`✗ ${task.task_id} failed.`);
+            }
+        }
+
+        addLog("🏁 Sprint completed. All tasks executed.");
+    };
+
+    const fetchProjectFiles = async () => {
+        if (!sessionId) return;
+        try {
+            const res = await axios.get(`${API_BASE_URL}/projects/${sessionId}`);
+            if (res.data && res.data.files) {
+                setProjectFiles(res.data.files);
+                setShowCodeBrowser(true);
+            }
+        } catch (e) {
+            console.error("Error fetching project files:", e);
+        }
+    };
+
     return (
         <div className="grid grid-cols-12 gap-8 h-[calc(100vh-8rem)]">
             {/* Left Column: Workflow */}
@@ -365,7 +434,7 @@ const MissionControl: React.FC = () => {
                     <div className="flex gap-4">
                         <input
                             type="text"
-                            placeholder="Describe your app idea (e.g. 'A marketplace for used spaceships')..."
+                            placeholder="Describe your app idea (e.g. 'A marketplace for used spaceships')...."
                             className="flex-1 input-field"
                             value={keywords}
                             onChange={(e) => setKeywords(e.target.value)}
@@ -481,15 +550,49 @@ const MissionControl: React.FC = () => {
                                     <span className="text-xs px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300 border border-purple-100 dark:border-purple-800">
                                         {task.assignee}
                                     </span>
-                                    <StatusBadge status="loading" />
+                                    <StatusBadge status={taskStatuses[task.task_id] || 'pending'} />
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 flex items-center justify-center gap-3 text-blue-600 dark:text-blue-400">
-                        <Loader2 className="animate-spin" />
-                        <span className="font-medium">Agents are actively coding...</span>
-                    </div>
+
+                    {Object.values(taskStatuses).some(s => s === 'loading') && (
+                        <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 flex items-center justify-center gap-3 text-blue-600 dark:text-blue-400">
+                            <Loader2 className="animate-spin" />
+                            <span className="font-medium">Agents are actively coding...</span>
+                        </div>
+                    )}
+
+                    {Object.values(taskStatuses).every(s => s === 'complete') && Object.keys(taskStatuses).length > 0 && (
+                        <div className="mt-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-800 flex items-center justify-center gap-3 text-green-600 dark:text-green-400">
+                            <CheckCircle />
+                            <span className="font-medium">Sprint successfully completed!</span>
+                        </div>
+                    )}
+
+                    {/* Code Browser Button */}
+                    {Object.values(taskStatuses).some(s => s === 'complete') && (
+                        <div className="mt-6 pt-6 border-t border-[hsl(var(--border))]">
+                            <button
+                                onClick={fetchProjectFiles}
+                                className="w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                            >
+                                <Layout size={18} />
+                                {showCodeBrowser ? 'Refresh Project Files' : 'View & Debug Code'}
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Code Viewer with Debugging */}
+                    {showCodeBrowser && projectFiles.length > 0 && (
+                        <div className="mt-6">
+                            <CodeViewer
+                                sessionId={sessionId || ''}
+                                files={projectFiles}
+                                onRefresh={fetchProjectFiles}
+                            />
+                        </div>
+                    )}
                 </StepCard>
 
             </div>
@@ -534,3 +637,4 @@ const MissionControl: React.FC = () => {
 };
 
 export default MissionControl;
+
