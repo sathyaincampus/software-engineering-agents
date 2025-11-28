@@ -118,13 +118,32 @@ const CodeViewer: React.FC<CodeViewerProps> = ({ sessionId, files, onRefresh }) 
     const loadFileContent = async (filePath: string) => {
         setLoading(true);
         try {
-            const cleanPath = filePath.replace('code/', '');
-            const res = await axios.get(`${API_BASE_URL}/projects/${sessionId}/code/${cleanPath}`);
-            setFileContent(res.data.content);
-            setSelectedFile(filePath);
+            // Check if file is in code directory or project root
+            if (filePath.startsWith('code/')) {
+                // File is in code directory
+                const cleanPath = filePath.replace('code/', '');
+                const url = `${API_BASE_URL}/projects/${sessionId}/code/${cleanPath}`;
+                const res = await axios.get(url);
+                setFileContent(res.data.content);
+                setSelectedFile(filePath);
+            } else {
+                // File is in project root (ideas.json, prd.md, etc.)
+                // Use the step endpoint instead
+                const fileName = filePath.split('/').pop()?.replace(/\.(json|md)$/, '') || '';
+                const res = await axios.get(`${API_BASE_URL}/projects/${sessionId}/${fileName}`);
+
+                // Format the content based on type
+                if (res.data && res.data.data) {
+                    const content = typeof res.data.data === 'string'
+                        ? res.data.data
+                        : JSON.stringify(res.data.data, null, 2);
+                    setFileContent(content);
+                    setSelectedFile(filePath);
+                }
+            }
         } catch (e) {
             console.error('Error loading file:', e);
-            setFileContent('// Error loading file');
+            setFileContent('// Error loading file: ' + (e as any).message);
         } finally {
             setLoading(false);
         }
@@ -288,18 +307,23 @@ const CodeViewer: React.FC<CodeViewerProps> = ({ sessionId, files, onRefresh }) 
 
                         {/* Debug Section */}
                         <div className="space-y-3">
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                                💡 <strong>How to use:</strong> Paste error messages from your terminal, browser console, or lint results below. The AI will analyze and suggest fixes for this specific file.
+                            </div>
                             <div className="flex gap-2">
                                 <input
                                     type="text"
-                                    placeholder="Paste error message here to debug..."
+                                    placeholder="e.g., 'TypeError: Cannot read property...' or 'ESLint: 'useState' is not defined'"
                                     className="flex-1 px-4 py-2 bg-[hsl(var(--background))] border border-[hsl(var(--border))] rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                                     value={errorMessage}
                                     onChange={(e) => setErrorMessage(e.target.value)}
+                                    title="Paste error messages from terminal, browser console, or lint results"
                                 />
                                 <button
                                     onClick={debugCode}
                                     disabled={debugging || !errorMessage}
                                     className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
+                                    title="Analyze error and suggest fixes for the current file"
                                 >
                                     {debugging ? <Loader2 size={14} className="animate-spin" /> : <Terminal size={14} />}
                                     Debug & Fix
@@ -332,7 +356,7 @@ const CodeViewer: React.FC<CodeViewerProps> = ({ sessionId, files, onRefresh }) 
                 <div className="flex-1 bg-[hsl(var(--card))] rounded-xl border border-[hsl(var(--border))] overflow-hidden flex flex-col">
                     {selectedFile ? (
                         <>
-                            <div className="flex-1 overflow-y-auto p-6 bg-[#0d1117]">
+                            <div className="flex-1 overflow-y-auto p-6 bg-[#0d1117] max-h-[600px]">
                                 {loading ? (
                                     <div className="flex items-center justify-center h-full">
                                         <Loader2 className="animate-spin text-blue-500" size={32} />

@@ -32,3 +32,16 @@ async def get_project_step(session_id: str, step_name: str):
     if result is None:
         raise HTTPException(status_code=404, detail=f"Step '{step_name}' not found")
     return {"step": step_name, "data": result}
+
+@app.get("/projects/{session_id}/task_statuses")
+async def get_task_statuses(session_id: str):
+    """Get all task execution statuses"""
+    statuses = project_storage.load_task_statuses(session_id)
+    return {"session_id": session_id, "task_statuses": statuses}
+
+@app.post("/projects/{session_id}/task_statuses")
+async def save_task_statuses(session_id: str, task_statuses: dict):
+    """Save task execution statuses"""
+    for task_id, status in task_statuses.items():
+        project_storage.save_task_status(session_id, task_id, status)
+    return {"status": "success", "saved_count": len(task_statuses)}

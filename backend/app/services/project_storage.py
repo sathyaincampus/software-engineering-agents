@@ -110,6 +110,47 @@ class ProjectStorage:
         with open(metadata_path, 'w') as f:
             json.dump(metadata, f, indent=2)
     
+    def save_task_status(self, session_id: str, task_id: str, status: str):
+        """Save individual task execution status"""
+        project_dir = self.get_project_dir(session_id)
+        task_status_path = project_dir / "task_statuses.json"
+        
+        # Load existing statuses
+        if task_status_path.exists():
+            with open(task_status_path, 'r') as f:
+                statuses = json.load(f)
+        else:
+            statuses = {}
+        
+        # Update status
+        statuses[task_id] = {
+            "status": status,
+            "updated_at": datetime.now().isoformat()
+        }
+        
+        # Save statuses
+        with open(task_status_path, 'w') as f:
+            json.dump(statuses, f, indent=2)
+    
+    def load_task_statuses(self, session_id: str) -> Dict[str, str]:
+        """Load all task statuses for a session"""
+        project_dir = self.get_project_dir(session_id)
+        task_status_path = project_dir / "task_statuses.json"
+        
+        if not task_status_path.exists():
+            return {}
+        
+        with open(task_status_path, 'r') as f:
+            statuses = json.load(f)
+        
+        # Return just the status values
+        return {task_id: data["status"] for task_id, data in statuses.items()}
+    
+    def get_task_status(self, session_id: str, task_id: str) -> Optional[str]:
+        """Get status of a specific task"""
+        statuses = self.load_task_statuses(session_id)
+        return statuses.get(task_id)
+    
     def get_project_summary(self, session_id: str) -> Dict[str, Any]:
         """Get project summary"""
         project_dir = self.get_project_dir(session_id)

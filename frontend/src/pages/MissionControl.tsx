@@ -185,6 +185,25 @@ const MissionControl: React.FC = () => {
         logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [logs]);
 
+    // Load task statuses when session ID changes
+    useEffect(() => {
+        const loadTaskStatuses = async () => {
+            if (!sessionId) return;
+
+            try {
+                const res = await axios.get(`${API_BASE_URL}/projects/${sessionId}/task_statuses`);
+                if (res.data && res.data.task_statuses) {
+                    setTaskStatuses(res.data.task_statuses);
+                    addLog(`📊 Loaded ${Object.keys(res.data.task_statuses).length} task statuses`);
+                }
+            } catch (e) {
+                console.log('No task statuses found (this is normal for new projects)');
+            }
+        };
+
+        loadTaskStatuses();
+    }, [sessionId]);
+
     // Trigger sprint execution when step 5 is active
     useEffect(() => {
         if (activeStep === 5 && sprintPlan && Object.keys(taskStatuses).length === 0) {
@@ -666,7 +685,7 @@ const MissionControl: React.FC = () => {
                                     className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                                 >
                                     <Play size={18} />
-                                    Start Sprint Execution
+                                    Resume Sprint Execution
                                 </button>
                             </div>
                         )}
