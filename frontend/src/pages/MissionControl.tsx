@@ -378,17 +378,78 @@ const MissionControl: React.FC = () => {
                     prd
                 };
 
-                await axios.post(`${API_BASE_URL}${endpoint}?session_id=${sessionId}`, {
+                const response = await axios.post(`${API_BASE_URL}${endpoint}?session_id=${sessionId}`, {
                     task,
                     context
                 });
 
-                setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'complete' }));
-                addLog(`✓ ${task.task_id} completed.`);
-            } catch (e) {
+                // Check if response contains an error
+                if (response.data.error) {
+                    const errorType = response.data.error_type;
+                    const retryAfter = response.data.retry_after;
+                    const recoverable = response.data.recoverable;
+
+                    addLog(`❌ ${task.task_id} failed: ${response.data.error}`);
+                    if (response.data.suggestion) {
+                        addLog(`💡 ${response.data.suggestion}`);
+                    }
+
+                    // Handle different error types
+                    if (errorType === 'rate_limit' && retryAfter) {
+                        addLog(`⏸️  Pausing sprint. Will retry in ${retryAfter} seconds...`);
+                        setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+
+                        // Show countdown and auto-retry
+                        for (let i = retryAfter; i > 0; i--) {
+                            addLog(`⏳ Retrying in ${i} seconds...`);
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        }
+
+                        addLog(`🔄 Retrying ${task.task_id}...`);
+                        // Retry the task by recursively calling itself
+                        await retryTask(task);
+                        continue;
+
+                    } else if (errorType === 'token_exhausted') {
+                        addLog(`🛑 Sprint paused: Token limit exceeded`);
+                        addLog(`💡 Please reduce context size or use a larger model`);
+                        setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+                        // Stop the sprint - user needs to intervene
+                        return;
+
+                    } else if (!recoverable) {
+                        addLog(`🛑 Sprint paused: Unrecoverable error`);
+                        setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+                        // Stop the sprint
+                        return;
+                    } else {
+                        // Generic error - mark as error and continue
+                        setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+                    }
+                } else {
+                    // Success
+                    setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'complete' }));
+                    addLog(`✓ ${task.task_id} completed.`);
+                }
+            } catch (e: any) {
                 console.error(`Error executing task ${task.task_id}:`, e);
+
+                // Check if it's a network error or server error
+                if (e.response?.status === 500) {
+                    addLog(`❌ ${task.task_id} failed: Server error`);
+                } else if (!e.response) {
+                    addLog(`❌ ${task.task_id} failed: Network error`);
+                } else {
+                    addLog(`❌ ${task.task_id} failed: ${e.message}`);
+                }
+
                 setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
-                addLog(`✗ ${task.task_id} failed.`);
+
+                // For critical errors, pause the sprint
+                if (e.response?.status === 500) {
+                    addLog(`🛑 Sprint paused due to server error`);
+                    return;
+                }
             }
         }
 
@@ -410,17 +471,34 @@ const MissionControl: React.FC = () => {
                 prd
             };
 
-            await axios.post(`${API_BASE_URL}${endpoint}?session_id=${sessionId}`, {
+            const response = await axios.post(`${API_BASE_URL}${endpoint}?session_id=${sessionId}`, {
                 task,
                 context
             });
 
-            setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'complete' }));
-            addLog(`✓ ${task.task_id} completed on retry.`);
-        } catch (e) {
+            // Check if response contains an error
+            if (response.data.error) {
+                addLog(`❌ ${task.task_id} retry failed: ${response.data.error}`);
+                if (response.data.suggestion) {
+                    addLog(`💡 ${response.data.suggestion}`);
+                }
+                setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+            } else {
+                setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'complete' }));
+                addLog(`✓ ${task.task_id} completed on retry.`);
+            }
+        } catch (e: any) {
             console.error(`Error retrying task ${task.task_id}:`, e);
+
+            if (e.response?.status === 500) {
+                addLog(`❌ ${task.task_id} retry failed: Server error`);
+            } else if (!e.response) {
+                addLog(`❌ ${task.task_id} retry failed: Network error`);
+            } else {
+                addLog(`❌ ${task.task_id} retry failed: ${e.message}`);
+            }
+
             setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
-            addLog(`✗ ${task.task_id} failed again.`);
         }
     };
 

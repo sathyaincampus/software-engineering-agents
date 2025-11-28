@@ -130,17 +130,44 @@ async def run_engineering_manager(session_id: str, request: CreateSprintPlanRequ
 
 @app.post("/agent/backend_dev/run")
 async def run_backend_dev(session_id: str, request: WriteCodeRequest):
+    from app.utils.error_handler import handle_adk_errors
+    
     session = orchestrator.get_session(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log(f"Writing Backend Code for task: {request.task.get('title')}...")
-    result = await backend_dev_agent.write_code(request.task, request.context, session_id)
+    
+    # Wrap the agent call with error handler
+    async def execute_task():
+        return await backend_dev_agent.write_code(request.task, request.context, session_id)
+    
+    result = await handle_adk_errors(execute_task)
+    
+    # Check if there was an error
+    if not result.get("success"):
+        error_info = {
+            "error": result.get("error"),
+            "error_type": result.get("error_type"),
+            "retry_after": result.get("retry_after"),
+            "recoverable": result.get("recoverable"),
+            "suggestion": result.get("suggestion"),
+            "task_id": request.task.get('task_id')
+        }
+        session.add_log(f"❌ Error: {result.get('error')}")
+        if result.get("suggestion"):
+            session.add_log(f"💡 Suggestion: {result.get('suggestion')}")
+        
+        # Return error info instead of raising HTTPException
+        return error_info
+    
+    # Success path
+    actual_result = result.get("data")
     session.add_log("Backend Code written")
     
     # Save code files
-    if "files" in result:
-        for file in result["files"]:
+    if "files" in actual_result:
+        for file in actual_result["files"]:
             try:
                 file_path = project_storage.save_code_file(session_id, file["path"], file["content"])
                 session.add_log(f"💾 Saved {file['path']}")
@@ -156,21 +183,48 @@ async def run_backend_dev(session_id: str, request: WriteCodeRequest):
         except Exception as e:
             logger.error(f"Failed to save task status: {e}")
     
-    return result
+    return actual_result
 
 @app.post("/agent/frontend_dev/run")
 async def run_frontend_dev(session_id: str, request: WriteCodeRequest):
+    from app.utils.error_handler import handle_adk_errors
+    
     session = orchestrator.get_session(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log(f"Writing Frontend Code for task: {request.task.get('title')}...")
-    result = await frontend_dev_agent.write_code(request.task, request.context, session_id)
+    
+    # Wrap the agent call with error handler
+    async def execute_task():
+        return await frontend_dev_agent.write_code(request.task, request.context, session_id)
+    
+    result = await handle_adk_errors(execute_task)
+    
+    # Check if there was an error
+    if not result.get("success"):
+        error_info = {
+            "error": result.get("error"),
+            "error_type": result.get("error_type"),
+            "retry_after": result.get("retry_after"),
+            "recoverable": result.get("recoverable"),
+            "suggestion": result.get("suggestion"),
+            "task_id": request.task.get('task_id')
+        }
+        session.add_log(f"❌ Error: {result.get('error')}")
+        if result.get("suggestion"):
+            session.add_log(f"💡 Suggestion: {result.get('suggestion')}")
+        
+        # Return error info instead of raising HTTPException
+        return error_info
+    
+    # Success path
+    actual_result = result.get("data")
     session.add_log("Frontend Code written")
     
     # Save code files
-    if "files" in result:
-        for file in result["files"]:
+    if "files" in actual_result:
+        for file in actual_result["files"]:
             try:
                 file_path = project_storage.save_code_file(session_id, file["path"], file["content"])
                 session.add_log(f"💾 Saved {file['path']}")
@@ -186,7 +240,7 @@ async def run_frontend_dev(session_id: str, request: WriteCodeRequest):
         except Exception as e:
             logger.error(f"Failed to save task status: {e}")
                 
-    return result
+    return actual_result
 
 @app.post("/agent/qa_agent/run")
 async def run_qa_agent(session_id: str, request: ReviewCodeRequest):

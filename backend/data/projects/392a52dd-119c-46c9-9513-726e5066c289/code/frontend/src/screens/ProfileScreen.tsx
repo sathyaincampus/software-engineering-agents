@@ -1,27 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, Alert } from 'react-native';
-import { TextInput, Button, Text, Avatar, useTheme } from 'react-native-paper';
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { Avatar, Button, Card, TextInput, Modal, Portal, Provider as PaperProvider, DefaultTheme, Divider } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../state/store';
+import { fetchUserProfile, updateUserProfile, uploadAvatar, fetchUserById } from '../state/userSlice';
+import { User } from '../types/users';
+import { fetchFamilyMembers } from '../state/familyMembersSlice';
 import * as ImagePicker from 'expo-image-picker';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../redux/store';
-import { fetchUserProfile, updateUserProfile, uploadAvatar } from '../redux/slices/userSlice';
+import { fetchConversations } from '../state/messagesSlice';
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#6200ee',
+    accent: '#03dac4',
+  },
+};
 
 const ProfileScreen: React.FC = () => {
-  const theme = useTheme();
-  const dispatch: AppDispatch = useDispatch();
-  const { user, loading, error } = useSelector((state: RootState) => state.user);
-
-  const [displayName, setDisplayName] = useState<string>('');
-  const [avatarUri, setAvatarUri] = useState<string | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const userProfile = useSelector((state: RootState) => state.user.profile);
+  const familyMembers = useSelector((state: RootState) => state.familyMembers.members);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedProfile, setEditedProfile] = useState<Partial<User>>({});
+  const [avatarModalVisible, setAvatarModalVisible] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      setDisplayName(user.displayName || '');
-      setAvatarUri(user.avatarUrl || null);
+    if (currentUser) {
+      dispatch(fetchUserProfile(currentUser.user_id));
+      dispatch(fetchFamilyMembers(currentUser.family_id));
+      dispatch(fetchConversations(currentUser.user_id)); // Fetch conversations for messaging list
     }
-  }, [user]);
+  }, [currentUser, dispatch]);
 
-  const handleChoosePhoto = async () => {
+  useEffect(() => {
+    if (userProfile) {
+      setEditedProfile({ ...userProfile });
+    }
+  }, [userProfile]);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    if (currentUser && editedProfile) {
+      dispatch(updateUserProfile({ userId: currentUser.user_id, userData: editedProfile as User }));
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedProfile({ ...userProfile }); // Reset to original profile data
+  };
+
+  const handleInputChange = (field: keyof User, value: string) => {
+    setEditedProfile(prev => ({ ...prev, [field]: value }));
+  };
+
+  const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permission required', 'Sorry, we need camera roll permissions to make this work!');
@@ -29,163 +69,287 @@ const ProfileScreen: React.FC = () => {
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
-    if (!result.canceled) {
-      if (result.assets && result.assets.length > 0) {
-        const asset = result.assets[0];
-        // Assuming the backend expects a file object or base64
-        // For simplicity, we'll pass the URI and let the uploadAvatar handle it
-        setAvatarUri(asset.uri);
-        // Optionally, trigger an immediate upload or save for later
-        await handleUploadAvatar(asset.uri);
-      }
-    }
-  };
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const localUri = result.assets[0].uri;
+      const filename = localUri.split('/').pop() || 'avatar.jpg';
+      const fileType = filename.split('.').pop() || 'jpg';
 
-  const handleUploadAvatar = async (uri: string) => {
-    try {
+      // Create a FormData object for file upload
       const formData = new FormData();
-      const uriParts = uri.split('.');
-      const fileType = uriParts[uriParts.length - 1];
-      const fileName = `avatar_${Date.now()}.${fileType}`;
-
-      formData.append('avatar', {
-        uri: uri,
-        name: fileName,
+      formData.append('file', {
+        uri: localUri,
+        name: filename,
         type: `image/${fileType}`,
       } as any);
 
-      await dispatch(uploadAvatar(formData)).unwrap();
-      Alert.alert('Success', 'Avatar updated successfully!');
-      // Fetch updated user profile to get the new avatar URL
-      if (user?.id) {
-         dispatch(fetchUserProfile(user.id));
+      if (currentUser) {
+        dispatch(uploadAvatar({ userId: currentUser.user_id, avatarData: formData }));
+        setAvatarModalVisible(false);
       }
-    } catch (err) {
-      console.error('Avatar upload error:', err);
-      Alert.alert('Error', 'Failed to upload avatar. Please try again.');
     }
   };
 
-  const handleSaveProfile = async () => {
-    if (!user?.id) return;
+  const renderFamilyMember = (member: User) => (
+    <TouchableOpacity key={member.user_id} onPress={() => handleSelectChildForMessage(member)} style={styles.memberItem}>
+      <Avatar.Image size={40} source={{ uri: member.avatar_url || 'https://via.placeholder.com/150' }} style={styles.memberAvatar} />
+      <Text style={styles.memberName}>{member.display_name}</Text>
+      {member.role === 'child' && (
+        <Avatar.Icon size={20} icon="chat" style={styles.chatIcon} />
+      )}
+    </TouchableOpacity>
+  );
 
-    try {
-      await dispatch(updateUserProfile({
-        userId: user.id,
-        displayName
-      })).unwrap();
-      Alert.alert('Success', 'Profile updated successfully!');
-      // Refresh user data after update
-      dispatch(fetchUserProfile(user.id));
-    } catch (err) {
-      console.error('Profile update error:', err);
-      Alert.alert('Error', 'Failed to update profile. Please try again.');
+  const [isMessageModalVisible, setIsMessageModalVisible] = useState(false);
+  const [selectedChildForMessage, setSelectedChildForMessage] = useState<User | null>(null);
+
+  const handleSelectChildForMessage = (child: User) => {
+    if (child.role === 'child') {
+      setSelectedChildForMessage(child);
+      setIsMessageModalVisible(true);
     }
   };
 
-  // Render placeholder avatar if no image is selected or available
-  const renderAvatar = () => {
-    if (avatarUri) {
-      return <Avatar.Image size={100} source={{ uri: avatarUri }} />; 
-    } else if (user?.avatarUrl) {
-      return <Avatar.Image size={100} source={{ uri: user.avatarUrl }} />;
-    } else {
-      // Use initials if no avatar is available
-      const initials = user?.displayName?.charAt(0)?.toUpperCase() || '?';
-      return <Avatar.Text size={100} label={initials} />;
-    }
+  const closeMessageModal = () => {
+    setIsMessageModalVisible(false);
+    setSelectedChildForMessage(null);
   };
-
-  // Fetch user profile on component mount if not already loaded
-  useEffect(() => {
-    if (user && !user.displayName && !user.avatarUrl) { // Fetch if profile is incomplete
-       if (user.id) {
-         dispatch(fetchUserProfile(user.id));
-       }
-    }
-  }, [dispatch, user]);
-
-  if (loading && !user) {
-    return <View style={styles.centered}><Text>Loading profile...</Text></View>;
-  }
-
-  if (error) {
-    return <View style={styles.centered}><Text style={styles.errorText}>Error: {error}</Text></View>;
-  }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.avatarContainer}>
-        {renderAvatar()}
-        <Button mode="outlined" onPress={handleChoosePhoto} style={styles.changePhotoButton}>
-          Change Photo
+    <PaperProvider theme={theme}>
+      <ScrollView style={styles.container}>
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.avatarContainer}>
+              <Avatar.Image 
+                size={100} 
+                source={{ uri: editedProfile.avatar_url || 'https://via.placeholder.com/150' }}
+                style={styles.profileAvatar}
+              />
+              <TouchableOpacity onPress={() => setAvatarModalVisible(true)} style={styles.editAvatarButton}>
+                <Avatar.Icon size={30} icon="camera" style={styles.cameraIcon} />
+              </TouchableOpacity>
+            </View>
+
+            {!isEditing ? (
+              <View>
+                <Text style={styles.nameText}>{userProfile?.display_name}</Text>
+                <Text style={styles.roleText}>{userProfile?.role === 'parent' ? 'Parent' : 'Child'}</Text>
+                {userProfile?.email && <Text style={styles.emailText}>Email: {userProfile.email}</Text>}
+              </View>
+            ) : (
+              <View>
+                <TextInput
+                  label="Display Name"
+                  value={editedProfile.display_name || ''}
+                  onChangeText={(text) => handleInputChange('display_name', text)}
+                  mode="outlined"
+                  style={styles.input}
+                />
+                {/* Add other editable fields as needed */}
+                <View style={styles.buttonContainerEdit}>
+                  <Button mode="outlined" onPress={handleCancel} style={styles.buttonEditCancel}>
+                    Cancel
+                  </Button>
+                  <Button mode="contained" onPress={handleSave} style={styles.buttonEditSave}>
+                    Save
+                  </Button>
+                </View>
+              </View>
+            )}
+
+            {!isEditing && userProfile?.role === 'parent' && (
+              <View style={styles.messagingSection}>
+                <Text style={styles.messagingHeader}>Send Message To Child:</Text>
+                <Divider />
+                <View style={styles.memberList}>
+                  {familyMembers
+                    .filter(member => member.role === 'child')
+                    .map(renderFamilyMember)
+                  }
+                  {familyMembers.filter(member => member.role === 'child').length === 0 && (
+                    <Text style={styles.noChildrenText}>No children found in your family.</Text>
+                  )}
+                </View>
+              </View>
+            )}
+
+            {!isEditing && (
+              <Button mode="outlined" onPress={handleEdit} style={styles.editButton}>
+                Edit Profile
+              </Button>
+            )}
+          </Card.Content>
+        </Card>
+      </ScrollView>
+
+      {/* Avatar Upload Modal */}
+      <Modal visible={avatarModalVisible} onDismiss={() => setAvatarModalVisible(false)} contentContainerStyle={styles.modalContainer}>
+        <Text style={styles.modalTitle}>Change Profile Picture</Text>
+        <Button mode="contained" onPress={pickImage} style={styles.modalButton}>
+          Choose from Library
         </Button>
-      </View>
+        {/* Add option to take photo if needed */}
+        <Button mode="outlined" onPress={() => setAvatarModalVisible(false)} style={styles.modalButton}>
+          Cancel
+        </Button>
+      </Modal>
 
-      <TextInput
-        label="Display Name"
-        value={displayName}
-        onChangeText={setDisplayName}
-        mode="outlined"
-        style={styles.input}
-      />
-
-      <TextInput
-        label="Email"
-        value={user?.email || ''}
-        mode="outlined"
-        disabled
-        style={styles.input}
-      />
-
-      {/* Add other profile fields here as needed (e.g., age, role) */}
-      <TextInput
-        label="Role"
-        value={user?.role || ''}
-        mode="outlined"
-        disabled
-        style={styles.input}
-      />
-
-      <Button mode="contained" onPress={handleSaveProfile} style={styles.button} loading={loading}>
-        Save Profile
-      </Button>
-    </View>
+      {/* Message Modal - placeholder, would need a proper chat interface */}
+      <Modal visible={isMessageModalVisible} onDismiss={closeMessageModal} contentContainerStyle={styles.messageModalContainer}>
+        <Text style={styles.modalTitle}>Message {selectedChildForMessage?.display_name}</Text>
+        <View style={styles.chatInterfacePlaceholder}>
+          <Text>Chat Interface Coming Soon!</Text>
+          {/* This is where a chat component would go */}
+        </View>
+        <Button mode="outlined" onPress={closeMessageModal} style={styles.modalButton}>
+          Close
+        </Button>
+      </Modal>
+    </PaperProvider>
   );
 };
 
 const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#f0f2f5',
+  },
+  card: {
+    margin: 16,
+    elevation: 4,
   },
   avatarContainer: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
+    position: 'relative',
   },
-  changePhotoButton: {
-    marginTop: 10,
+  profileAvatar: {
+    backgroundColor: '#ccc',
+  },
+  editAvatarButton: {
+    position: 'absolute',
+    bottom: -5, // Adjust as needed
+    right: '30%', // Adjust to position over the avatar
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 15,
+    overflow: 'hidden',
+  },
+  cameraIcon: {
+      backgroundColor: 'transparent',
+  },
+  nameText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  roleText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  emailText: {
+    fontSize: 14,
+    color: '#777',
+    textAlign: 'center',
   },
   input: {
-    marginBottom: 15,
+    marginBottom: 12,
   },
-  button: {
+  buttonContainerEdit: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 20,
-    paddingVertical: 10,
   },
-  errorText: {
-    color: 'red',
+  buttonEditCancel: {
+    flex: 1,
+    marginRight: 8,
+  },
+  buttonEditSave: {
+    flex: 1,
+    marginLeft: 8,
+  },
+  editButton: {
+    marginTop: 20,
+  },
+  messagingSection: {
+    marginTop: 25,
+    paddingTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+  },
+  messagingHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  memberList: {
+    marginTop: 10,
+  },
+  memberItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginBottom: 8,
+    elevation: 1,
+    position: 'relative',
+  },
+  memberAvatar: {
+    marginRight: 12,
+  },
+  memberName: {
+    fontSize: 16,
+    flex: 1, // Allows name to take available space
+  },
+  chatIcon: {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+    backgroundColor: theme.colors.accent,
+  },
+  noChildrenText: {
+    textAlign: 'center',
+    color: '#888',
+    marginTop: 10,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButton: {
+    marginVertical: 10,
+  },
+  messageModalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 10,
+    height: '70%', // Adjust height as needed
+  },
+  chatInterfacePlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
 });
 
