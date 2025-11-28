@@ -12,8 +12,22 @@ interface Project {
 const ProjectSidebar = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
-    const [expanded, setExpanded] = useState(true);
+    const [expanded, setExpanded] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('projectSidebarExpanded');
+            return saved !== null ? saved === 'true' : true;
+        }
+        return true;
+    });
     const { sessionId, loadProject } = useProject();
+
+    const toggleExpanded = () => {
+        const newState = !expanded;
+        setExpanded(newState);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('projectSidebarExpanded', String(newState));
+        }
+    };
 
     useEffect(() => {
         fetchProjects();
@@ -70,7 +84,7 @@ const ProjectSidebar = () => {
         return (
             <div className="w-12 bg-gray-900/50 border-r border-gray-800 flex flex-col items-center py-4">
                 <button
-                    onClick={() => setExpanded(true)}
+                    onClick={toggleExpanded}
                     className="p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white"
                     title="Expand projects"
                 >
@@ -89,7 +103,7 @@ const ProjectSidebar = () => {
                     <h3 className="font-semibold text-sm">Recent Projects</h3>
                 </div>
                 <button
-                    onClick={() => setExpanded(false)}
+                    onClick={toggleExpanded}
                     className="p-1 hover:bg-gray-800 rounded transition-colors text-gray-400 hover:text-white"
                 >
                     <ChevronRight size={16} className="rotate-180" />
@@ -117,8 +131,8 @@ const ProjectSidebar = () => {
                                     key={project.session_id}
                                     onClick={() => handleProjectClick(project.session_id)}
                                     className={`w-full text-left p-3 rounded-lg transition-all ${isActive
-                                            ? 'bg-blue-600/20 border border-blue-500/50'
-                                            : 'hover:bg-gray-800/50 border border-transparent'
+                                        ? 'bg-blue-600/20 border border-blue-500/50'
+                                        : 'hover:bg-gray-800/50 border border-transparent'
                                         }`}
                                 >
                                     <div className="flex items-start gap-2">

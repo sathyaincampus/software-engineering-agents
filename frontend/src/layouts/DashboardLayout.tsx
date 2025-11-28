@@ -11,7 +11,9 @@ import {
     LogOut,
     Cpu,
     Command,
-    Folder
+    Folder,
+    Menu,
+    X
 } from 'lucide-react';
 import Settings from '../components/Settings';
 import ProjectSidebar from '../components/ProjectSidebar';
@@ -26,6 +28,12 @@ const DashboardLayout: React.FC = () => {
         return true;
     });
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('sidebarCollapsed') === 'true';
+        }
+        return false;
+    });
 
     useEffect(() => {
         if (darkMode) {
@@ -36,6 +44,14 @@ const DashboardLayout: React.FC = () => {
             localStorage.setItem('theme', 'light');
         }
     }, [darkMode]);
+
+    const toggleSidebar = () => {
+        const newState = !sidebarCollapsed;
+        setSidebarCollapsed(newState);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('sidebarCollapsed', String(newState));
+        }
+    };
 
     const NavItem = ({ to, icon: Icon, label }: any) => {
         const isActive = location.pathname === to;
@@ -57,53 +73,75 @@ const DashboardLayout: React.FC = () => {
     return (
         <div className="flex h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))] overflow-hidden font-sans">
             {/* Sidebar */}
-            <aside className="w-72 bg-[hsl(var(--card))] border-r border-[hsl(var(--border))] flex flex-col shadow-2xl z-20">
+            <aside className={`${sidebarCollapsed ? 'w-16' : 'w-72'} bg-[hsl(var(--card))] border-r border-[hsl(var(--border))] flex flex-col shadow-2xl z-20 transition-all duration-300`}>
                 {/* Logo Area */}
                 <div className="p-6 flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
-                        <Cpu className="text-white w-6 h-6" />
-                    </div>
-                    <div>
-                        <h1 className="text-lg font-bold tracking-tight">ZeroToOne AI</h1>
-                        <p className="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Engineering Agent</p>
-                    </div>
+                    {!sidebarCollapsed && (
+                        <>
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+                                <Cpu className="text-white w-6 h-6" />
+                            </div>
+                            <div>
+                                <h1 className="text-lg font-bold tracking-tight">ZeroToOne AI</h1>
+                                <p className="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Engineering Agent</p>
+                            </div>
+                        </>
+                    )}
+                    {sidebarCollapsed && (
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 mx-auto">
+                            <Cpu className="text-white w-6 h-6" />
+                        </div>
+                    )}
                 </div>
 
                 {/* Navigation */}
                 <nav className="mt-2 flex-1 space-y-1">
-                    <div className="px-6 pb-2">
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Platform</p>
-                    </div>
-                    <NavItem to="/" icon={LayoutDashboard} label="Mission Control" />
-                    <NavItem to="/boardroom" icon={Layers} label="Boardroom" />
-                    <NavItem to="/projects" icon={Folder} label="Projects" />
+                    {!sidebarCollapsed && (
+                        <div className="px-6 pb-2">
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Platform</p>
+                        </div>
+                    )}
+                    <NavItem to="/" icon={LayoutDashboard} label={sidebarCollapsed ? "" : "Mission Control"} />
+                    <NavItem to="/boardroom" icon={Layers} label={sidebarCollapsed ? "" : "Boardroom"} />
+                    <NavItem to="/projects" icon={Folder} label={sidebarCollapsed ? "" : "Projects"} />
 
-                    <div className="px-6 pb-2 pt-6">
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Assets</p>
-                    </div>
-                    <NavItem to="/artifacts" icon={FileText} label="Artifacts" />
-                    <NavItem to="/showcase" icon={Video} label="Showcase" />
+                    {!sidebarCollapsed && (
+                        <div className="px-6 pb-2 pt-6">
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Assets</p>
+                        </div>
+                    )}
+                    <NavItem to="/artifacts" icon={FileText} label={sidebarCollapsed ? "" : "Artifacts"} />
+                    <NavItem to="/showcase" icon={Video} label={sidebarCollapsed ? "" : "Showcase"} />
                 </nav>
 
                 {/* User / Footer */}
                 <div className="p-4 border-t border-[hsl(var(--border))] bg-[hsl(var(--muted))/30]">
-                    <div className="flex items-center justify-between p-3 bg-[hsl(var(--background))] rounded-xl border border-[hsl(var(--border))] shadow-sm">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold text-xs">
-                                SA
+                    {!sidebarCollapsed ? (
+                        <div className="flex items-center justify-between p-3 bg-[hsl(var(--background))] rounded-xl border border-[hsl(var(--border))] shadow-sm">
+                            <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold text-xs">
+                                    SA
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-xs font-bold">Sathya</span>
+                                    <span className="text-[10px] text-gray-500">Pro Plan</span>
+                                </div>
                             </div>
-                            <div className="flex flex-col">
-                                <span className="text-xs font-bold">Sathya</span>
-                                <span className="text-[10px] text-gray-500">Pro Plan</span>
-                            </div>
+                            <button
+                                onClick={() => setDarkMode(!darkMode)}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500"
+                            >
+                                {darkMode ? <Moon size={16} /> : <Sun size={16} />}
+                            </button>
                         </div>
+                    ) : (
                         <button
                             onClick={() => setDarkMode(!darkMode)}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500"
+                            className="w-full p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500"
                         >
                             {darkMode ? <Moon size={16} /> : <Sun size={16} />}
                         </button>
-                    </div>
+                    )}
                 </div>
             </aside>
 
@@ -114,10 +152,19 @@ const DashboardLayout: React.FC = () => {
 
                 {/* Header */}
                 <header className="h-16 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))/80 backdrop-blur-md flex items-center justify-between px-8 z-10 sticky top-0">
-                    <div className="flex items-center text-gray-500 text-sm">
-                        <Command size={14} className="mr-2" />
-                        <span className="font-mono">Cmd + K</span>
-                        <span className="mx-2">to search...</span>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={toggleSidebar}
+                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-500 hover:text-gray-900 dark:hover:text-gray-200"
+                            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                        >
+                            {sidebarCollapsed ? <Menu size={20} /> : <X size={20} />}
+                        </button>
+                        <div className="flex items-center text-gray-500 text-sm">
+                            <Command size={14} className="mr-2" />
+                            <span className="font-mono">Cmd + K</span>
+                            <span className="mx-2">to search...</span>
+                        </div>
                     </div>
 
                     <div className="flex items-center space-x-4">

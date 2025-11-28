@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {
     FileText,
     AlertTriangle,
@@ -57,6 +59,34 @@ const CodeViewer: React.FC<CodeViewerProps> = ({ sessionId, files, onRefresh }) 
     const [debugResult, setDebugResult] = useState<DebugResult | null>(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+
+    // Helper function to detect language from file extension
+    const getLanguageFromPath = (path: string): string => {
+        const ext = path.split('.').pop()?.toLowerCase();
+        const languageMap: Record<string, string> = {
+            'ts': 'typescript',
+            'tsx': 'tsx',
+            'js': 'javascript',
+            'jsx': 'jsx',
+            'py': 'python',
+            'json': 'json',
+            'md': 'markdown',
+            'css': 'css',
+            'scss': 'scss',
+            'html': 'html',
+            'yaml': 'yaml',
+            'yml': 'yaml',
+            'sh': 'bash',
+            'sql': 'sql',
+            'go': 'go',
+            'rs': 'rust',
+            'java': 'java',
+            'cpp': 'cpp',
+            'c': 'c',
+            'xml': 'xml',
+        };
+        return languageMap[ext || ''] || 'text';
+    };
 
     // Organize files into a tree structure
     const buildFileTree = (files: CodeFile[]) => {
@@ -302,15 +332,32 @@ const CodeViewer: React.FC<CodeViewerProps> = ({ sessionId, files, onRefresh }) 
                 <div className="flex-1 bg-[hsl(var(--card))] rounded-xl border border-[hsl(var(--border))] overflow-hidden flex flex-col">
                     {selectedFile ? (
                         <>
-                            <div className="flex-1 overflow-y-auto p-6 bg-[#0d1117] font-mono text-sm">
+                            <div className="flex-1 overflow-y-auto p-6 bg-[#0d1117]">
                                 {loading ? (
                                     <div className="flex items-center justify-center h-full">
                                         <Loader2 className="animate-spin text-blue-500" size={32} />
                                     </div>
                                 ) : (
-                                    <pre className="text-green-400/90 whitespace-pre-wrap break-words">
-                                        {fileContent}
-                                    </pre>
+                                    <SyntaxHighlighter
+                                        language={getLanguageFromPath(selectedFile)}
+                                        style={vscDarkPlus}
+                                        showLineNumbers
+                                        wrapLines
+                                        customStyle={{
+                                            margin: 0,
+                                            padding: 0,
+                                            background: 'transparent',
+                                            fontSize: '13px',
+                                        }}
+                                        lineNumberStyle={{
+                                            minWidth: '3em',
+                                            paddingRight: '1em',
+                                            color: '#6e7681',
+                                            userSelect: 'none',
+                                        }}
+                                    >
+                                        {fileContent || '// Empty file'}
+                                    </SyntaxHighlighter>
                                 )}
                             </div>
 

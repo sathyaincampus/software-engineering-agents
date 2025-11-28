@@ -3,6 +3,7 @@ import axios from 'axios';
 import MarkdownViewer from '../components/MarkdownViewer';
 import ArchitectureViewer from '../components/ArchitectureViewer';
 import CodeViewer from '../components/CodeViewer';
+import CodeWalkthrough from '../components/CodeWalkthrough';
 import { useProject } from '../context/ProjectContext';
 import {
     Lightbulb,
@@ -18,7 +19,9 @@ import {
     Sparkles,
     Layout,
     Server,
-    RefreshCw
+    RefreshCw,
+    ChevronLeft,
+    ChevronRight
 } from 'lucide-react';
 
 const API_BASE_URL = 'http://localhost:8050';
@@ -133,6 +136,13 @@ const MissionControl: React.FC = () => {
     const [taskStatuses, setTaskStatuses] = useState<Record<string, 'pending' | 'loading' | 'complete' | 'error'>>({});
     const [projectFiles, setProjectFiles] = useState<any[]>([]);
     const [showCodeBrowser, setShowCodeBrowser] = useState(false);
+    const [showWalkthrough, setShowWalkthrough] = useState(false);
+    const [logsCollapsed, setLogsCollapsed] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('logsCollapsed') === 'true';
+        }
+        return false;
+    });
 
     // Use ProjectContext instead of local state
     const {
@@ -162,6 +172,14 @@ const MissionControl: React.FC = () => {
 
     // --- Helpers ---
     const addLog = (msg: string) => setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
+
+    const toggleLogs = () => {
+        const newState = !logsCollapsed;
+        setLogsCollapsed(newState);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('logsCollapsed', String(newState));
+        }
+    };
 
     useEffect(() => {
         logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -365,7 +383,7 @@ const MissionControl: React.FC = () => {
     return (
         <div className="grid grid-cols-12 gap-8 h-[calc(100vh-8rem)]">
             {/* Left Column: Workflow */}
-            <div className="col-span-8 space-y-8 overflow-y-auto pr-4 pb-20">
+            <div className={`${logsCollapsed ? 'col-span-11' : 'col-span-8'} space-y-8 overflow-y-auto pr-4 pb-20 transition-all duration-300`}>
 
                 {/* Header */}
                 <div>
@@ -593,38 +611,75 @@ const MissionControl: React.FC = () => {
                             />
                         </div>
                     )}
+
+                    {/* Code Walkthrough Button */}
+                    {Object.values(taskStatuses).some(s => s === 'complete') && (
+                        <div className="mt-4">
+                            <button
+                                onClick={() => setShowWalkthrough(!showWalkthrough)}
+                                className="w-full py-3 bg-purple-100 dark:bg-purple-900/20 hover:bg-purple-200 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-xl flex items-center justify-center gap-2 transition-colors font-semibold"
+                            >
+                                <FileText size={18} />
+                                {showWalkthrough ? 'Hide Walkthrough Generator' : 'Generate Code Walkthrough'}
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Code Walkthrough */}
+                    {showWalkthrough && sessionId && (
+                        <div className="mt-6">
+                            <CodeWalkthrough sessionId={sessionId} />
+                        </div>
+                    )}
                 </StepCard>
 
             </div>
 
             {/* Right Column: Logs */}
-            <div className="col-span-4">
+            <div className={`${logsCollapsed ? 'col-span-1' : 'col-span-4'} transition-all duration-300`}>
                 <div className="sticky top-8 bg-[#0d1117] rounded-2xl border border-gray-800 shadow-2xl overflow-hidden flex flex-col h-[calc(100vh-10rem)]">
                     <div className="p-4 border-b border-gray-800 flex items-center justify-between bg-[#161b22]">
                         <div className="flex items-center gap-2 text-gray-400">
-                            <Terminal size={16} />
-                            <span className="text-xs font-bold uppercase tracking-wider">System Logs</span>
+                            {!logsCollapsed && (
+                                <>
+                                    <Terminal size={16} />
+                                    <span className="text-xs font-bold uppercase tracking-wider">System Logs</span>
+                                </>
+                            )}
                         </div>
-                        <div className="flex gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50" />
+                        <div className="flex items-center gap-2">
+                            {!logsCollapsed && (
+                                <div className="flex gap-1.5">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50" />
+                                </div>
+                            )}
+                            <button
+                                onClick={toggleLogs}
+                                className="p-1 hover:bg-gray-800 rounded transition-colors text-gray-400 hover:text-white"
+                                title={logsCollapsed ? "Expand logs" : "Collapse logs"}
+                            >
+                                {logsCollapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+                            </button>
                         </div>
                     </div>
-                    <div className="flex-1 overflow-y-auto p-4 font-mono text-xs space-y-3">
-                        {logs.length === 0 && (
-                            <div className="text-gray-600 italic text-center mt-10">
-                                Waiting for system events...
-                            </div>
-                        )}
-                        {logs.map((log, i) => (
-                            <div key={i} className="flex gap-3 animate-in fade-in slide-in-from-bottom-1 duration-300">
-                                <span className="text-gray-600 shrink-0">{log.split(']')[0]}]</span>
-                                <span className="text-green-400/90 break-words">{log.split(']')[1]}</span>
-                            </div>
-                        ))}
-                        <div ref={logsEndRef} />
-                    </div>
+                    {!logsCollapsed && (
+                        <div className="flex-1 overflow-y-auto p-4 font-mono text-xs space-y-3">
+                            {logs.length === 0 && (
+                                <div className="text-gray-600 italic text-center mt-10">
+                                    Waiting for system events...
+                                </div>
+                            )}
+                            {logs.map((log, i) => (
+                                <div key={i} className="flex gap-3 animate-in fade-in slide-in-from-bottom-1 duration-300">
+                                    <span className="text-gray-600 shrink-0">{log.split(']')[0]}]</span>
+                                    <span className="text-green-400/90 break-words">{log.split(']')[1]}</span>
+                                </div>
+                            ))}
+                            <div ref={logsEndRef} />
+                        </div>
+                    )}
                     {loading && (
                         <div className="p-2 bg-blue-500/10 border-t border-blue-500/20 text-blue-400 text-xs flex items-center justify-center gap-2">
                             <Loader2 size={10} className="animate-spin" /> Processing...

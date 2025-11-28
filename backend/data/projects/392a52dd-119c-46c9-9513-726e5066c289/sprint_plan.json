@@ -1,0 +1,412 @@
+{
+  "sprint_plan": [
+    {
+      "task_id": "TASK-001",
+      "title": "Project Documentation",
+      "description": "Create README.md, IMPLEMENTATION_GUIDE.md, and HOW_TO_RUN.md for the project.",
+      "assignee": "Backend",
+      "story_id": null,
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-002",
+      "title": "UI Visualizations",
+      "description": "Create UI_SCREENSHOTS.html, a static HTML file simulating screenshots of key views.",
+      "assignee": "Frontend",
+      "story_id": null,
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-003",
+      "title": "User Authentication Setup",
+      "description": "Implement user signup (email/password, Google Sign-In) and login functionality.",
+      "assignee": "Backend",
+      "story_id": "User Authentication and Profile Setup",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-004",
+      "title": "Google OAuth Integration",
+      "description": "Integrate Google Sign-In for user authentication.",
+      "assignee": "Backend",
+      "story_id": "User Authentication and Profile Setup",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-005",
+      "title": "User Profile Management API",
+      "description": "Develop API endpoints for creating, retrieving, and updating user profiles (name, age, avatar).",
+      "assignee": "Backend",
+      "story_id": "User Authentication and Profile Setup",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-006",
+      "title": "Profile Avatar Upload",
+      "description": "Implement functionality to upload and store user avatars in AWS S3.",
+      "assignee": "Backend",
+      "story_id": "User Authentication and Profile Setup",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-007",
+      "title": "Parental Control API",
+      "description": "Implement API endpoints for parents to manage child account permissions and access.",
+      "assignee": "Backend",
+      "story_id": "User Authentication and Profile Setup",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-008",
+      "title": "Signup and Login UI",
+      "description": "Create React Native UI components for user signup and login forms, including Google Sign-In button.",
+      "assignee": "Frontend",
+      "story_id": "User Authentication and Profile Setup",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-009",
+      "title": "Profile Setup UI",
+      "description": "Develop UI components for user profile creation and management (name, age, avatar upload).",
+      "assignee": "Frontend",
+      "story_id": "User Authentication and Profile Setup",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-010",
+      "title": "Parental Control UI",
+      "description": "Design and implement UI for parents to manage child account permissions.",
+      "assignee": "Frontend",
+      "story_id": "User Authentication and Profile Setup",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-011",
+      "title": "Family Calendar API",
+      "description": "Develop API endpoints for adding, editing, deleting, and retrieving family calendar events.",
+      "assignee": "Backend",
+      "story_id": "Shared Family Calendar Management",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-012",
+      "title": "Event Assignment and Categorization API",
+      "description": "Implement API logic for assigning events to members and managing custom event categories with colors.",
+      "assignee": "Backend",
+      "story_id": "Shared Family Calendar Management",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-013",
+      "title": "Real-time Calendar Updates",
+      "description": "Integrate WebSockets (Socket.IO) to ensure real-time updates for shared family calendars.",
+      "assignee": "Backend",
+      "story_id": "Shared Family Calendar Management",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-014",
+      "title": "Calendar UI Components",
+      "description": "Develop React Native UI components for displaying the calendar in daily, weekly, and monthly views.",
+      "assignee": "Frontend",
+      "story_id": "Shared Family Calendar Management",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-015",
+      "title": "Event Creation/Editing UI",
+      "description": "Build UI forms for adding, editing, and deleting calendar events, including assignment and category selection.",
+      "assignee": "Frontend",
+      "story_id": "Shared Family Calendar Management",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-016",
+      "title": "Recurring Schedule API",
+      "description": "Implement API endpoints for creating and managing recurring events (daily, weekly, monthly) with end dates.",
+      "assignee": "Backend",
+      "story_id": "Recurring Schedule Creation and Management",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-017",
+      "title": "Recurring Event Population Logic",
+      "description": "Develop backend logic to automatically populate recurring events on the calendar based on set schedules.",
+      "assignee": "Backend",
+      "story_id": "Recurring Schedule Creation and Management",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-018",
+      "title": "Recurring Event UI Integration",
+      "description": "Update event creation/editing UI to support setting up recurring schedules.",
+      "assignee": "Frontend",
+      "story_id": "Recurring Schedule Creation and Management",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-019",
+      "title": "Task Management API",
+      "description": "Develop API endpoints for creating, assigning, updating status, and retrieving tasks.",
+      "assignee": "Backend",
+      "story_id": "Task Management for Kids",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-020",
+      "title": "Task Completion Tracking",
+      "description": "Implement backend logic to track task completion by children and visibility for parents.",
+      "assignee": "Backend",
+      "story_id": "Task Management for Kids",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-021",
+      "title": "Task Creation UI",
+      "description": "Build UI for parents to create and assign tasks to specific children.",
+      "assignee": "Frontend",
+      "story_id": "Task Management for Kids",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-022",
+      "title": "Child Task View UI",
+      "description": "Develop UI for children to view their assigned tasks and mark them as completed.",
+      "assignee": "Frontend",
+      "story_id": "Task Management for Kids",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-023",
+      "title": "Gamified Rewards API",
+      "description": "Develop API endpoints for defining rewards, assigning points to tasks, and tracking redemptions.",
+      "assignee": "Backend",
+      "story_id": "Gamified Rewards System for Kids",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-024",
+      "title": "Point Management Logic",
+      "description": "Implement backend logic for managing user points, deducting points for redemptions, and optional approval workflows.",
+      "assignee": "Backend",
+      "story_id": "Gamified Rewards System for Kids",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-025",
+      "title": "Rewards UI",
+      "description": "Create UI components for parents to define rewards and for children to view points balance and redeem rewards.",
+      "assignee": "Frontend",
+      "story_id": "Gamified Rewards System for Kids",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-026",
+      "title": "Google Calendar Sync API",
+      "description": "Develop API endpoints to handle OAuth flow for Google Calendar and sync events.",
+      "assignee": "Backend",
+      "story_id": "Google Calendar Synchronization",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-027",
+      "title": "Event Synchronization Logic",
+      "description": "Implement backend logic for importing events from Google Calendar to FamilyFlow and exporting from FamilyFlow to Google Calendar.",
+      "assignee": "Backend",
+      "story_id": "Google Calendar Synchronization",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-028",
+      "title": "Google Calendar Sync UI",
+      "description": "Create UI elements for users to connect their Google Calendar and manage sync preferences.",
+      "assignee": "Frontend",
+      "story_id": "Google Calendar Synchronization",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-029",
+      "title": "Event Notes and Location API",
+      "description": "Update event API to include fields for notes and location, and ensure data is saved and retrieved correctly.",
+      "assignee": "Backend",
+      "story_id": "Add Notes and Details to Events",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-030",
+      "title": "Event Details UI Update",
+      "description": "Modify the event creation/editing and viewing UI to accommodate notes and location fields.",
+      "assignee": "Frontend",
+      "story_id": "Add Notes and Details to Events",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-031",
+      "title": "Parental Dashboard API",
+      "description": "Develop API endpoints to fetch aggregated data for the parental dashboard (upcoming events, pending tasks, points summary).",
+      "assignee": "Backend",
+      "story_id": "Parental Dashboard Overview",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-032",
+      "title": "Parental Dashboard UI",
+      "description": "Create the React Native UI for the parental dashboard, displaying summaries of events, tasks, and points.",
+      "assignee": "Frontend",
+      "story_id": "Parental Dashboard Overview",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-033",
+      "title": "21-Day Routine Builder API",
+      "description": "Develop API endpoints for creating, managing, and tracking progress within the 21-Day Routine Builder.",
+      "assignee": "Backend",
+      "story_id": "21-Day Routine Builder",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-034",
+      "title": "21-Day Routine Builder UI",
+      "description": "Create UI components for accessing the routine builder, setting up routines, and visualizing daily progress.",
+      "assignee": "Frontend",
+      "story_id": "21-Day Routine Builder",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-035",
+      "title": "Co-Parent Invitation API",
+      "description": "Implement API endpoints for inviting and managing connections between co-parents within a family.",
+      "assignee": "Backend",
+      "story_id": "Sharing Calendar with Co-Parent",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-036",
+      "title": "Co-Parent Connection Logic",
+      "description": "Develop backend logic to establish shared access to calendar and task data for connected parents.",
+      "assignee": "Backend",
+      "story_id": "Sharing Calendar with Co-Parent",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-037",
+      "title": "Co-Parent Invitation UI",
+      "description": "Create UI for parents to send and accept co-parent invitations.",
+      "assignee": "Frontend",
+      "story_id": "Sharing Calendar with Co-Parent",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-038",
+      "title": "Notification Service Setup",
+      "description": "Set up the notification service to handle push notifications for events and tasks.",
+      "assignee": "Backend",
+      "story_id": "Basic Reminder Notifications",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-039",
+      "title": "Notification Trigger Logic",
+      "description": "Implement backend logic to trigger notifications for upcoming events, new tasks, and deadlines.",
+      "assignee": "Backend",
+      "story_id": "Basic Reminder Notifications",
+      "effort": "High"
+    },
+    {
+      "task_id": "TASK-040",
+      "title": "Notification Preferences UI",
+      "description": "Develop UI components for users to manage their notification preferences.",
+      "assignee": "Frontend",
+      "story_id": "Basic Reminder Notifications",
+      "effort": "Medium"
+    },
+    {
+      "task_id": "TASK-041",
+      "title": "Custom Categories API",
+      "description": "Implement API endpoints for creating and managing custom event and task categories.",
+      "assignee": "Backend",
+      "story_id": "Customizable Event and Task Categories",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-042",
+      "title": "Custom Categories UI Integration",
+      "description": "Update UI for event and task creation to allow selection and creation of custom categories.",
+      "assignee": "Frontend",
+      "story_id": "Customizable Event and Task Categories",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-043",
+      "title": "In-App Messaging API",
+      "description": "Develop API endpoints for sending and receiving simple messages between parent and child.",
+      "assignee": "Backend",
+      "story_id": "In-App Messaging (Parent-to-Child)",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-044",
+      "title": "In-App Messaging UI",
+      "description": "Create a simple messaging interface within the app for parents to send messages to children.",
+      "assignee": "Frontend",
+      "story_id": "In-App Messaging (Parent-to-Child)",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-045",
+      "title": "Advanced Reward Customization API",
+      "description": "Update reward API to support setting different point values for tasks and configuring approval workflows.",
+      "assignee": "Backend",
+      "story_id": "Advanced Reward Customization",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-046",
+      "title": "Advanced Reward Customization UI",
+      "description": "Enhance the rewards UI for parents to configure advanced reward settings.",
+      "assignee": "Frontend",
+      "story_id": "Advanced Reward Customization",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-047",
+      "title": "Advanced Analytics API",
+      "description": "Develop API endpoints to provide data for advanced analytics reports (time allocation, trends, spending).",
+      "assignee": "Backend",
+      "story_id": "Advanced Family Analytics",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-048",
+      "title": "Advanced Analytics UI",
+      "description": "Create a dedicated 'Analytics' section in the UI for premium users to view reports.",
+      "assignee": "Frontend",
+      "story_id": "Advanced Family Analytics",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-049",
+      "title": "Subscription Payment Gateway Integration",
+      "description": "Integrate a secure payment gateway (e.g., Stripe) for processing monthly subscriptions.",
+      "assignee": "Backend",
+      "story_id": "Subscription Payment Gateway Integration",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-050",
+      "title": "Subscription Management API",
+      "description": "Develop API endpoints for managing subscription plans, user subscription status, and payment processing.",
+      "assignee": "Backend",
+      "story_id": "Subscription Payment Gateway Integration",
+      "effort": "Low"
+    },
+    {
+      "task_id": "TASK-051",
+      "title": "Subscription UI",
+      "description": "Create UI components for users to select subscription plans and manage their subscription status.",
+      "assignee": "Frontend",
+      "story_id": "Subscription Payment Gateway Integration",
+      "effort": "Low"
+    }
+  ]
+}
