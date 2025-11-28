@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.src.routes.v1 import auth, users, events, tasks, rewards, categories, messages
+from backend.src.routes.v1 import auth, users, events, tasks, rewards, categories, messages, analytics # Import analytics router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -38,6 +38,7 @@ app.include_router(tasks.router, prefix="/api/v1/tasks")
 app.include_router(rewards.router, prefix="/api/v1/rewards")
 app.include_router(categories.router, prefix="/api/v1/custom-categories")
 app.include_router(messages.router, prefix="/api/v1/messages") # Include messages router
+app.include_router(analytics.router, prefix="/api/v1/analytics") # Include analytics router
 
 
 @app.get("/", tags=["Health Check"])

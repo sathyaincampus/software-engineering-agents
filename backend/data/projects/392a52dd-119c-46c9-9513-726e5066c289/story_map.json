@@ -1,0 +1,332 @@
+{
+  "stories": {
+    "User Authentication and Profile Setup": {
+      "tasks": [
+        "TASK-003",
+        "TASK-004",
+        "TASK-005",
+        "TASK-006",
+        "TASK-007",
+        "TASK-008",
+        "TASK-009",
+        "TASK-010"
+      ],
+      "backend_tasks": [
+        "TASK-003",
+        "TASK-004",
+        "TASK-005",
+        "TASK-006",
+        "TASK-007"
+      ],
+      "frontend_tasks": [
+        "TASK-008",
+        "TASK-009",
+        "TASK-010"
+      ],
+      "total_tasks": 8,
+      "effort_distribution": {
+        "High": 5,
+        "Medium": 3,
+        "Low": 0
+      }
+    },
+    "Shared Family Calendar Management": {
+      "tasks": [
+        "TASK-011",
+        "TASK-012",
+        "TASK-013",
+        "TASK-014",
+        "TASK-015"
+      ],
+      "backend_tasks": [
+        "TASK-011",
+        "TASK-012",
+        "TASK-013"
+      ],
+      "frontend_tasks": [
+        "TASK-014",
+        "TASK-015"
+      ],
+      "total_tasks": 5,
+      "effort_distribution": {
+        "High": 5,
+        "Medium": 0,
+        "Low": 0
+      }
+    },
+    "Recurring Schedule Creation and Management": {
+      "tasks": [
+        "TASK-016",
+        "TASK-017",
+        "TASK-018"
+      ],
+      "backend_tasks": [
+        "TASK-016",
+        "TASK-017"
+      ],
+      "frontend_tasks": [
+        "TASK-018"
+      ],
+      "total_tasks": 3,
+      "effort_distribution": {
+        "High": 3,
+        "Medium": 0,
+        "Low": 0
+      }
+    },
+    "Task Management for Kids": {
+      "tasks": [
+        "TASK-019",
+        "TASK-020",
+        "TASK-021",
+        "TASK-022"
+      ],
+      "backend_tasks": [
+        "TASK-019",
+        "TASK-020"
+      ],
+      "frontend_tasks": [
+        "TASK-021",
+        "TASK-022"
+      ],
+      "total_tasks": 4,
+      "effort_distribution": {
+        "High": 4,
+        "Medium": 0,
+        "Low": 0
+      }
+    },
+    "Gamified Rewards System for Kids": {
+      "tasks": [
+        "TASK-023",
+        "TASK-024",
+        "TASK-025"
+      ],
+      "backend_tasks": [
+        "TASK-023",
+        "TASK-024"
+      ],
+      "frontend_tasks": [
+        "TASK-025"
+      ],
+      "total_tasks": 3,
+      "effort_distribution": {
+        "High": 3,
+        "Medium": 0,
+        "Low": 0
+      }
+    },
+    "Google Calendar Synchronization": {
+      "tasks": [
+        "TASK-026",
+        "TASK-027",
+        "TASK-028"
+      ],
+      "backend_tasks": [
+        "TASK-026",
+        "TASK-027"
+      ],
+      "frontend_tasks": [
+        "TASK-028"
+      ],
+      "total_tasks": 3,
+      "effort_distribution": {
+        "High": 3,
+        "Medium": 0,
+        "Low": 0
+      }
+    },
+    "Add Notes and Details to Events": {
+      "tasks": [
+        "TASK-029",
+        "TASK-030"
+      ],
+      "backend_tasks": [
+        "TASK-029"
+      ],
+      "frontend_tasks": [
+        "TASK-030"
+      ],
+      "total_tasks": 2,
+      "effort_distribution": {
+        "High": 0,
+        "Medium": 2,
+        "Low": 0
+      }
+    },
+    "Parental Dashboard Overview": {
+      "tasks": [
+        "TASK-031",
+        "TASK-032"
+      ],
+      "backend_tasks": [
+        "TASK-031"
+      ],
+      "frontend_tasks": [
+        "TASK-032"
+      ],
+      "total_tasks": 2,
+      "effort_distribution": {
+        "High": 0,
+        "Medium": 2,
+        "Low": 0
+      }
+    },
+    "21-Day Routine Builder": {
+      "tasks": [
+        "TASK-033",
+        "TASK-034"
+      ],
+      "backend_tasks": [
+        "TASK-033"
+      ],
+      "frontend_tasks": [
+        "TASK-034"
+      ],
+      "total_tasks": 2,
+      "effort_distribution": {
+        "High": 0,
+        "Medium": 2,
+        "Low": 0
+      }
+    },
+    "Sharing Calendar with Co-Parent": {
+      "tasks": [
+        "TASK-035",
+        "TASK-036",
+        "TASK-037"
+      ],
+      "backend_tasks": [
+        "TASK-035",
+        "TASK-036"
+      ],
+      "frontend_tasks": [
+        "TASK-037"
+      ],
+      "total_tasks": 3,
+      "effort_distribution": {
+        "High": 3,
+        "Medium": 0,
+        "Low": 0
+      }
+    },
+    "Basic Reminder Notifications": {
+      "tasks": [
+        "TASK-038",
+        "TASK-039",
+        "TASK-040"
+      ],
+      "backend_tasks": [
+        "TASK-038",
+        "TASK-039"
+      ],
+      "frontend_tasks": [
+        "TASK-040"
+      ],
+      "total_tasks": 3,
+      "effort_distribution": {
+        "High": 2,
+        "Medium": 1,
+        "Low": 0
+      }
+    },
+    "Customizable Event and Task Categories": {
+      "tasks": [
+        "TASK-041",
+        "TASK-042"
+      ],
+      "backend_tasks": [
+        "TASK-041"
+      ],
+      "frontend_tasks": [
+        "TASK-042"
+      ],
+      "total_tasks": 2,
+      "effort_distribution": {
+        "High": 0,
+        "Medium": 0,
+        "Low": 2
+      }
+    },
+    "In-App Messaging (Parent-to-Child)": {
+      "tasks": [
+        "TASK-043",
+        "TASK-044"
+      ],
+      "backend_tasks": [
+        "TASK-043"
+      ],
+      "frontend_tasks": [
+        "TASK-044"
+      ],
+      "total_tasks": 2,
+      "effort_distribution": {
+        "High": 0,
+        "Medium": 0,
+        "Low": 2
+      }
+    },
+    "Advanced Reward Customization": {
+      "tasks": [
+        "TASK-045",
+        "TASK-046"
+      ],
+      "backend_tasks": [
+        "TASK-045"
+      ],
+      "frontend_tasks": [
+        "TASK-046"
+      ],
+      "total_tasks": 2,
+      "effort_distribution": {
+        "High": 0,
+        "Medium": 0,
+        "Low": 2
+      }
+    },
+    "Advanced Family Analytics": {
+      "tasks": [
+        "TASK-047",
+        "TASK-048"
+      ],
+      "backend_tasks": [
+        "TASK-047"
+      ],
+      "frontend_tasks": [
+        "TASK-048"
+      ],
+      "total_tasks": 2,
+      "effort_distribution": {
+        "High": 0,
+        "Medium": 0,
+        "Low": 2
+      }
+    },
+    "Subscription Payment Gateway Integration": {
+      "tasks": [
+        "TASK-049",
+        "TASK-050",
+        "TASK-051"
+      ],
+      "backend_tasks": [
+        "TASK-049",
+        "TASK-050"
+      ],
+      "frontend_tasks": [
+        "TASK-051"
+      ],
+      "total_tasks": 3,
+      "effort_distribution": {
+        "High": 0,
+        "Medium": 0,
+        "Low": 3
+      }
+    }
+  },
+  "orphan_tasks": [
+    "TASK-001",
+    "TASK-002"
+  ],
+  "total_stories": 16,
+  "total_tasks": 51
+}

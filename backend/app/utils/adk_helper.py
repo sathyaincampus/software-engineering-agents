@@ -10,8 +10,11 @@ async def collect_response(async_gen):
     Handles errors gracefully to prevent crashes.
     """
     full_response = ""
+    event_count = 0
+    
     try:
         async for event in async_gen:
+            event_count += 1
             # Check for ModelGenerateContentEvent or similar that contains text
             # We look for 'content' or 'text' in the event or its payload
             if hasattr(event, 'content') and event.content:
@@ -44,8 +47,18 @@ async def collect_response(async_gen):
             # If we got nothing, return error info
             return json.dumps({
                 "error": "Failed to collect response",
-                "details": error_str[:500]
+                "details": error_str[:500],
+                "event_count": event_count
             })
+    
+    # Check if we got an empty response
+    if not full_response.strip():
+        logger.warning(f"Empty response after processing {event_count} events")
+        return json.dumps({
+            "error": "Agent returned empty response",
+            "details": f"Processed {event_count} events but got no text content",
+            "suggestion": "The agent may have encountered an error or the prompt may need adjustment"
+        })
             
     return full_response
 
@@ -78,8 +91,29 @@ def parse_json_response(response: str) -> dict:
     Returns:
         dict: Parsed JSON or error dict with raw_output
     """
+    # Check if response is empty
+    if not response or not response.strip():
+        return {
+            "error": "Empty response from agent",
+            "raw_output": ""
+        }
+    
     try:
-        # First, try to extract JSON from markdown
+        # First, try to parse directly (in case it's already JSON from error handler)
+        parsed = json.loads(response)
+        
+        # If it's already an error object from collect_response, return it
+        if isinstance(parsed, dict) and "error" in parsed:
+            return parsed
+        
+        return parsed
+    
+    except json.JSONDecodeError:
+        # Not direct JSON, try extracting from markdown
+        pass
+    
+    try:
+        # Try to extract JSON from markdown
         json_text = extract_json_from_markdown(response)
         
         # Try to parse

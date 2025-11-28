@@ -8,6 +8,7 @@ import categoriesReducer from './categoriesSlice';
 import taskCategoriesReducer from './taskCategoriesSlice';
 import familyMembersReducer from './familyMembersSlice';
 import messagesReducer from './messagesSlice'; // Import messages reducer
+import analyticsReducer from './analyticsSlice'; // Import analytics reducer
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
     taskCategories: taskCategoriesReducer,
     familyMembers: familyMembersReducer,
     messages: messagesReducer, // Add messages reducer
+    analytics: analyticsReducer, // Add analytics reducer
   },
 });
 

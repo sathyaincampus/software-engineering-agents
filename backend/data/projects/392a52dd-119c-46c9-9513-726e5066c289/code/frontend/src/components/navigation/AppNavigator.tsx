@@ -9,6 +9,7 @@ import TaskScreen from '../../screens/TaskScreen';
 import RewardsScreen from '../../screens/RewardsScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
 import AuthScreen from '../../screens/AuthScreen'; // Assuming you have an AuthScreen
+import AnalyticsScreen from '../../screens/AnalyticsScreen'; // Import AnalyticsScreen
 import { useSelector } from 'react-redux';
 import { RootState } from '../../state/store';
 import { User } from '../../types/users';
@@ -20,6 +21,7 @@ export type TabParamList = {
   Tasks: undefined;
   Rewards: undefined;
   Profile: undefined;
+  Analytics: undefined; // Add Analytics tab
   Auth: undefined;
 };
 
@@ -74,6 +76,8 @@ const MainTabsNavigator: React.FC = () => {
             iconName = focused ? 'gift' : 'gift-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
+          } else if (route.name === 'Analytics') { // Icon for Analytics tab
+            iconName = focused ? 'stats-chart' : 'stats-chart-outline';
           }
 
           // You can return any component that displays a symbol
@@ -95,6 +99,10 @@ const MainTabsNavigator: React.FC = () => {
           <Tab.Screen name="Rewards" component={RewardsScreen} />
        )}
       <Tab.Screen name="Profile" component={ProfileScreen} />
+      {/* Only show Analytics tab if user is a parent (or based on subscription tier) */}
+      {currentUser?.role === 'parent' && (
+        <Tab.Screen name="Analytics" component={AnalyticsScreen} />
+      )}
     </Tab.Navigator>
   );
 };

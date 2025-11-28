@@ -1,0 +1,84 @@
+{
+    "stories": {
+        "User Authentication and Profile Setup": {
+            "tasks": [
+                "TASK-003",
+                "TASK-004",
+                "TASK-005",
+                "TASK-006",
+                "TASK-007",
+                "TASK-008",
+                "TASK-009",
+                "TASK-010"
+            ],
+            "backend_tasks": [
+                "TASK-003",
+                "TASK-004",
+                "TASK-005",
+                "TASK-006",
+                "TASK-007"
+            ],
+            "frontend_tasks": [
+                "TASK-008",
+                "TASK-009",
+                "TASK-010"
+            ],
+            "total_tasks": 8,
+            "effort_distribution": {
+                "High": 5,
+                "Medium": 3,
+                "Low": 0
+            }
+        },
+        "Shared Family Calendar Management": {
+            "tasks": [
+                "TASK-011",
+                "TASK-012",
+                "TASK-013",
+                "TASK-014",
+                "TASK-015"
+            ],
+            "backend_tasks": [
+                "TASK-011",
+                "TASK-012",
+                "TASK-013"
+            ],
+            "frontend_tasks": [
+                "TASK-014",
+                "TASK-015"
+            ],
+            "total_tasks": 5,
+            "effort_distribution": {
+                "High": 5,
+                "Medium": 0,
+                "Low": 0
+            }
+        },
+        "Recurring Schedule Creation and Management": {
+            "tasks": [
+                "TASK-016",
+                "TASK-017",
+                "TASK-018"
+            ],
+            "backend_tasks": [
+                "TASK-016",
+                "TASK-017"
+            ],
+            "frontend_tasks": [
+                "TASK-018"
+            ],
+            "total_tasks": 3,
+            "effort_distribution": {
+                "High": 3,
+                "Medium": 0,
+                "Low": 0
+            }
+        }
+    },
+    "orphan_tasks": [
+        "TASK-001",
+        "TASK-002"
+    ],
+    "total_stories": 3,
+    "total_tasks": 18
+}

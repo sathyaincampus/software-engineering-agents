@@ -4,6 +4,7 @@ import MarkdownViewer from '../components/MarkdownViewer';
 import ArchitectureViewer from '../components/ArchitectureViewer';
 import CodeViewer from '../components/CodeViewer';
 import CodeWalkthrough from '../components/CodeWalkthrough';
+import StoryMapViewer from '../components/StoryMapViewer';
 import { useProject } from '../context/ProjectContext';
 import {
     Lightbulb,
@@ -53,13 +54,14 @@ interface SprintPlan {
 
 // --- Components ---
 
-const StatusBadge = ({ status }: { status: 'pending' | 'loading' | 'complete' | 'active' | 'error' }) => {
+const StatusBadge = ({ status }: { status: 'pending' | 'loading' | 'complete' | 'active' | 'error' | 'skipped' }) => {
     const styles = {
         pending: 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 border-gray-200 dark:border-gray-700',
         loading: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-blue-200 dark:border-blue-800 animate-pulse',
         active: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border-blue-300 dark:border-blue-700',
         complete: 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800',
         error: 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-800',
+        skipped: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800',
     };
 
     const icons = {
@@ -68,6 +70,7 @@ const StatusBadge = ({ status }: { status: 'pending' | 'loading' | 'complete' | 
         active: <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />,
         complete: <CheckCircle size={12} />,
         error: <div className="w-2 h-2 rounded-full bg-red-500" />,
+        skipped: <div className="w-2 h-2 rounded-full bg-yellow-500" />,
     };
 
     return (
@@ -133,7 +136,8 @@ const MissionControl: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [logs, setLogs] = useState<string[]>([]);
     const logsEndRef = useRef<HTMLDivElement>(null);
-    const [taskStatuses, setTaskStatuses] = useState<Record<string, 'pending' | 'loading' | 'complete' | 'error'>>({});
+    const [taskStatuses, setTaskStatuses] = useState<Record<string, any>>({});
+    const [sprintView, setSprintView] = useState<'tasks' | 'storymap'>('tasks');
     const [projectFiles, setProjectFiles] = useState<any[]>([]);
     const [showCodeBrowser, setShowCodeBrowser] = useState(false);
     const [showWalkthrough, setShowWalkthrough] = useState(false);
@@ -347,6 +351,9 @@ const MissionControl: React.FC = () => {
         const tasks = Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || []);
         if (!tasks.length) return;
 
+        // Track which tasks failed in THIS run (not previous runs)
+        const failedInThisRun = new Set<string>();
+
         // If resuming, keep existing statuses; otherwise initialize
         if (!resumeFromCurrent) {
             const initialStatuses: Record<string, any> = {};
@@ -361,6 +368,16 @@ const MissionControl: React.FC = () => {
             const currentStatus = taskStatuses[task.task_id];
             if (currentStatus === 'complete') {
                 addLog(`⏭️  Skipping ${task.task_id} (already complete)`);
+                continue;
+            }
+
+            // Check for failed dependencies (only from THIS run)
+            const hasDependencyFailures = checkDependencies(task, tasks, failedInThisRun);
+            if (hasDependencyFailures) {
+                addLog(`⏭️  Skipping ${task.task_id}: Dependencies failed`);
+                addLog(`   💡 ${hasDependencyFailures}`);
+                setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'skipped' }));
+                failedInThisRun.add(task.task_id); // Mark as failed in this run
                 continue;
             }
 
@@ -393,6 +410,9 @@ const MissionControl: React.FC = () => {
                     if (response.data.suggestion) {
                         addLog(`💡 ${response.data.suggestion}`);
                     }
+                    if (response.data.details) {
+                        addLog(`📝 Details: ${response.data.details}`);
+                    }
 
                     // Handle different error types
                     if (errorType === 'rate_limit' && retryAfter) {
@@ -414,17 +434,30 @@ const MissionControl: React.FC = () => {
                         addLog(`🛑 Sprint paused: Token limit exceeded`);
                         addLog(`💡 Please reduce context size or use a larger model`);
                         setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+                        failedInThisRun.add(task.task_id); // Track failure
                         // Stop the sprint - user needs to intervene
                         return;
 
-                    } else if (!recoverable) {
+                    } else if (recoverable === false) {
+                        // Explicitly marked as unrecoverable
                         addLog(`🛑 Sprint paused: Unrecoverable error`);
                         setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+                        failedInThisRun.add(task.task_id); // Track failure
                         // Stop the sprint
                         return;
                     } else {
-                        // Generic error - mark as error and continue
+                        // Generic error or agent error (no error_type)
+                        // Mark as error but check if we should continue
                         setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+                        failedInThisRun.add(task.task_id); // Track failure
+
+                        // Check if any remaining tasks depend on this one
+                        const dependentTasks = findDependentTasks(task, tasks);
+                        if (dependentTasks.length > 0) {
+                            addLog(`⚠️  ${task.task_id} failed - ${dependentTasks.length} dependent task(s) will be skipped`);
+                        } else {
+                            addLog(`⚠️  ${task.task_id} failed, continuing to next task...`);
+                        }
                     }
                 } else {
                     // Success
@@ -444,6 +477,7 @@ const MissionControl: React.FC = () => {
                 }
 
                 setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'error' }));
+                failedInThisRun.add(task.task_id); // Track failure
 
                 // For critical errors, pause the sprint
                 if (e.response?.status === 500) {
@@ -454,6 +488,64 @@ const MissionControl: React.FC = () => {
         }
 
         addLog("🏁 Sprint completed. All tasks executed.");
+    };
+
+    // Helper function to check if a task's dependencies have failed
+    const checkDependencies = (
+        task: any,
+        allTasks: any[],
+        failedInThisRun: Set<string>
+    ): string | null => {
+        // If task has a story_id, check if any earlier tasks in the same story failed IN THIS RUN
+        if (task.story_id) {
+            const currentTaskIndex = allTasks.findIndex(t => t.task_id === task.task_id);
+
+            // Find all earlier tasks in the same story
+            const earlierTasksInStory = allTasks
+                .slice(0, currentTaskIndex)
+                .filter(t => t.story_id === task.story_id);
+
+            // Check if any of them failed IN THIS RUN
+            const failedDependencies = earlierTasksInStory.filter(t =>
+                failedInThisRun.has(t.task_id)
+            );
+
+            if (failedDependencies.length > 0) {
+                const failedIds = failedDependencies.map(t => t.task_id).join(', ');
+                return `Required task(s) failed: ${failedIds}`;
+            }
+        }
+
+        // For frontend tasks, check if corresponding backend tasks exist and succeeded
+        if (task.assignee.toLowerCase().includes('frontend') && task.story_id) {
+            const backendTasksInStory = allTasks.filter(t =>
+                t.story_id === task.story_id &&
+                t.assignee.toLowerCase().includes('backend')
+            );
+
+            const failedBackendTasks = backendTasksInStory.filter(t =>
+                failedInThisRun.has(t.task_id)
+            );
+
+            if (failedBackendTasks.length > 0) {
+                const failedIds = failedBackendTasks.map(t => t.task_id).join(', ');
+                return `Backend dependencies failed: ${failedIds}`;
+            }
+        }
+
+        return null;
+    };
+
+    // Helper function to find tasks that depend on the current task
+    const findDependentTasks = (task: any, allTasks: any[]): any[] => {
+        if (!task.story_id) return [];
+
+        const currentTaskIndex = allTasks.findIndex(t => t.task_id === task.task_id);
+
+        // Find all later tasks in the same story
+        return allTasks
+            .slice(currentTaskIndex + 1)
+            .filter(t => t.story_id === task.story_id);
     };
 
     const retryTask = async (task: any) => {
@@ -689,56 +781,86 @@ const MissionControl: React.FC = () => {
                     onRegenerate={() => createSprintPlan()}
                 >
                     <div className="space-y-6">
-                        <div className="space-y-3">
-                            {(Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).map((task: any, i: number) => {
-                                const status = taskStatuses[task.task_id] || 'pending';
-                                return (
-                                    <div key={i} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${status === 'error' ? 'border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-900/10' :
-                                        status === 'complete' ? 'border-green-300 dark:border-green-800 bg-green-50 dark:bg-green-900/10' :
-                                            status === 'loading' ? 'border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/10' :
-                                                'border-[hsl(var(--border))] bg-[hsl(var(--background))]'
-                                        }`}>
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-mono text-gray-500">
-                                                {i + 1}
-                                            </div>
-                                            <div>
-                                                <h5 className="font-medium text-sm">{task.title}</h5>
-                                                <span className="text-xs text-gray-500">{task.task_id}</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-xs px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300 border border-purple-100 dark:border-purple-800">
-                                                {task.assignee}
-                                            </span>
-                                            <StatusBadge status={status} />
-                                            {/* Retry button for failed tasks */}
-                                            {status === 'error' && (
-                                                <button
-                                                    onClick={() => retryTask(task)}
-                                                    className="px-3 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
-                                                    title="Retry this task"
-                                                >
-                                                    <RefreshCw size={12} />
-                                                    Retry
-                                                </button>
-                                            )}
-                                            {/* Run button for pending tasks */}
-                                            {status === 'pending' && Object.keys(taskStatuses).length > 0 && (
-                                                <button
-                                                    onClick={() => retryTask(task)}
-                                                    className="px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
-                                                    title="Run this task"
-                                                >
-                                                    <Play size={12} />
-                                                    Run
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                        {/* Tab Navigation */}
+                        <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
+                            <button
+                                onClick={() => setSprintView('tasks')}
+                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${sprintView === 'tasks'
+                                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                    }`}
+                            >
+                                Task List
+                            </button>
+                            <button
+                                onClick={() => setSprintView('storymap')}
+                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${sprintView === 'storymap'
+                                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                    }`}
+                            >
+                                Story Map
+                            </button>
                         </div>
+
+                        {/* Task List View */}
+                        {sprintView === 'tasks' && (
+                            <div className="space-y-3">
+                                {(Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).map((task: any, i: number) => {
+                                    const status = taskStatuses[task.task_id] || 'pending';
+                                    return (
+                                        <div key={i} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${status === 'error' ? 'border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-900/10' :
+                                            status === 'complete' ? 'border-green-300 dark:border-green-800 bg-green-50 dark:bg-green-900/10' :
+                                                status === 'loading' ? 'border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/10' :
+                                                    'border-[hsl(var(--border))] bg-[hsl(var(--background))]'
+                                            }`}>
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-mono text-gray-500">
+                                                    {i + 1}
+                                                </div>
+                                                <div>
+                                                    <h5 className="font-medium text-sm">{task.title}</h5>
+                                                    <span className="text-xs text-gray-500">{task.task_id}</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-xs px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300 border border-purple-100 dark:border-purple-800">
+                                                    {task.assignee}
+                                                </span>
+                                                <StatusBadge status={status} />
+                                                {/* Retry button for failed tasks */}
+                                                {status === 'error' && (
+                                                    <button
+                                                        onClick={() => retryTask(task)}
+                                                        className="px-3 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
+                                                        title="Retry this task"
+                                                    >
+                                                        <RefreshCw size={12} />
+                                                        Retry
+                                                    </button>
+                                                )}
+                                                {/* Run button for pending tasks */}
+                                                {status === 'pending' && Object.keys(taskStatuses).length > 0 && (
+                                                    <button
+                                                        onClick={() => retryTask(task)}
+                                                        className="px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
+                                                        title="Run this task"
+                                                    >
+                                                        <Play size={12} />
+                                                        Run
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {/* Story Map View */}
+                        {sprintView === 'storymap' && sessionId && (
+                            <StoryMapViewer sessionId={sessionId} />
+                        )}
 
                         {Object.values(taskStatuses).some(s => s === 'loading') && (
                             <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 flex items-center justify-center gap-3 text-blue-600 dark:text-blue-400">

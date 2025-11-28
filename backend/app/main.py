@@ -119,14 +119,92 @@ async def run_engineering_manager(session_id: str, request: CreateSprintPlanRequ
     result = await eng_manager_agent.create_sprint_plan(request.user_stories, request.architecture, session_id)
     session.add_log("Sprint Plan created")
     
-    # Save to filesystem
+    # Save sprint plan to filesystem
     try:
         file_path = project_storage.save_step(session_id, "sprint_plan", result)
         session.add_log(f"💾 Saved sprint plan to {file_path}")
     except Exception as e:
         logger.error(f"Failed to save sprint plan: {e}")
+    
+    # Generate and save story-to-task mapping
+    try:
+        story_map = generate_story_map(result)
+        file_path = project_storage.save_step(session_id, "story_map", story_map)
+        session.add_log(f"💾 Saved story map to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save story map: {e}")
         
     return result
+
+def generate_story_map(sprint_plan_result: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Generate a story-to-task mapping from the sprint plan.
+    
+    Returns:
+        {
+            "stories": {
+                "Story Name": {
+                    "tasks": ["TASK-001", "TASK-002"],
+                    "backend_tasks": ["TASK-001"],
+                    "frontend_tasks": ["TASK-002"],
+                    "total_tasks": 2,
+                    "effort_distribution": {"High": 1, "Medium": 1, "Low": 0}
+                }
+            },
+            "orphan_tasks": ["TASK-003"],  # Tasks without story_id
+            "total_stories": 5,
+            "total_tasks": 50
+        }
+    """
+    tasks = sprint_plan_result.get("sprint_plan", [])
+    
+    story_map = {
+        "stories": {},
+        "orphan_tasks": [],
+        "total_stories": 0,
+        "total_tasks": len(tasks)
+    }
+    
+    for task in tasks:
+        story_id = task.get("story_id")
+        task_id = task.get("task_id")
+        assignee = task.get("assignee", "").lower()
+        effort = task.get("effort", "Medium")
+        
+        if not story_id:
+            # Task without story_id
+            story_map["orphan_tasks"].append(task_id)
+            continue
+        
+        # Initialize story entry if not exists
+        if story_id not in story_map["stories"]:
+            story_map["stories"][story_id] = {
+                "tasks": [],
+                "backend_tasks": [],
+                "frontend_tasks": [],
+                "total_tasks": 0,
+                "effort_distribution": {"High": 0, "Medium": 0, "Low": 0}
+            }
+        
+        # Add task to story
+        story_entry = story_map["stories"][story_id]
+        story_entry["tasks"].append(task_id)
+        story_entry["total_tasks"] += 1
+        
+        # Categorize by assignee
+        if "backend" in assignee:
+            story_entry["backend_tasks"].append(task_id)
+        elif "frontend" in assignee:
+            story_entry["frontend_tasks"].append(task_id)
+        
+        # Track effort distribution
+        if effort in story_entry["effort_distribution"]:
+            story_entry["effort_distribution"][effort] += 1
+    
+    story_map["total_stories"] = len(story_map["stories"])
+    
+    return story_map
+
 
 @app.post("/agent/backend_dev/run")
 async def run_backend_dev(session_id: str, request: WriteCodeRequest):
