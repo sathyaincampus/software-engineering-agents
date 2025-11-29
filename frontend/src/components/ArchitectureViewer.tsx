@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import mermaid from 'mermaid';
 import { Server, Database, Cloud, Code, Copy, Check, Maximize2, X } from 'lucide-react';
 
@@ -342,18 +343,27 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
             {/* Database Schema */}
             {renderDatabaseSchema()}
 
-            {/* Zoom Modal */}
-            {zoomedDiagram && (
-                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-8" onClick={() => setZoomedDiagram(null)}>
-                    <div className="relative w-full h-full max-w-7xl max-h-full bg-gray-900 rounded-2xl overflow-auto" onClick={(e) => e.stopPropagation()}>
+
+            {/* Zoom Modal - Portal to document.body for true fullscreen */}
+            {zoomedDiagram && createPortal(
+                <div
+                    className="fixed inset-0 bg-black/90 flex items-center justify-center p-4"
+                    style={{ zIndex: 9999 }}
+                    onClick={() => setZoomedDiagram(null)}
+                >
+                    <div
+                        className="relative w-full h-full max-w-7xl bg-gray-900 rounded-2xl overflow-auto flex flex-col"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <button
                             onClick={() => setZoomedDiagram(null)}
-                            className="sticky top-4 right-4 float-right p-3 bg-red-500 hover:bg-red-600 text-white rounded-lg z-10 m-4"
+                            className="absolute top-4 right-4 p-3 bg-red-500 hover:bg-red-600 text-white rounded-lg z-10 shadow-lg"
+                            title="Close (ESC)"
                         >
                             <X size={20} />
                         </button>
-                        <div className="p-8">
-                            <h2 className="text-2xl font-bold mb-6">
+                        <div className="p-8 flex-1 overflow-auto">
+                            <h2 className="text-2xl font-bold mb-6 text-white">
                                 {zoomedDiagram === 'system' ? 'System Architecture Diagram' : 'Sequence Diagram'}
                             </h2>
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl">
@@ -365,7 +375,8 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* API Design Principles */}
