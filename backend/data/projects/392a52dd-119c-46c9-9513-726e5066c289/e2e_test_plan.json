@@ -1,0 +1,1542 @@
+{
+  "test_suites": [
+    {
+      "suite_name": "User Authentication and Profile Management",
+      "description": "Tests for user signup, login, Google Sign-In, profile updates, and parental controls.",
+      "test_cases": [
+        {
+          "test_id": "E2E-AUTH-001",
+          "name": "Successful user signup with email and password",
+          "description": "Verify that a new user can successfully create an account using email and password.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Navigate to the signup page.",
+            "Enter a unique email address (e.g., test_signup_[timestamp]@example.com).",
+            "Enter a strong password.",
+            "Confirm the password.",
+            "Click the 'Sign Up' button.",
+            "Verify successful redirection to the profile setup or dashboard."
+          ],
+          "expected_result": "User account is created, and the user is logged in.",
+          "test_data": {
+            "email": "test_signup_[timestamp]@example.com",
+            "password": "Password123!",
+            "confirm_password": "Password123!"
+          },
+          "dependencies": []
+        },
+        {
+          "test_id": "E2E-AUTH-002",
+          "name": "User signup with existing email",
+          "description": "Verify that a user cannot sign up with an email address that already exists.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Navigate to the signup page.",
+            "Enter an email address that is already registered.",
+            "Enter a password.",
+            "Confirm the password.",
+            "Click the 'Sign Up' button.",
+            "Verify an appropriate error message is displayed."
+          ],
+          "expected_result": "Error message indicating the email is already in use is displayed. Account is not created.",
+          "test_data": {
+            "email": "existing_user@example.com",
+            "password": "Password123!",
+            "confirm_password": "Password123!"
+          },
+          "dependencies": [
+            "E2E-AUTH-001"
+          ]
+        },
+        {
+          "test_id": "E2E-AUTH-003",
+          "name": "Successful user login with email and password",
+          "description": "Verify that an existing user can log in using their registered email and password.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Navigate to the login page.",
+            "Enter a registered email address.",
+            "Enter the correct password.",
+            "Click the 'Login' button.",
+            "Verify successful redirection to the dashboard or home page."
+          ],
+          "expected_result": "User is logged in successfully and redirected to their dashboard.",
+          "test_data": {
+            "email": "existing_user@example.com",
+            "password": "CorrectPassword123!"
+          },
+          "dependencies": [
+            "E2E-AUTH-001"
+          ]
+        },
+        {
+          "test_id": "E2E-AUTH-004",
+          "name": "User login with incorrect password",
+          "description": "Verify that a user cannot log in with an incorrect password.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Navigate to the login page.",
+            "Enter a registered email address.",
+            "Enter an incorrect password.",
+            "Click the 'Login' button.",
+            "Verify an appropriate error message is displayed."
+          ],
+          "expected_result": "Error message indicating invalid credentials is displayed. User is not logged in.",
+          "test_data": {
+            "email": "existing_user@example.com",
+            "password": "WrongPassword123!"
+          },
+          "dependencies": [
+            "E2E-AUTH-001"
+          ]
+        },
+        {
+          "test_id": "E2E-AUTH-005",
+          "name": "Successful Google Sign-In",
+          "description": "Verify that a user can sign up or log in using their Google account.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Navigate to the signup/login page.",
+            "Click the 'Sign in with Google' button.",
+            "Complete the Google authentication flow (select account, grant permissions).",
+            "Verify successful redirection to the dashboard or profile setup."
+          ],
+          "expected_result": "User is authenticated via Google and logged into FamilyFlow.",
+          "test_data": {},
+          "dependencies": []
+        },
+        {
+          "test_id": "E2E-AUTH-006",
+          "name": "User profile creation and update",
+          "description": "Verify that a user can set up and update their profile information (name, age, avatar).",
+          "priority": "High",
+          "type": "UI",
+          "steps": [
+            "Log in to the application.",
+            "Navigate to the 'Profile' or 'Account Settings' section.",
+            "Enter a display name.",
+            "Enter an age.",
+            "Upload a valid avatar image.",
+            "Click 'Save' or 'Update Profile'.",
+            "Verify that the profile information is updated correctly.",
+            "Navigate away and back to the profile page to confirm persistence."
+          ],
+          "expected_result": "Profile information is saved and displayed correctly. Avatar is uploaded and visible.",
+          "test_data": {
+            "display_name": "Test User",
+            "age": 30,
+            "avatar_path": "path/to/test_avatar.jpg"
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-AUTH-007",
+          "name": "Parental control: Child account creation",
+          "description": "Verify that a parent can create a child account with controlled permissions.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent user.",
+            "Navigate to 'Family Management' or 'Add Member'.",
+            "Enter child's details (name, potentially age/DOB).",
+            "Assign a role (e.g., 'child').",
+            "Set initial permissions (e.g., access to tasks, calendar view only).",
+            "Save the child account.",
+            "Log out as parent and log in as the newly created child.",
+            "Verify the child's limited access based on set permissions."
+          ],
+          "expected_result": "Child account is created successfully under the parent's family. Permissions are correctly applied.",
+          "test_data": {
+            "child_name": "Child Test",
+            "child_email": "child_test_[timestamp]@example.com",
+            "child_password": "ChildPassword123!",
+            "permissions": {
+              "can_view_calendar": true,
+              "can_edit_calendar": false,
+              "can_view_tasks": true,
+              "can_complete_tasks": true
+            }
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-AUTH-008",
+          "name": "Parental control: Modifying child permissions",
+          "description": "Verify that a parent can modify the permissions of an existing child account.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent user.",
+            "Navigate to 'Family Management' or the specific child's profile.",
+            "Access the permissions settings for the child.",
+            "Modify permissions (e.g., grant 'can_edit_calendar' ability).",
+            "Save changes.",
+            "Log in as the child.",
+            "Verify the updated permissions are active."
+          ],
+          "expected_result": "Parent can successfully update child permissions, and these changes are reflected for the child user.",
+          "test_data": {
+            "child_email": "child_test@example.com",
+            "new_permissions": {
+              "can_edit_calendar": true
+            }
+          },
+          "dependencies": [
+            "E2E-AUTH-007"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Shared Family Calendar Management",
+      "description": "Tests for creating, editing, deleting, assigning, and categorizing family events, including real-time updates.",
+      "test_cases": [
+        {
+          "test_id": "E2E-CAL-001",
+          "name": "Add a new family event",
+          "description": "Verify that a user can add a new event to the shared family calendar.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to the Calendar view.",
+            "Click the 'Add Event' button.",
+            "Fill in event details: title, start time, end time.",
+            "Optionally assign to a family member.",
+            "Optionally select an event category.",
+            "Save the event.",
+            "Verify the event appears on the calendar."
+          ],
+          "expected_result": "The new event is successfully added to the family calendar and visible to all family members.",
+          "test_data": {
+            "title": "Family Movie Night",
+            "start_time": "2023-10-27T19:00:00Z",
+            "end_time": "2023-10-27T21:00:00Z",
+            "assigned_to_email": "child_test@example.com",
+            "category": "Leisure"
+          },
+          "dependencies": [
+            "E2E-AUTH-003",
+            "E2E-AUTH-007"
+          ]
+        },
+        {
+          "test_id": "E2E-CAL-002",
+          "name": "Edit an existing family event",
+          "description": "Verify that a user can edit the details of an existing event.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to the Calendar view.",
+            "Select an existing event.",
+            "Click the 'Edit' button.",
+            "Modify event details (e.g., change title, time).",
+            "Save the changes.",
+            "Verify the event details are updated on the calendar."
+          ],
+          "expected_result": "The event is successfully updated with the new details.",
+          "test_data": {
+            "event_title_to_edit": "Family Movie Night",
+            "new_title": "Family Game Night",
+            "new_start_time": "2023-10-27T18:30:00Z"
+          },
+          "dependencies": [
+            "E2E-CAL-001"
+          ]
+        },
+        {
+          "test_id": "E2E-CAL-003",
+          "name": "Delete an existing family event",
+          "description": "Verify that a user can delete an event from the calendar.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to the Calendar view.",
+            "Select an existing event.",
+            "Click the 'Delete' button.",
+            "Confirm deletion if prompted.",
+            "Verify the event is removed from the calendar."
+          ],
+          "expected_result": "The event is successfully removed from the family calendar.",
+          "test_data": {
+            "event_title_to_delete": "Family Game Night"
+          },
+          "dependencies": [
+            "E2E-CAL-002"
+          ]
+        },
+        {
+          "test_id": "E2E-CAL-004",
+          "name": "Real-time update for shared parent accounts",
+          "description": "Verify that changes made by one parent are reflected immediately for another shared parent.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Log in as Parent A.",
+            "Open the Calendar view.",
+            "Log in as Parent B (in a separate browser or incognito window).",
+            "Open the Calendar view.",
+            "Parent A adds a new event.",
+            "Observe Parent B's calendar view.",
+            "Parent A edits an existing event.",
+            "Observe Parent B's calendar view.",
+            "Parent A deletes an event.",
+            "Observe Parent B's calendar view."
+          ],
+          "expected_result": "All changes made by Parent A (adding, editing, deleting events) are reflected in real-time on Parent B's calendar view.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-AUTH-003",
+            "E2E-CAL-001",
+            "E2E-SHARING-002"
+          ]
+        },
+        {
+          "test_id": "E2E-CAL-005",
+          "name": "Create custom event category with color",
+          "description": "Verify that a parent can create a new custom event category with a specific color.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to 'Event Categories' or 'Settings'.",
+            "Click 'Add New Category'.",
+            "Enter a category name (e.g., 'Sports Practice').",
+            "Select a color (e.g., blue).",
+            "Save the category.",
+            "Go to the Calendar and attempt to add a new event, selecting the new category.",
+            "Verify the category and its color are available and applied."
+          ],
+          "expected_result": "Custom event category is created and available for use when adding/editing events.",
+          "test_data": {
+            "category_name": "Sports Practice",
+            "category_color": "#0000FF"
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-CAL-006",
+          "name": "View calendar in different views (Day, Week, Month)",
+          "description": "Verify that the calendar can be displayed correctly in Day, Week, and Month views.",
+          "priority": "High",
+          "type": "UI",
+          "steps": [
+            "Log in to the application.",
+            "Navigate to the Calendar view.",
+            "Switch to the 'Day' view and verify events are displayed.",
+            "Switch to the 'Week' view and verify events are displayed.",
+            "Switch to the 'Month' view and verify events are displayed.",
+            "Ensure navigation between dates/weeks/months works correctly in each view."
+          ],
+          "expected_result": "Calendar displays events accurately and legibly in Day, Week, and Month views.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-CAL-001"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Recurring Schedule Creation and Management",
+      "description": "Tests for setting up and managing recurring events.",
+      "test_cases": [
+        {
+          "test_id": "E2E-REC-001",
+          "name": "Create a daily recurring event",
+          "description": "Verify that a user can create an event that repeats daily.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to 'Add Event'.",
+            "Fill in event details (title, start time, end time).",
+            "Enable the 'Recurring' option.",
+            "Select 'Daily' recurrence.",
+            "Set an end date for the recurrence (e.g., 1 week from now).",
+            "Save the event.",
+            "Verify the event appears on the calendar for the current day and subsequent days within the recurrence period."
+          ],
+          "expected_result": "The daily recurring event is created and populated on the calendar for the specified duration.",
+          "test_data": {
+            "title": "Daily Homework Time",
+            "start_time": "2023-10-27T16:00:00Z",
+            "end_time": "2023-10-27T17:00:00Z",
+            "recurrence_type": "daily",
+            "end_date": "2023-11-03"
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-REC-002",
+          "name": "Create a weekly recurring event",
+          "description": "Verify that a user can create an event that repeats weekly on specific days.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to 'Add Event'.",
+            "Fill in event details (title, start time, end time).",
+            "Enable the 'Recurring' option.",
+            "Select 'Weekly' recurrence.",
+            "Choose specific days of the week (e.g., every Tuesday and Thursday).",
+            "Set an end date for the recurrence.",
+            "Save the event.",
+            "Verify the event appears on the calendar for the selected days within the recurrence period."
+          ],
+          "expected_result": "The weekly recurring event is created and populated on the calendar for the specified days and duration.",
+          "test_data": {
+            "title": "Piano Lessons",
+            "start_time": "2023-10-31T15:00:00Z",
+            "end_time": "2023-10-31T16:00:00Z",
+            "recurrence_type": "weekly",
+            "days_of_week": [
+              "Tuesday",
+              "Thursday"
+            ],
+            "end_date": "2023-11-17"
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-REC-003",
+          "name": "Create a monthly recurring event",
+          "description": "Verify that a user can create an event that repeats monthly.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to 'Add Event'.",
+            "Fill in event details (title, start time, end time).",
+            "Enable the 'Recurring' option.",
+            "Select 'Monthly' recurrence.",
+            "Set the day of the month (e.g., the 15th).",
+            "Set an end date for the recurrence.",
+            "Save the event.",
+            "Verify the event appears on the calendar for the specified day(s) within the recurrence period."
+          ],
+          "expected_result": "The monthly recurring event is created and populated on the calendar for the specified day(s) and duration.",
+          "test_data": {
+            "title": "Dental Check-up",
+            "start_time": "2023-10-27T10:00:00Z",
+            "end_time": "2023-10-27T11:00:00Z",
+            "recurrence_type": "monthly",
+            "day_of_month": 15,
+            "end_date": "2024-01-15"
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-REC-004",
+          "name": "Edit all future occurrences of a recurring event",
+          "description": "Verify that a parent can edit all future occurrences of a recurring event.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Select an existing recurring event.",
+            "Choose the option to edit 'All future occurrences'.",
+            "Modify event details (e.g., change start time).",
+            "Save changes.",
+            "Verify that the selected event instance and all subsequent instances are updated."
+          ],
+          "expected_result": "All future occurrences of the recurring event are updated with the modified details.",
+          "test_data": {
+            "event_title_to_edit": "Daily Homework Time",
+            "new_start_time": "2023-10-27T17:00:00Z"
+          },
+          "dependencies": [
+            "E2E-REC-001"
+          ]
+        },
+        {
+          "test_id": "E2E-REC-005",
+          "name": "Edit a single instance of a recurring event",
+          "description": "Verify that a parent can edit only a single instance of a recurring event.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Select a specific instance of a recurring event.",
+            "Choose the option to edit 'This instance only'.",
+            "Modify event details (e.g., change title, mark as complete).",
+            "Save changes.",
+            "Verify that only the selected instance is updated, while other instances remain unchanged."
+          ],
+          "expected_result": "Only the selected instance of the recurring event is modified, leaving future instances intact.",
+          "test_data": {
+            "event_title_to_edit": "Daily Homework Time",
+            "instance_date": "2023-10-29",
+            "new_title": "Special Homework Session"
+          },
+          "dependencies": [
+            "E2E-REC-001"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Task Management for Kids",
+      "description": "Tests for creating, assigning, viewing, and completing tasks by parents and children.",
+      "test_cases": [
+        {
+          "test_id": "E2E-TASK-001",
+          "name": "Parent creates and assigns a task",
+          "description": "Verify that a parent can create a new task and assign it to a child.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to the 'Tasks' section.",
+            "Click 'Add Task'.",
+            "Enter task title and description.",
+            "Set a due date (optional).",
+            "Assign the task to a specific child.",
+            "Save the task.",
+            "Verify the task appears in the parent's task list and the child's assigned tasks list."
+          ],
+          "expected_result": "Task is created successfully and assigned to the specified child. Visible to both parent and child.",
+          "test_data": {
+            "task_title": "Clean Bedroom",
+            "description": "Put away toys and clothes.",
+            "due_date": "2023-10-28",
+            "assigned_to_email": "child_test@example.com"
+          },
+          "dependencies": [
+            "E2E-AUTH-007"
+          ]
+        },
+        {
+          "test_id": "E2E-TASK-002",
+          "name": "Child views assigned tasks",
+          "description": "Verify that a child can view the list of tasks assigned to them.",
+          "priority": "Critical",
+          "type": "UI",
+          "steps": [
+            "Log in as a child user.",
+            "Navigate to the 'My Tasks' or 'Tasks' section.",
+            "Verify that the task created in E2E-TASK-001 is visible in the list.",
+            "Check that tasks assigned to other children (if any) are not visible."
+          ],
+          "expected_result": "The child can see a clear list of all tasks assigned specifically to them, including title, description, and due date.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-TASK-001"
+          ]
+        },
+        {
+          "test_id": "E2E-TASK-003",
+          "name": "Child marks a task as completed",
+          "description": "Verify that a child can mark an assigned task as completed.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Log in as a child user.",
+            "Navigate to 'My Tasks'.",
+            "Locate an uncompleted task.",
+            "Click the 'Mark as Complete' button or checkbox.",
+            "Verify the task's status changes to 'Completed'.",
+            "Log in as the parent.",
+            "Navigate to the parent's task view.",
+            "Verify that the completed task is marked as done by the child."
+          ],
+          "expected_result": "Child can mark tasks as complete. Parent can see the task marked as completed by the child.",
+          "test_data": {
+            "task_title_to_complete": "Clean Bedroom"
+          },
+          "dependencies": [
+            "E2E-TASK-001",
+            "E2E-TASK-002"
+          ]
+        },
+        {
+          "test_id": "E2E-TASK-004",
+          "name": "Parent views completed tasks",
+          "description": "Verify that a parent can see a summary or list of tasks completed by their children.",
+          "priority": "High",
+          "type": "UI",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to the 'Tasks' overview or dashboard.",
+            "Verify that tasks marked as complete by children are clearly indicated.",
+            "Check if there's a filter or view to see only completed tasks."
+          ],
+          "expected_result": "Parent has clear visibility into which tasks have been completed by their children.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-TASK-003"
+          ]
+        },
+        {
+          "test_id": "E2E-TASK-005",
+          "name": "Task assignment to multiple children",
+          "description": "Verify that a parent can assign a single task to multiple children.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Create a new task.",
+            "Select multiple children for assignment.",
+            "Save the task.",
+            "Log in as each assigned child.",
+            "Verify the task appears in each child's task list."
+          ],
+          "expected_result": "The task is assigned to all selected children and appears in their respective task lists.",
+          "test_data": {
+            "task_title": "Tidy Up Living Room",
+            "assigned_to_emails": [
+              "child1@example.com",
+              "child2@example.com"
+            ]
+          },
+          "dependencies": [
+            "E2E-AUTH-007"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Gamified Rewards System for Kids",
+      "description": "Tests for setting up rewards, assigning points to tasks, and children redeeming rewards.",
+      "test_cases": [
+        {
+          "test_id": "E2E-REWARD-001",
+          "name": "Parent defines a redeemable reward",
+          "description": "Verify that a parent can create a new reward with a specific point cost.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to the 'Rewards' section.",
+            "Click 'Add New Reward'.",
+            "Enter reward name (e.g., 'Extra Screen Time').",
+            "Enter description (e.g., '30 extra minutes of tablet time').",
+            "Set a point cost (e.g., 50 points).",
+            "Optionally set 'Requires Approval'.",
+            "Save the reward.",
+            "Verify the reward is listed in the available rewards."
+          ],
+          "expected_result": "Reward is successfully created and added to the list of available rewards for children.",
+          "test_data": {
+            "reward_name": "Extra Screen Time",
+            "reward_description": "30 minutes of tablet time.",
+            "point_cost": 50,
+            "requires_approval": false
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-REWARD-002",
+          "name": "Parent assigns points to a task",
+          "description": "Verify that a parent can assign a point value to a task.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Create a new task (or edit an existing one).",
+            "Enter a point value for task completion (e.g., 10 points).",
+            "Save the task.",
+            "Verify the point value is associated with the task."
+          ],
+          "expected_result": "The point value is saved with the task and will be awarded upon completion.",
+          "test_data": {
+            "task_title": "Do Dishes",
+            "points": 10
+          },
+          "dependencies": [
+            "E2E-TASK-001"
+          ]
+        },
+        {
+          "test_id": "E2E-REWARD-003",
+          "name": "Child views current point balance",
+          "description": "Verify that a child can see their accumulated points balance.",
+          "priority": "High",
+          "type": "UI",
+          "steps": [
+            "Log in as a child user.",
+            "Navigate to the 'Rewards' or 'Points' section.",
+            "Verify that the current point balance is displayed.",
+            "Complete a task that awards points (see E2E-REWARD-004).",
+            "Refresh the rewards/points section and verify the balance has increased."
+          ],
+          "expected_result": "Child's current point balance is accurately displayed and updates after task completion.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-TASK-003",
+            "E2E-REWARD-002"
+          ]
+        },
+        {
+          "test_id": "E2E-REWARD-004",
+          "name": "Points awarded upon task completion",
+          "description": "Verify that points are awarded to a child when they complete a task.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Log in as a child.",
+            "Have a task assigned with a point value (e.g., 10 points).",
+            "Mark the task as completed.",
+            "Check the child's point balance (either via UI or by querying the backend).",
+            "Verify the point balance has increased by the task's point value."
+          ],
+          "expected_result": "Upon task completion, the associated points are added to the child's account balance.",
+          "test_data": {
+            "task_title": "Clean Bedroom",
+            "points_awarded": 10
+          },
+          "dependencies": [
+            "E2E-TASK-003",
+            "E2E-REWARD-002",
+            "E2E-REWARD-003"
+          ]
+        },
+        {
+          "test_id": "E2E-REWARD-005",
+          "name": "Child redeems an available reward",
+          "description": "Verify that a child can redeem an available reward if they have sufficient points.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a child.",
+            "Ensure the child has enough points (e.g., 50 points).",
+            "Navigate to the 'Rewards' section.",
+            "Select a reward with a cost less than or equal to the child's points (e.g., 'Extra Screen Time' for 50 points).",
+            "Click 'Redeem'.",
+            "Confirm redemption.",
+            "Verify the reward is listed as redeemed by the child.",
+            "Verify the child's point balance has decreased by the reward's cost.",
+            "If 'Requires Approval' is true, verify the redemption status is 'Pending Approval'."
+          ],
+          "expected_result": "Child can redeem a reward, points are deducted, and the redemption is recorded. Status reflects approval requirement.",
+          "test_data": {
+            "reward_name": "Extra Screen Time",
+            "child_points": 50,
+            "reward_cost": 50
+          },
+          "dependencies": [
+            "E2E-REWARD-001",
+            "E2E-REWARD-003",
+            "E2E-REWARD-004"
+          ]
+        },
+        {
+          "test_id": "E2E-REWARD-006",
+          "name": "Child attempts to redeem reward with insufficient points",
+          "description": "Verify that a child cannot redeem a reward if they do not have enough points.",
+          "priority": "Medium",
+          "type": "UI",
+          "steps": [
+            "Log in as a child.",
+            "Ensure the child has fewer points than the cost of a specific reward.",
+            "Navigate to the 'Rewards' section.",
+            "Attempt to redeem the reward.",
+            "Verify that redemption is blocked or an error message is displayed."
+          ],
+          "expected_result": "The system prevents the redemption of rewards when the user lacks sufficient points.",
+          "test_data": {
+            "reward_name": "Expensive Gadget",
+            "child_points": 20,
+            "reward_cost": 100
+          },
+          "dependencies": [
+            "E2E-REWARD-001",
+            "E2E-REWARD-003"
+          ]
+        },
+        {
+          "test_id": "E2E-REWARD-007",
+          "name": "Parent approves/denies a reward redemption",
+          "description": "Verify that a parent can approve or deny a reward redemption that requires approval.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Create a reward that requires approval (see E2E-REWARD-001).",
+            "Log in as a child and redeem this reward (ensure they have enough points).",
+            "Log back in as the parent.",
+            "Navigate to the 'Pending Approvals' or rewards management section.",
+            "Locate the child's redemption request.",
+            "Approve the request.",
+            "Verify the redemption status is updated to 'Approved'.",
+            "Verify the child's points balance is deducted.",
+            "Repeat steps to deny the request and verify status is 'Denied' and points are not deducted (or are returned)."
+          ],
+          "expected_result": "Parent can manage reward redemptions, approving or denying them, with corresponding point adjustments.",
+          "test_data": {
+            "reward_name": "New Video Game",
+            "point_cost": 150,
+            "requires_approval": true
+          },
+          "dependencies": [
+            "E2E-REWARD-001",
+            "E2E-REWARD-005"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Google Calendar Synchronization",
+      "description": "Tests for connecting Google Calendar and syncing events.",
+      "test_cases": [
+        {
+          "test_id": "E2E-SYNC-001",
+          "name": "Connect Google Calendar account",
+          "description": "Verify that a user can successfully connect their Google Calendar account.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in to FamilyFlow.",
+            "Navigate to 'Settings' or 'Integrations'.",
+            "Click 'Connect Google Calendar'.",
+            "Complete the Google OAuth authentication flow.",
+            "Grant necessary permissions to FamilyFlow.",
+            "Verify a success message and confirmation of the connected account."
+          ],
+          "expected_result": "Google Calendar account is successfully connected to FamilyFlow.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-SYNC-002",
+          "name": "Import events from Google Calendar",
+          "description": "Verify that events from Google Calendar can be imported into FamilyFlow.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Ensure Google Calendar is connected (E2E-SYNC-001).",
+            "Navigate to the Calendar sync settings.",
+            "Select an option to 'Import Events' from Google Calendar.",
+            "Specify a date range if applicable.",
+            "Initiate the import.",
+            "Verify that events from the connected Google Calendar appear in the FamilyFlow calendar."
+          ],
+          "expected_result": "Events from the user's Google Calendar are imported and displayed within FamilyFlow.",
+          "test_data": {
+            "google_calendar_event_title": "Existing Google Event"
+          },
+          "dependencies": [
+            "E2E-SYNC-001"
+          ]
+        },
+        {
+          "test_id": "E2E-SYNC-003",
+          "name": "Export events to Google Calendar",
+          "description": "Verify that events created in FamilyFlow can be exported to Google Calendar.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Ensure Google Calendar is connected (E2E-SYNC-001).",
+            "Create a new event in FamilyFlow (e.g., 'Family Outing').",
+            "Navigate to Calendar sync settings.",
+            "Ensure 'Export Events' is enabled.",
+            "Check the connected Google Calendar.",
+            "Verify the newly created FamilyFlow event appears in Google Calendar."
+          ],
+          "expected_result": "Events created in FamilyFlow are successfully exported to the connected Google Calendar.",
+          "test_data": {
+            "familyflow_event_title": "Family Outing"
+          },
+          "dependencies": [
+            "E2E-CAL-001",
+            "E2E-SYNC-001"
+          ]
+        },
+        {
+          "test_id": "E2E-SYNC-004",
+          "name": "Real-time sync: FamilyFlow to Google Calendar",
+          "description": "Verify that changes in FamilyFlow events sync to Google Calendar in near real-time.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Ensure Google Calendar is connected and exporting is enabled.",
+            "Create or edit an event in FamilyFlow.",
+            "Wait for the sync interval (e.g., a few minutes).",
+            "Check the connected Google Calendar.",
+            "Verify the event in Google Calendar reflects the changes made in FamilyFlow."
+          ],
+          "expected_result": "Updates to FamilyFlow events are synced to Google Calendar promptly.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-SYNC-003"
+          ]
+        },
+        {
+          "test_id": "E2E-SYNC-005",
+          "name": "Real-time sync: Google Calendar to FamilyFlow",
+          "description": "Verify that changes in Google Calendar events sync to FamilyFlow in near real-time.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Ensure Google Calendar is connected and importing is enabled.",
+            "Create or edit an event in the connected Google Calendar.",
+            "Wait for the sync interval.",
+            "Check the FamilyFlow calendar.",
+            "Verify the event in FamilyFlow reflects the changes made in Google Calendar."
+          ],
+          "expected_result": "Updates to Google Calendar events are synced to FamilyFlow promptly.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-SYNC-002"
+          ]
+        },
+        {
+          "test_id": "E2E-SYNC-006",
+          "name": "Disconnect Google Calendar",
+          "description": "Verify that a user can disconnect their Google Calendar account.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Ensure Google Calendar is connected.",
+            "Navigate to 'Settings' or 'Integrations'.",
+            "Click 'Disconnect Google Calendar'.",
+            "Confirm disconnection.",
+            "Verify that the connection status is updated and no further syncs occur."
+          ],
+          "expected_result": "Google Calendar connection is successfully removed, and sync functionality is disabled.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-SYNC-001"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Notifications and Reminders",
+      "description": "Tests for basic notification functionality.",
+      "test_cases": [
+        {
+          "test_id": "E2E-NOTIF-001",
+          "name": "Receive notification for upcoming event",
+          "description": "Verify that users receive a notification before an event starts.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Create a calendar event with a start time in the near future (e.g., 15 minutes from now).",
+            "Ensure the user has notifications enabled.",
+            "Wait for the notification trigger time (e.g., 5 minutes before the event).",
+            "Verify that a push notification is received on the device/app.",
+            "Click the notification and verify it navigates to the event details."
+          ],
+          "expected_result": "User receives a timely notification for an upcoming event.",
+          "test_data": {
+            "event_title": "Doctor Appointment",
+            "start_time_offset_minutes": 15
+          },
+          "dependencies": [
+            "E2E-CAL-001"
+          ]
+        },
+        {
+          "test_id": "E2E-NOTIF-002",
+          "name": "Receive notification for new task assignment",
+          "description": "Verify that users receive a notification when a new task is assigned to them.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Assign a task to a child user.",
+            "Ensure the child user has task notifications enabled.",
+            "Log in or check the child's device/app.",
+            "Verify that a push notification is received for the new task assignment.",
+            "Click the notification and verify it navigates to the task details."
+          ],
+          "expected_result": "User receives a notification immediately after being assigned a new task.",
+          "test_data": {
+            "task_title": "Water the Plants"
+          },
+          "dependencies": [
+            "E2E-TASK-001"
+          ]
+        },
+        {
+          "test_id": "E2E-NOTIF-003",
+          "name": "Receive notification for task deadline",
+          "description": "Verify that users receive a notification when a task deadline is approaching.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Create a task with a due date in the near future.",
+            "Ensure the user has task deadline notifications enabled.",
+            "Wait for the notification trigger time (e.g., 1 hour before deadline).",
+            "Verify that a push notification is received.",
+            "Click the notification and verify it navigates to the task details."
+          ],
+          "expected_result": "User receives a timely notification for an approaching task deadline.",
+          "test_data": {
+            "task_title": "Complete Math Worksheet",
+            "due_date_offset_hours": 1
+          },
+          "dependencies": [
+            "E2E-TASK-001"
+          ]
+        },
+        {
+          "test_id": "E2E-NOTIF-004",
+          "name": "Manage notification preferences",
+          "description": "Verify that users can enable or disable different types of notifications.",
+          "priority": "Medium",
+          "type": "UI",
+          "steps": [
+            "Log in to the application.",
+            "Navigate to 'Notification Settings'.",
+            "Toggle off 'Event Reminders'.",
+            "Save settings.",
+            "Create an event and verify no reminder notification is received.",
+            "Toggle 'Event Reminders' back on.",
+            "Toggle off 'New Task Notifications'.",
+            "Assign a task and verify no notification is received by the child.",
+            "Toggle back on."
+          ],
+          "expected_result": "Users can successfully manage their notification preferences, and these settings affect received notifications.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-NOTIF-001",
+            "E2E-NOTIF-002"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Sharing and Collaboration",
+      "description": "Tests for sharing the family account with a co-parent.",
+      "test_cases": [
+        {
+          "test_id": "E2E-SHARING-001",
+          "name": "Invite a co-parent to the family account",
+          "description": "Verify that a parent can invite another user to join their family account.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as Parent A.",
+            "Navigate to 'Family Settings' or 'Invite Member'.",
+            "Enter the email address of the co-parent (Parent B).",
+            "Send the invitation.",
+            "Verify an invitation record is created."
+          ],
+          "expected_result": "An invitation is successfully sent to the specified co-parent's email address.",
+          "test_data": {
+            "parent_a_email": "parent_a@example.com",
+            "parent_b_email": "parent_b_invite@[timestamp].com"
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-SHARING-002",
+          "name": "Co-parent accepts invitation and joins family",
+          "description": "Verify that an invited co-parent can accept the invitation and join the family.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as Parent B (using the invited email).",
+            "Locate the invitation (e.g., via email link or in-app notification).",
+            "Accept the invitation.",
+            "If Parent B is new, complete signup. If existing, log in.",
+            "Verify Parent B is now part of Parent A's family.",
+            "Check that Parent B can now see shared calendar events and tasks."
+          ],
+          "expected_result": "Invited user successfully joins the family account and gains access to shared data.",
+          "test_data": {
+            "parent_b_email": "parent_b_invite@[timestamp].com",
+            "parent_b_password": "ParentBPassword123!"
+          },
+          "dependencies": [
+            "E2E-SHARING-001"
+          ]
+        },
+        {
+          "test_id": "E2E-SHARING-003",
+          "name": "Shared access to calendar and tasks",
+          "description": "Verify that both parents have access to view and manage shared family calendar and tasks.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Log in as Parent A.",
+            "Add a calendar event and create a task.",
+            "Log out.",
+            "Log in as Parent B.",
+            "Navigate to the Calendar and Tasks sections.",
+            "Verify that the event and task created by Parent A are visible and manageable (if permissions allow) by Parent B."
+          ],
+          "expected_result": "Both linked parents have synchronized access to the family's shared calendar and task lists.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-SHARING-002",
+            "E2E-CAL-001",
+            "E2E-TASK-001"
+          ]
+        },
+        {
+          "test_id": "E2E-SHARING-004",
+          "name": "Remove a family member (co-parent)",
+          "description": "Verify that a parent can remove another family member (co-parent) from the account.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Log in as Parent A.",
+            "Navigate to 'Family Settings'.",
+            "Locate Parent B in the member list.",
+            "Select the option to remove Parent B.",
+            "Confirm removal.",
+            "Log in as Parent B.",
+            "Verify Parent B no longer has access to the family account.",
+            "Verify Parent B's data is handled according to policy (e.g., data retention or removal)."
+          ],
+          "expected_result": "The specified family member is removed from the account, revoking their access.",
+          "test_data": {
+            "parent_b_email": "parent_b_invite@[timestamp].com"
+          },
+          "dependencies": [
+            "E2E-SHARING-002"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Edge Cases and Error Handling",
+      "description": "Tests for handling unexpected inputs, network issues, and error conditions.",
+      "test_cases": [
+        {
+          "test_id": "E2E-ERR-001",
+          "name": "Attempt to create event with invalid date/time",
+          "description": "Verify error handling when attempting to create an event with illogical date/time values.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Log in as a user.",
+            "Attempt to create a new event.",
+            "Enter an end time that is before the start time.",
+            "Submit the form.",
+            "Verify an appropriate validation error message is displayed.",
+            "Attempt to create an event with a date in the far past."
+          ],
+          "expected_result": "Input validation prevents submission of invalid date/time data and provides user-friendly error messages.",
+          "test_data": {
+            "start_time": "2023-10-27T18:00:00Z",
+            "end_time": "2023-10-27T17:00:00Z"
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-ERR-002",
+          "name": "Upload invalid avatar file type",
+          "description": "Verify error handling when uploading an avatar with an unsupported file type.",
+          "priority": "Low",
+          "type": "Integration",
+          "steps": [
+            "Log in as a user.",
+            "Navigate to profile settings.",
+            "Attempt to upload a file that is not an image (e.g., a .txt or .pdf file).",
+            "Submit the upload.",
+            "Verify an error message indicating the unsupported file type is displayed."
+          ],
+          "expected_result": "The system rejects unsupported file types for avatars and informs the user.",
+          "test_data": {
+            "invalid_file_path": "path/to/document.pdf"
+          },
+          "dependencies": [
+            "E2E-AUTH-006"
+          ]
+        },
+        {
+          "test_id": "E2E-ERR-003",
+          "name": "Network interruption during data submission",
+          "description": "Simulate network interruption during critical data submission (e.g., saving an event) and verify graceful handling.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Log in as a user.",
+            "Start creating/editing an event.",
+            "Simulate a network disconnection (e.g., using browser developer tools or disabling network).",
+            "Attempt to save the event.",
+            "Verify that an appropriate message is shown to the user (e.g., 'Failed to save. Check connection.').",
+            "Restore network connection.",
+            "Verify the application attempts to resync or prompts the user to retry saving."
+          ],
+          "expected_result": "Application handles network interruptions gracefully, informs the user, and allows for retry upon connection restoration.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-AUTH-003",
+            "E2E-CAL-001"
+          ]
+        },
+        {
+          "test_id": "E2E-ERR-004",
+          "name": "Invalid credentials during login (API level)",
+          "description": "Test the API endpoint for login with invalid credentials to ensure proper error response.",
+          "priority": "High",
+          "type": "API",
+          "steps": [
+            "Send a POST request to the /auth/login endpoint.",
+            "Use an invalid email/password combination.",
+            "Observe the HTTP status code and response body."
+          ],
+          "expected_result": "API returns a 401 Unauthorized or 400 Bad Request status code with a clear error message.",
+          "test_data": {
+            "email": "nonexistent@example.com",
+            "password": "anypassword"
+          },
+          "dependencies": []
+        },
+        {
+          "test_id": "E2E-ERR-005",
+          "name": "Attempt to access protected resource without authentication",
+          "description": "Verify that accessing authenticated API endpoints without a valid token returns an error.",
+          "priority": "Critical",
+          "type": "API",
+          "steps": [
+            "Send a GET request to a protected endpoint (e.g., /calendar/events).",
+            "Do not include an Authorization header or use an invalid/expired token.",
+            "Observe the HTTP status code and response body."
+          ],
+          "expected_result": "API returns a 401 Unauthorized or 403 Forbidden status code.",
+          "test_data": {},
+          "dependencies": []
+        }
+      ]
+    },
+    {
+      "suite_name": "UI/UX and Usability",
+      "description": "Tests focused on the user interface and overall user experience.",
+      "test_cases": [
+        {
+          "test_id": "E2E-UI-001",
+          "name": "Responsive design on different screen sizes",
+          "description": "Verify that the application UI adapts correctly to various screen sizes (if applicable for web or simulated device sizes in RN).",
+          "priority": "Medium",
+          "type": "UI",
+          "steps": [
+            "Access the application on different simulated devices (e.g., phone, tablet) or resize the browser window.",
+            "Navigate through key sections (Dashboard, Calendar, Tasks, Profile).",
+            "Verify that layout elements adjust properly, text is readable, and interactive elements are accessible."
+          ],
+          "expected_result": "The application's user interface is responsive and usable across different screen dimensions.",
+          "test_data": {},
+          "dependencies": []
+        },
+        {
+          "test_id": "E2E-UI-002",
+          "name": "Intuitive navigation",
+          "description": "Verify that users can easily navigate between different sections of the application.",
+          "priority": "High",
+          "type": "UI",
+          "steps": [
+            "Start from the dashboard.",
+            "Use the main navigation menu to go to Calendar.",
+            "Navigate to Tasks.",
+            "Go to Profile/Settings.",
+            "Use back buttons or breadcrumbs where applicable.",
+            "Verify that navigation is consistent and predictable."
+          ],
+          "expected_result": "Users can effortlessly move between different features and sections of the application.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-UI-003",
+          "name": "Clarity of event and task details display",
+          "description": "Verify that event and task details are presented clearly and concisely.",
+          "priority": "Medium",
+          "type": "UI",
+          "steps": [
+            "Create events and tasks with various details (description, location, assigned user, time, etc.).",
+            "View these items in calendar and task lists.",
+            "Click on items to view their full details.",
+            "Verify that all information is displayed in an organized and easy-to-understand manner."
+          ],
+          "expected_result": "All relevant information for events and tasks is clearly and logically displayed.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-CAL-001",
+            "E2E-TASK-001"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Security",
+      "description": "Tests focusing on security aspects of the application.",
+      "test_cases": [
+        {
+          "test_id": "E2E-SEC-001",
+          "name": "Password complexity enforcement",
+          "description": "Verify that the system enforces password complexity rules during signup.",
+          "priority": "High",
+          "type": "Integration",
+          "steps": [
+            "Navigate to the signup page.",
+            "Attempt to sign up with a weak password (e.g., 'password', '123456').",
+            "Verify an error message regarding password requirements is shown.",
+            "Attempt to sign up with a password that meets requirements but is common (e.g., 'password123').",
+            "Attempt to sign up with a password that meets requirements (e.g., 'P@sswOrd!123')."
+          ],
+          "expected_result": "The system enforces minimum password length, complexity (uppercase, lowercase, number, special character), and rejects weak passwords.",
+          "test_data": {
+            "weak_password": "password",
+            "medium_password": "Password123",
+            "strong_password": "P@sswOrd!123"
+          },
+          "dependencies": []
+        },
+        {
+          "test_id": "E2E-SEC-002",
+          "name": "Secure handling of JWT tokens",
+          "description": "Verify that JWT tokens are transmitted securely (HTTPS) and handled appropriately.",
+          "priority": "Critical",
+          "type": "API",
+          "steps": [
+            "Perform a login operation.",
+            "Inspect the network traffic for the login response containing the JWT.",
+            "Verify the token is transmitted over HTTPS.",
+            "Make a subsequent authenticated request and verify the 'Authorization: Bearer <token>' header is sent.",
+            "Attempt to use an expired token and verify a 401 Unauthorized response."
+          ],
+          "expected_result": "JWT tokens are transmitted securely and used correctly for authentication. Expired tokens result in unauthorized access.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-SEC-003",
+          "name": "OAuth 2.0 flow security for Google Sign-In",
+          "description": "Verify the security of the Google Sign-In flow, ensuring proper redirection and token handling.",
+          "priority": "Critical",
+          "type": "Integration",
+          "steps": [
+            "Initiate Google Sign-In.",
+            "Observe the redirect URLs and parameters during the OAuth flow.",
+            "Ensure sensitive information is not exposed in URLs.",
+            "Complete the sign-in and verify a valid session is established without exposing Google credentials directly.",
+            "Attempt to manipulate OAuth parameters (e.g., state parameter) to ensure security measures are in place."
+          ],
+          "expected_result": "Google Sign-In follows secure OAuth 2.0 practices, protecting user credentials and session integrity.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-AUTH-005"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_name": "Advanced Features (Medium/Low Priority)",
+      "description": "Tests for features like 21-Day Routine Builder, In-App Messaging, Analytics, etc.",
+      "test_cases": [
+        {
+          "test_id": "E2E-ADV-001",
+          "name": "21-Day Routine Builder - Setup and Tracking",
+          "description": "Verify the functionality of the 21-Day Routine Builder.",
+          "priority": "Medium",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to the '21-Day Routine Builder'.",
+            "Start creating a new routine (e.g., 'Morning Chores').",
+            "Define daily steps or goals for the routine.",
+            "Assign the routine to a child.",
+            "Log in as the child and mark a day as complete.",
+            "Log back in as the parent and verify the progress tracking visually.",
+            "Verify the child can mark subsequent days as complete."
+          ],
+          "expected_result": "Users can create and track progress within the 21-Day Routine Builder, with visual feedback on completed days.",
+          "test_data": {
+            "routine_name": "Morning Chores",
+            "steps": [
+              "Make bed",
+              "Brush teeth",
+              "Get dressed"
+            ]
+          },
+          "dependencies": [
+            "E2E-AUTH-007"
+          ]
+        },
+        {
+          "test_id": "E2E-ADV-002",
+          "name": "Parent-to-Child In-App Messaging",
+          "description": "Verify that parents can send messages to their children within the app.",
+          "priority": "Low",
+          "type": "Integration",
+          "steps": [
+            "Log in as a parent.",
+            "Navigate to the child's profile or a dedicated messaging section.",
+            "Compose a short message (e.g., 'Have a great day at school!').",
+            "Send the message.",
+            "Log in as the child.",
+            "Check their messages or profile.",
+            "Verify the message from the parent is received."
+          ],
+          "expected_result": "Parents can send messages to children, and children can view these messages within the app.",
+          "test_data": {
+            "message": "Have a great day at school!"
+          },
+          "dependencies": [
+            "E2E-AUTH-007"
+          ]
+        },
+        {
+          "test_id": "E2E-ADV-003",
+          "name": "Subscription Payment Gateway Integration",
+          "description": "Verify the integration with a payment gateway for premium subscriptions.",
+          "priority": "Low",
+          "type": "Integration",
+          "steps": [
+            "Log in as a user (ensure not already subscribed).",
+            "Navigate to the subscription/upgrade section.",
+            "Select a monthly subscription plan.",
+            "Proceed to the payment gateway checkout.",
+            "Enter valid (test mode) payment details.",
+            "Complete the payment process.",
+            "Verify redirection back to the application with a success message.",
+            "Check the user's account status to confirm they now have premium features.",
+            "Verify subscription details (plan, start date) are recorded."
+          ],
+          "expected_result": "Users can successfully subscribe to premium features via the integrated payment gateway.",
+          "test_data": {
+            "payment_method_token": "tok_visa",
+            "plan_name": "Premium Monthly"
+          },
+          "dependencies": [
+            "E2E-AUTH-003"
+          ]
+        },
+        {
+          "test_id": "E2E-ADV-004",
+          "name": "Parental Dashboard Overview - Upcoming Events",
+          "description": "Verify that the parental dashboard displays upcoming family events.",
+          "priority": "Medium",
+          "type": "UI",
+          "steps": [
+            "Log in as a parent.",
+            "Ensure there are several upcoming events scheduled (some for today, some for the next few days).",
+            "Navigate to the Parental Dashboard.",
+            "Verify that a section clearly lists the upcoming events, showing at least the event title and time.",
+            "Check that events beyond the defined 'upcoming' window (e.g., > 3 days) are not shown, or are in a separate section."
+          ],
+          "expected_result": "The parental dashboard provides a concise view of imminent family events.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-AUTH-003",
+            "E2E-CAL-001"
+          ]
+        },
+        {
+          "test_id": "E2E-ADV-005",
+          "name": "Parental Dashboard Overview - Pending Tasks & Points",
+          "description": "Verify that the parental dashboard displays pending tasks and children's points summary.",
+          "priority": "Medium",
+          "type": "UI",
+          "steps": [
+            "Log in as a parent.",
+            "Ensure there are pending tasks assigned to children.",
+            "Ensure children have accumulated some points.",
+            "Navigate to the Parental Dashboard.",
+            "Verify a section shows pending tasks for each child.",
+            "Verify a section shows a summary of points earned by each child."
+          ],
+          "expected_result": "The parental dashboard provides a clear overview of children's pending tasks and reward point status.",
+          "test_data": {},
+          "dependencies": [
+            "E2E-AUTH-003",
+            "E2E-TASK-001",
+            "E2E-REWARD-003"
+          ]
+        }
+      ]
+    }
+  ],
+  "coverage_summary": {
+    "total_test_cases": 46,
+    "critical_tests": 13,
+    "high_priority_tests": 21,
+    "medium_priority_tests": 10,
+    "low_priority_tests": 2,
+    "api_tests": 8,
+    "ui_tests": 15,
+    "integration_tests": 23
+  },
+  "test_execution_plan": {
+    "smoke_tests": [
+      "E2E-AUTH-001",
+      "E2E-AUTH-003",
+      "E2E-AUTH-005",
+      "E2E-CAL-001",
+      "E2E-TASK-001",
+      "E2E-TASK-003",
+      "E2E-REWARD-004",
+      "E2E-SHARING-002",
+      "E2E-NOTIF-001"
+    ],
+    "regression_tests": [
+      "E2E-AUTH-001",
+      "E2E-AUTH-002",
+      "E2E-AUTH-003",
+      "E2E-AUTH-004",
+      "E2E-AUTH-005",
+      "E2E-AUTH-006",
+      "E2E-AUTH-007",
+      "E2E-CAL-001",
+      "E2E-CAL-002",
+      "E2E-CAL-003",
+      "E2E-CAL-004",
+      "E2E-CAL-005",
+      "E2E-CAL-006",
+      "E2E-REC-001",
+      "E2E-REC-002",
+      "E2E-REC-003",
+      "E2E-REC-004",
+      "E2E-TASK-001",
+      "E2E-TASK-002",
+      "E2E-TASK-003",
+      "E2E-TASK-004",
+      "E2E-REWARD-001",
+      "E2E-REWARD-002",
+      "E2E-REWARD-003",
+      "E2E-REWARD-004",
+      "E2E-REWARD-005",
+      "E2E-SYNC-001",
+      "E2E-SYNC-002",
+      "E2E-SYNC-003",
+      "E2E-SYNC-004",
+      "E2E-SYNC-005",
+      "E2E-NOTIF-001",
+      "E2E-NOTIF-002",
+      "E2E-SHARING-001",
+      "E2E-SHARING-002",
+      "E2E-SHARING-003",
+      "E2E-ERR-004",
+      "E2E-ERR-005",
+      "E2E-SEC-002",
+      "E2E-SEC-003"
+    ],
+    "estimated_total_time": "3-4 hours"
+  }
+}

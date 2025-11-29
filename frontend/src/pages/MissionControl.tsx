@@ -5,6 +5,7 @@ import ArchitectureViewer from '../components/ArchitectureViewer';
 import CodeViewer from '../components/CodeViewer';
 import CodeWalkthrough from '../components/CodeWalkthrough';
 import StoryMapViewer from '../components/StoryMapViewer';
+import TestPlanViewer from '../components/TestPlanViewer';
 import { useProject } from '../context/ProjectContext';
 import {
     Lightbulb,
@@ -137,7 +138,7 @@ const MissionControl: React.FC = () => {
     const [logs, setLogs] = useState<string[]>([]);
     const logsEndRef = useRef<HTMLDivElement>(null);
     const [taskStatuses, setTaskStatuses] = useState<Record<string, any>>({});
-    const [sprintView, setSprintView] = useState<'tasks' | 'storymap'>('tasks');
+    const [sprintView, setSprintView] = useState<'tasks' | 'storymap' | 'tests'>('tasks');
     const [projectFiles, setProjectFiles] = useState<any[]>([]);
     const [showCodeBrowser, setShowCodeBrowser] = useState(false);
     const [showWalkthrough, setShowWalkthrough] = useState(false);
@@ -548,6 +549,28 @@ const MissionControl: React.FC = () => {
             .filter(t => t.story_id === task.story_id);
     };
 
+    const generateE2ETests = async () => {
+        if (!sessionId) return;
+
+        setLoading(true);
+        addLog("🧪 Generating E2E Test Plan...");
+
+        try {
+            const response = await axios.post(`${API_BASE_URL}/agent/e2e_test/generate?session_id=${sessionId}`);
+            const testCount = response.data?.coverage_summary?.total_test_cases || 0;
+            addLog(`✓ Generated ${testCount} test cases`);
+            addLog("💾 E2E test plan saved");
+
+            // Switch to tests tab to show results
+            setSprintView('tests');
+        } catch (error: any) {
+            console.error("Failed to generate E2E tests:", error);
+            addLog(`❌ Failed to generate E2E tests: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const retryTask = async (task: any) => {
         setTaskStatuses(prev => ({ ...prev, [task.task_id]: 'loading' }));
         addLog(`🔄 Retrying ${task.task_id}...`);
@@ -801,6 +824,15 @@ const MissionControl: React.FC = () => {
                             >
                                 Story Map
                             </button>
+                            <button
+                                onClick={() => setSprintView('tests')}
+                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${sprintView === 'tests'
+                                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                    }`}
+                            >
+                                E2E Tests
+                            </button>
                         </div>
 
                         {/* Task List View */}
@@ -862,17 +894,32 @@ const MissionControl: React.FC = () => {
                             <StoryMapViewer sessionId={sessionId} />
                         )}
 
+                        {/* E2E Tests View */}
+                        {sprintView === 'tests' && sessionId && (
+                            <TestPlanViewer sessionId={sessionId} />
+                        )}
+
                         {Object.values(taskStatuses).some(s => s === 'loading') && (
                             <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 flex items-center justify-center gap-3 text-blue-600 dark:text-blue-400">
                                 <Loader2 className="animate-spin" />
+                                ```
                                 <span className="font-medium">Agents are actively coding...</span>
                             </div>
                         )}
 
                         {Object.values(taskStatuses).every(s => s === 'complete') && Object.keys(taskStatuses).length > 0 && (
-                            <div className="mt-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-800 flex items-center justify-center gap-3 text-green-600 dark:text-green-400">
-                                <CheckCircle />
-                                <span className="font-medium">Sprint successfully completed!</span>
+                            <div className="mt-6 space-y-3">
+                                <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-800 flex items-center justify-center gap-3 text-green-600 dark:text-green-400">
+                                    <CheckCircle />
+                                    <span className="font-medium">Sprint successfully completed!</span>
+                                </div>
+                                <button
+                                    onClick={generateE2ETests}
+                                    disabled={loading}
+                                    className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                                >
+                                    🧪 Generate E2E Test Plan
+                                </button>
                             </div>
                         )}
 

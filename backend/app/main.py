@@ -45,6 +45,9 @@ app_settings = AppSettings(
 )
 
 # Register Agents
+from app.agents.engineering.e2e_test_agent import E2ETestAgent
+
+# Initialize agents
 idea_agent = IdeaGeneratorAgent()
 prd_agent = ProductRequirementsAgent()
 analysis_agent = RequirementAnalysisAgent()
@@ -55,6 +58,7 @@ backend_dev_agent = BackendDevAgent()
 frontend_dev_agent = FrontendDevAgent()
 qa_agent = QAAgent()
 debugger_agent = DebuggerAgent()
+e2e_test_agent = E2ETestAgent()
 
 orchestrator.register_agent("idea_generator", idea_agent)
 orchestrator.register_agent("product_requirements", prd_agent)
@@ -66,6 +70,7 @@ orchestrator.register_agent("backend_dev", backend_dev_agent)
 orchestrator.register_agent("frontend_dev", frontend_dev_agent)
 orchestrator.register_agent("qa_agent", qa_agent)
 orchestrator.register_agent("debugger_agent", debugger_agent)
+orchestrator.register_agent("e2e_test", e2e_test_agent)
 
 # ... (previous models)
 
@@ -330,6 +335,55 @@ async def run_qa_agent(session_id: str, request: ReviewCodeRequest):
     result = await qa_agent.review_code(request.code_files, session_id)
     session.add_log("Code Review complete")
     return result
+
+@app.post("/agent/e2e_test/generate")
+async def generate_e2e_tests(session_id: str):
+    """
+    Generate comprehensive E2E test plan after all development tasks are complete.
+    """
+    session = orchestrator.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    try:
+        # Load required data
+        user_stories_data = project_storage.load_step(session_id, "user_stories")
+        architecture_data = project_storage.load_step(session_id, "architecture")
+        
+        # user_stories_data is a list directly
+        # architecture_data is a dict directly
+        user_stories = user_stories_data if isinstance(user_stories_data, list) else []
+        architecture = architecture_data if isinstance(architecture_data, dict) else {}
+        
+        # Load code summaries (if available)
+        backend_code = {"summary": "Backend code generated"}
+        frontend_code = {"summary": "Frontend code generated"}
+        
+        session.add_log("🧪 Generating E2E Test Plan...")
+        
+        result = await e2e_test_agent.generate_test_plan(
+            user_stories=user_stories,
+            architecture=architecture,
+            backend_code=backend_code,
+            frontend_code=frontend_code,
+            session_id=session_id
+        )
+        
+        session.add_log(f"✓ Generated {result.get('coverage_summary', {}).get('total_test_cases', 0)} test cases")
+        
+        # Save test plan
+        try:
+            file_path = project_storage.save_step(session_id, "e2e_test_plan", result)
+            session.add_log(f"💾 Saved E2E test plan to {file_path}")
+        except Exception as e:
+            logger.error(f"Failed to save E2E test plan: {e}")
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Failed to generate E2E tests: {e}")
+        session.add_log(f"❌ Failed to generate E2E tests: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/agent/software_architect/run")
 async def run_software_architect(session_id: str, request: DesignArchitectureRequest):
