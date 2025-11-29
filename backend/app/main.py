@@ -490,6 +490,10 @@ async def root():
 async def start_session(request: StartSessionRequest):
     session = orchestrator.create_session()
     session.project_name = request.project_name
+    
+    # Save project name to metadata
+    project_storage.save_project_name(session.session_id, request.project_name)
+    
     return session
 
 @app.get("/session/{session_id}")

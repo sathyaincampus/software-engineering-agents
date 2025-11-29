@@ -4,6 +4,7 @@ import { useProject } from '../context/ProjectContext';
 
 interface Project {
     session_id: string;
+    project_name?: string;
     created_at: string;
     last_modified: string;
     steps_completed: string[];
@@ -130,10 +131,10 @@ const ProjectSidebar = () => {
                                 <button
                                     key={project.session_id}
                                     onClick={() => handleProjectClick(project.session_id)}
-                                    className={`w-full text-left p-3 rounded-lg transition-all ${isActive
+                                    className={`w - full text - left p - 3 rounded - lg transition - all ${isActive
                                         ? 'bg-blue-600/20 border border-blue-500/50'
                                         : 'hover:bg-gray-800/50 border border-transparent'
-                                        }`}
+                                        } `}
                                 >
                                     <div className="flex items-start gap-2">
                                         {isActive ? (
@@ -143,7 +144,7 @@ const ProjectSidebar = () => {
                                         )}
                                         <div className="flex-1 min-w-0">
                                             <div className="text-sm font-medium truncate">
-                                                {project.session_id.slice(0, 8)}...
+                                                {project.project_name || `Project ${project.session_id.slice(0, 8)}`}
                                             </div>
                                             <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
                                                 <Clock size={10} />
@@ -157,9 +158,9 @@ const ProjectSidebar = () => {
                                                 </div>
                                                 <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
                                                     <div
-                                                        className={`h-full transition-all ${isActive ? 'bg-blue-500' : 'bg-gray-600'
-                                                            }`}
-                                                        style={{ width: `${progress}%` }}
+                                                        className={`h - full transition - all ${isActive ? 'bg-blue-500' : 'bg-gray-600'
+                                                            } `}
+                                                        style={{ width: `${progress}% ` }}
                                                     />
                                                 </div>
                                             </div>

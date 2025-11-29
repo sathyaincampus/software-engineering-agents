@@ -110,6 +110,32 @@ class ProjectStorage:
         with open(metadata_path, 'w') as f:
             json.dump(metadata, f, indent=2)
     
+    def save_project_name(self, session_id: str, project_name: str):
+        """Save project name to metadata"""
+        project_dir = self.get_project_dir(session_id)
+        metadata_path = project_dir / "metadata.json"
+        
+        # Load existing metadata
+        if metadata_path.exists():
+            with open(metadata_path, 'r') as f:
+                metadata = json.load(f)
+        else:
+            metadata = {
+                "session_id": session_id,
+                "created_at": datetime.now().isoformat(),
+                "steps_completed": [],
+                "last_updated": None
+            }
+        
+        # Update project name
+        metadata["project_name"] = project_name
+        metadata["last_updated"] = datetime.now().isoformat()
+        
+        # Save metadata
+        with open(metadata_path, 'w') as f:
+            json.dump(metadata, f, indent=2)
+
+    
     def save_task_status(self, session_id: str, task_id: str, status: str):
         """Save individual task execution status"""
         project_dir = self.get_project_dir(session_id)
@@ -215,6 +241,7 @@ class ProjectStorage:
                         metadata = json.load(f)
                     projects.append({
                         "session_id": project_dir.name,
+                        "project_name": metadata.get("project_name", "Untitled Project"),
                         "created_at": metadata.get("created_at"),
                         "last_modified": metadata.get("last_updated"),
                         "steps_completed": metadata.get("steps_completed", [])

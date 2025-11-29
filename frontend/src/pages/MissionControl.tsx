@@ -3,7 +3,6 @@ import axios from 'axios';
 import MarkdownViewer from '../components/MarkdownViewer';
 import ArchitectureViewer from '../components/ArchitectureViewer';
 import CodeViewer from '../components/CodeViewer';
-import CodeWalkthrough from '../components/CodeWalkthrough';
 import StoryMapViewer from '../components/StoryMapViewer';
 import TestPlanViewer from '../components/TestPlanViewer';
 import WalkthroughGenerator from '../components/WalkthroughGenerator';

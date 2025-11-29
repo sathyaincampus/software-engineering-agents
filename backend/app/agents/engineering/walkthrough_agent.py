@@ -40,6 +40,57 @@ class WalkthroughAgent:
               - User flows
             - Visual representations of code structure
             
+            **IMPORTANT MERMAID SYNTAX RULES**:
+            - Output ONLY the Mermaid code in the diagrams array
+            - DO NOT wrap diagrams in ```mermaid code fences
+            - Use valid Mermaid syntax for version 10.x
+            
+            **For ER Diagrams (erDiagram)**:
+            - Start with: erDiagram
+            - Relationships: ENTITY1 ||--o{ ENTITY2 : "relationship label"
+            - Cardinality symbols: ||, }o, }|, |o (see Mermaid docs)
+            - Attributes format: type name key
+            - Types MUST start with alphabetic character: string, int, bool, datetime, date
+            - Keys: PK, FK, UK (or combinations like "PK, FK")
+            - Example:
+              erDiagram
+                  USERS ||--o{ TASKS : creates
+                  USERS {
+                      string user_id PK
+                      string email
+                      string password_hash
+                      string role
+                      string parent_id FK
+                  }
+                  TASKS {
+                      string task_id PK
+                      string family_id FK
+                      string title
+                      string description
+                      int points
+                  }
+            
+            **For Flowcharts**:
+            - Start with: flowchart TD (or LR, BT, RL)
+            - Nodes: A[Label], B(Label), C{Decision}
+            - Connections: A --> B, A -- Label --> B
+            
+            **For Sequence Diagrams**:
+            - Start with: sequenceDiagram
+            - Participants: participant Name
+            - Messages: Name->>OtherName: Message
+            - Activations: activate/deactivate
+            
+            **For Graphs**:
+            - Start with: graph TD (or LR, BT, RL)
+            - Similar to flowcharts but simpler syntax
+            - IMPORTANT: Each connection must be separate
+            - CORRECT: A --> B
+                A --> C
+                A --> D
+            - WRONG: A --> B, C, D (this is invalid!)
+            - Use individual arrows for each connection
+            
             For VIDEO-BASED walkthroughs, create:
             - Scene-by-scene script for animated explanation
             - Timestamps for each section

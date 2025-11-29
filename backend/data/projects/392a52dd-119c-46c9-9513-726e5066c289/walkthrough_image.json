@@ -1,0 +1,155 @@
+{
+  "walkthrough_type": "image",
+  "title": "Code Walkthrough: Untitled Project",
+  "overview": "This project walkthrough uses visual diagrams to illustrate the architecture, data flow, and key interactions of the FamilyFlow application. It highlights how the React Native frontend communicates with the Node.js/Express.js backend, the role of microservices, and the integration with various third-party services and cloud infrastructure.",
+  "sections": [
+    {
+      "section_id": "SEC-001",
+      "title": "System Architecture Overview",
+      "content": "This diagram provides a high-level view of the system's components and their interconnections. It shows how client applications interact with the API Gateway, which then routes requests to various backend microservices. Data flows between services, databases, caches, and external APIs.",
+      "diagrams": [
+        "graph TD\n    subgraph APIGateway[API Gateway]\n        A[POST /api/v1/auth/login]\n        B[GET /api/v1/auth/google]\n        C[GET /api/v1/auth/google/callback]\n        D[GET /api/v1/users/me]\n        E[PUT /api/v1/users/me]\n        F[GET /api/v1/events]\n        G[POST /api/v1/events]\n        H[GET /api/v1/events/:id]\n        I[PUT /api/v1/events/:id]\n        J[DELETE /api/v1/events/:id]\n        K[GET /api/v1/tasks]\n        L[POST /api/v1/tasks]\n        M[PUT /api/v1/tasks/:id/complete]\n        N[GET /api/v1/rewards]\n        O[POST /api/v1/rewards/redeem]\n        P[GET /api/v1/notifications]\n        Q[POST /api/v1/sync/google]\n    end\n\n    subgraph Services[Backend Services]\n        AuthService[Auth Service]\n        UserService[User Service]\n        CalendarService[Calendar Service]\n        TaskService[Task Service]\n        RewardService[Reward Service]\n        NotificationService[Notification Service]\n        SyncService[Sync Service]\n    end\n\n    AuthService --> A\n    AuthService --> B\n    AuthService --> C\n    UserService --> D\n    UserService --> E\n    CalendarService --> F\n    CalendarService --> G\n    CalendarService --> H\n    CalendarService --> I\n    CalendarService --> J\n    TaskService --> K\n    TaskService --> L\n    TaskService --> M\n    RewardService --> N\n    RewardService --> O\n    NotificationService --> P\n    SyncService --> Q"
+      ],
+      "visual_code_structure": "The backend is structured into distinct services (Auth, User, Calendar, etc.), each potentially residing in its own module or directory. The API Gateway acts as the single entry point for all client requests.",
+      "annotated_screenshot_description": "Diagram visually represents the separation of concerns, with each service handling a specific domain (e.g., authentication, calendar management). The API Gateway aggregates requests before distributing them.",
+      "duration": "1 minute"
+    },
+    {
+      "section_id": "SEC-002",
+      "title": "Frontend Component Structure (Conceptual)",
+      "content": "The React Native frontend is organized into feature-based components. Key sections include Authentication, Calendar, Tasks, Rewards, and Profile. State management is centralized using Redux Toolkit, while UI elements are built with React Native Paper.",
+      "diagrams": [
+        "graph TD\n    A[App Container]\n    A --> B(NavigationContainer)\n    B --> C{Root Navigator}\n    C --> D[Auth Stack]\n    C --> E[Main App Tabs]\n    D --> D1[Login Screen]\n    D --> D2[Sign Up Screen]\n    E --> E1[Calendar Tab]\n    E --> E2[Tasks Tab]\n    E --> E3[Rewards Tab]\n    E --> E4[Profile Tab]\n    E1 --> E1a[Event Details]\n    E2 --> E2a[Task Details]\n    E3 --> E3a[Reward Details]\n    D1 --> F{Redux Store}\n    E1 --> F\n    E2 --> F\n    E3 --> F\n    E4 --> F\n    F --> G[Auth Slice]\n    F --> H[Calendar Slice]\n    F --> I[Tasks Slice]\n    F --> J[Rewards Slice]"
+      ],
+      "visual_code_structure": "The frontend code is likely organized with top-level directories for `screens`, `components`, `features` (for Redux slices and related logic), `navigation`, and `store`. Each feature directory would contain its own components, actions, and reducers.",
+      "annotated_screenshot_description": "This diagram illustrates the navigation flow and component hierarchy. The `App` component initializes the Redux store and navigation. The `Root Navigator` branches into authentication or the main application interface, which is typically tab-based. Each tab screen then drills down into specific views or details.",
+      "duration": "2 minutes"
+    },
+    {
+      "section_id": "SEC-003",
+      "title": "User Authentication Flow (Login)",
+      "content": "This sequence diagram visualizes the process of a user logging in. It shows the interaction between the client, API Gateway, Authentication Service, Database, and Cache.",
+      "diagrams": [
+        "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant AuthService\n    participant PrimaryDB\n    participant Cache\n\n    Client->>+APIGateway: POST /auth/login\n    APIGateway->>+AuthService: Login Request\n    AuthService->>+PrimaryDB: Find User by Email\n    PrimaryDB-->>-AuthService: User Record\n    AuthService->>+Cache: Store Session Token\n    Cache-->>-AuthService: Success\n    AuthService-->>-APIGateway: JWT Token\n    APIGateway-->>-Client: Login Success Response"
+      ],
+      "visual_code_structure": "The backend's `authRoutes.ts` handles the `/auth/login` endpoint. It uses Passport.js middleware for authentication strategies (local or Google). The `AuthService` contains the business logic for user lookup and token generation. Session data might be stored in Redis.",
+      "annotated_screenshot_description": "The diagram clearly depicts the request-response cycle for login. The client initiates the process, the API Gateway routes it to the AuthService, which interacts with the database and cache before returning a JWT to the client via the Gateway.",
+      "duration": "1.5 minutes"
+    },
+    {
+      "section_id": "SEC-004",
+      "title": "Database Schema Overview",
+      "content": "This diagram outlines the primary tables in the PostgreSQL database, showing their relationships. Key entities include Users, Family Members, Events, Tasks, and Rewards, forming the core data model for the application.",
+      "diagrams": [
+        "erDiagram\n    USERS ||--o{ FAMILY_MEMBERS : \"is member of\"\n    USERS ||--o{ EVENTS : \"creates\"\n    USERS ||--o{ TASKS : \"creates\"\n    USERS ||--o{ REWARDS : \"creates\"\n    USERS ||--o{ REWARD_REDEMPTIONS : \"redeems\"\n    USERS ||--o{ USER_POINTS : \"has\"\n    USERS ||--o{ NOTIFICATIONS : \"receives\"\n    USERS ||--o{ SUBSCRIPTIONS : \"subscribes\"\n    \n    USERS {\n        string user_id PK\n        string email\n        string password_hash\n        string google_id\n        string display_name\n        string avatar_url\n        string role\n        string parent_id FK\n    }\n    \n    FAMILY_MEMBERS {\n        string family_id PK\n        string member_id FK\n        string role_in_family\n    }\n    \n    EVENTS {\n        string event_id PK\n        string family_id FK\n        string title\n        string description\n        datetime start_time\n        datetime end_time\n        string assigned_to FK\n    }\n    \n    TASKS {\n        string task_id PK\n        string family_id FK\n        string title\n        string description\n        string assigned_to FK\n        date due_date\n        int points\n        string status\n    }\n    \n    REWARDS {\n        string reward_id PK\n        string family_id FK\n        string name\n        string description\n        int point_cost\n        bool requires_approval\n    }\n    \n    REWARD_REDEMPTIONS {\n        string redemption_id PK\n        string reward_id FK\n        string user_id FK\n        datetime redeemed_at\n        string status\n    }\n    \n    USER_POINTS {\n        string user_id \"PK, FK\"\n        int current_points\n    }\n    \n    NOTIFICATIONS {\n        string notification_id PK\n        string user_id FK\n        string message\n        string type\n        bool read_status\n    }\n    \n    SUBSCRIPTIONS {\n        string subscription_id PK\n        string user_id FK\n        string plan_name\n        datetime start_date\n        datetime end_date\n        string status\n    }"
+      ],
+      "visual_code_structure": "Backend models (e.g., `backend/src/models/*.ts`) define the structure of each table, often using an ORM like Sequelize or TypeORM. These models map directly to the database schema.",
+      "annotated_screenshot_description": "This diagram visually represents the relational database structure. It shows the main entities and how they are linked via foreign keys (e.g., `events` table linked to `users` and `family_members`). This helps in understanding data relationships and query patterns.",
+      "duration": "2 minutes"
+    },
+    {
+      "section_id": "SEC-005",
+      "title": "API Endpoint Structure",
+      "content": "This diagram illustrates the typical structure of API endpoints exposed by the backend services. It groups endpoints by their corresponding service and HTTP method.",
+      "diagrams": [
+        "graph TD\n    subgraph APIGateway[API Gateway]\n        A[POST /api/v1/auth/login]\n        B[GET /api/v1/auth/google]\n        C[GET /api/v1/auth/google/callback]\n        D[GET /api/v1/users/me]\n        E[PUT /api/v1/users/me]\n        F[GET /api/v1/events]\n        G[POST /api/v1/events]\n        H[GET /api/v1/events/:id]\n        I[PUT /api/v1/events/:id]\n        J[DELETE /api/v1/events/:id]\n        K[GET /api/v1/tasks]\n        L[POST /api/v1/tasks]\n        M[PUT /api/v1/tasks/:id/complete]\n        N[GET /api/v1/rewards]\n        O[POST /api/v1/rewards/redeem]\n        P[GET /api/v1/notifications]\n        Q[POST /api/v1/sync/google]\n    end\n\n    subgraph Services[Backend Services]\n        AuthService[Auth Service]\n        UserService[User Service]\n        CalendarService[Calendar Service]\n        TaskService[Task Service]\n        RewardService[Reward Service]\n        NotificationService[Notification Service]\n        SyncService[Sync Service]\n    end\n\n    AuthService --> A\n    AuthService --> B\n    AuthService --> C\n    UserService --> D\n    UserService --> E\n    CalendarService --> F\n    CalendarService --> G\n    CalendarService --> H\n    CalendarService --> I\n    CalendarService --> J\n    TaskService --> K\n    TaskService --> L\n    TaskService --> M\n    RewardService --> N\n    RewardService --> O\n    NotificationService --> P\n    SyncService --> Q"
+      ],
+      "visual_code_structure": "Backend routing files (e.g., `backend/src/routes/*.ts`) define these endpoints. Each route handler typically calls a corresponding service function to perform the business logic.",
+      "annotated_screenshot_description": "This diagram organizes API endpoints by function and service. It shows the versioning (`/api/v1/`) and the common HTTP methods used for CRUD operations and specific actions (like completing a task or redeeming a reward).",
+      "duration": "1.5 minutes"
+    },
+    {
+      "section_id": "SEC-006",
+      "title": "Real-time Notification Flow",
+      "content": "This diagram illustrates how real-time notifications are sent from the backend to connected client applications using WebSockets.",
+      "diagrams": [
+        "sequenceDiagram\n    participant Server\n    participant NotificationService\n    participant WebSocketServer\n    participant ClientApp\n\n    Server->>+NotificationService: Trigger notification (e.g., task assigned)\n    NotificationService->>+WebSocketServer: Send event payload (userId, message, type)\n    WebSocketServer->>ClientApp: Emit 'notification' event to specific user room\n    activate ClientApp\n    ClientApp-->>ClientApp: Display notification UI\n    deactivate ClientApp"
+      ],
+      "visual_code_structure": "The `NotificationService` in the backend manages Socket.IO connections. When an event occurs (e.g., a task is assigned), it calls a method on the `NotificationService` to emit a message to the relevant user's WebSocket room.",
+      "annotated_screenshot_description": "The diagram shows a backend service triggering a notification, which is then processed by the `NotificationService`. This service uses the WebSocket server to push the notification to the specific `ClientApp` connected to the appropriate room (identified by `userId`).",
+      "duration": "1 minute"
+    },
+    {
+      "section_id": "SEC-007",
+      "title": "Data Flow for Task Completion",
+      "content": "This diagram visualizes the data flow when a child marks a task as complete, including point updates and potential reward redemption triggers.",
+      "diagrams": [
+        "flowchart TD\n    ClientApp[Client App]\n    APIGateway[API Gateway]\n    TaskService[Task Service]\n    RewardService[Reward Service]\n    UserService[User Service]\n    NotificationService[Notification Service]\n    PrimaryDB[(PostgreSQL)]\n    Cache[(Redis)]\n\n    ClientApp -- POST /tasks/:id/complete --> APIGateway\n    APIGateway -- Update Task Status --> TaskService\n    TaskService -- Update task status in DB --> PrimaryDB\n    TaskService -- Read task details (points) --> PrimaryDB\n    TaskService -- Update user points --> UserService\n    UserService -- Update points in DB --> PrimaryDB\n    UserService -- Invalidate user cache --> Cache\n    TaskService -- Trigger notification --> NotificationService\n    NotificationService -- Send notification to parent --> ClientApp\n    UserService -- Check for reward eligibility --> RewardService\n    RewardService -- Potentially create redemption --> PrimaryDB"
+      ],
+      "visual_code_structure": "The `TaskService` handles the `/tasks/:id/complete` endpoint. It updates the task's status in the database, then calls the `UserService` to update the user's points. It also triggers notifications via `NotificationService` and may interact with `RewardService`.",
+      "annotated_screenshot_description": "This data flow diagram illustrates the chain of operations: updating task status, updating user points, invalidating cache, sending notifications, and potentially checking for reward eligibility, all initiated by the client marking a task as complete.",
+      "duration": "2 minutes"
+    }
+  ],
+  "setup_instructions": {
+    "prerequisites": [
+      "Node.js (version 16 or higher)",
+      "npm or yarn",
+      "Docker",
+      "AWS CLI configured (for deployment)",
+      "PostgreSQL server instance",
+      "Redis instance"
+    ],
+    "installation_steps": [
+      "Clone the repository: `git clone <repository-url>`",
+      "Navigate to the backend directory: `cd backend`",
+      "Install backend dependencies: `npm install`",
+      "Configure environment variables for backend (e.g., `.env` file with `DATABASE_URL`, `JWT_SECRET`, AWS credentials)",
+      "Navigate to the frontend directory: `cd ../frontend`",
+      "Install frontend dependencies: `npm install`",
+      "Configure environment variables for frontend (e.g., `.env` file with `API_BASE_URL`)",
+      "Set up your PostgreSQL database and run migrations.",
+      "Start Redis server.",
+      "Start the backend server: `npm start` (or `npm run dev` for development)",
+      "Start the frontend development server: `npm start` (or `npm run start:ios`/`start:android` for React Native)"
+    ],
+    "environment_variables": [
+      "DATABASE_URL: Connection string for PostgreSQL",
+      "JWT_SECRET: Secret key for JWT signing",
+      "GOOGLE_CLIENT_ID: Google OAuth Client ID",
+      "GOOGLE_CLIENT_SECRET: Google OAuth Client Secret",
+      "REDIS_HOST: Redis host",
+      "REDIS_PORT: Redis port",
+      "AWS_ACCESS_KEY_ID: AWS Access Key",
+      "AWS_SECRET_ACCESS_KEY: AWS Secret Key",
+      "AWS_REGION: AWS Region",
+      "API_BASE_URL: URL for the backend API (for frontend)"
+    ]
+  },
+  "key_concepts": [
+    {
+      "concept": "Mermaid Diagrams",
+      "explanation": "Used extensively to visually represent system architecture, data flow, sequence diagrams, and database schemas, making complex interactions easier to understand.",
+      "examples": [
+        "flowchart",
+        "sequenceDiagram",
+        "graph TD"
+      ]
+    },
+    {
+      "concept": "Component-Based Architecture",
+      "explanation": "Both frontend (React Native) and backend (microservices) adhere to component-based design, promoting modularity, reusability, and maintainability.",
+      "examples": [
+        "React Components",
+        "Node.js Services"
+      ]
+    },
+    {
+      "concept": "API Gateway Pattern",
+      "explanation": "Centralizes incoming API requests, routing them to the appropriate backend microservices, simplifying client interaction and enabling cross-cutting concerns like authentication and rate limiting.",
+      "examples": [
+        "Directing traffic to Auth, User, Calendar services"
+      ]
+    },
+    {
+      "concept": "Separation of Concerns",
+      "explanation": "Each service and component is designed to handle a specific responsibility (e.g., authentication, calendar management, UI rendering), leading to a cleaner and more manageable codebase.",
+      "examples": [
+        "Dedicated `AuthService`",
+        "React `CalendarScreen` component"
+      ]
+    }
+  ],
+  "estimated_reading_time": "10 minutes",
+  "difficulty_level": "Intermediate"
+}

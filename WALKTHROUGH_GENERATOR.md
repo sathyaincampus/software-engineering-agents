@@ -1,341 +1,285 @@
-# Code Walkthrough Generator - Implementation Complete ✅
+# Walkthrough Generator - Enhanced Version ✅
 
-## What Was Implemented
+## Summary of Changes
 
-### 1. Walkthrough Agent (Backend)
-**File**: `backend/app/agents/engineering/walkthrough_agent.py`
+I've completely enhanced the Walkthrough Generator to address all your concerns:
 
-**Capabilities**:
-- Generates walkthroughs in **3 formats**:
-  1. **Text-Based**: Markdown documentation with code explanations
-  2. **Image-Based**: Visual diagrams (Mermaid format)
-  3. **Video-Based**: Animated explanation scripts
+### ✅ 1. Project Name Fixed
+**Problem**: Showing "Untitled Project" instead of actual name  
+**Solution**: 
+- Added `save_project_name()` function to `project_storage.py`
+- Updated `/session/start` endpoint to save project name
+- Fixed existing metadata to show "FamilyFlow"
 
-**Output Structure**:
-```json
-{
-  "walkthrough_type": "text|image|video",
-  "title": "Code Walkthrough: Project Name",
-  "overview": "High-level overview",
-  "sections": [
-    {
-      "section_id": "SEC-001",
-      "title": "Section Title",
-      "content": "Detailed explanation...",
-      "diagrams": ["mermaid code..."],
-      "code_snippets": [...],
-      "duration": "2 minutes"
-    }
-  ],
-  "setup_instructions": {...},
-  "key_concepts": [...],
-  "estimated_reading_time": "15 minutes"
-}
+### ✅ 2. Multiple Walkthrough Tabs
+**Problem**: No way to view all 3 generated walkthroughs  
+**Solution**: 
+- Added **"Generate New"** and **"View Existing"** modes
+- Added tabs for **Text**, **Image**, and **Video** walkthroughs
+- Each tab shows if walkthrough is generated or not
+- Can switch between tabs to view different types
+
+### ✅ 3. Mermaid Diagram Rendering
+**Problem**: Diagrams showing as raw code  
+**Solution**:
+- Installed `mermaid` package
+- Integrated Mermaid rendering engine
+- Diagrams now render as actual visual diagrams
+- Added "Copy" button for each diagram
+
+### ✅ 4. Enhanced Video Walkthrough Display
+**Problem**: Video scripts not well formatted  
+**Solution**:
+- Added voiceover script display with special styling
+- Added visual cues section
+- Added timestamps for each section
+- Better formatting for video-specific content
+
+## New Features
+
+### 1. Two-Mode Interface
+
+**Generate Mode**:
+- Select walkthrough type (Text/Image/Video)
+- Click "Generate Walkthrough"
+- Automatically switches to View mode after generation
+
+**View Mode**:
+- Tabs for Text, Image, Video
+- Shows which walkthroughs exist
+- Can generate missing walkthroughs from View mode
+
+### 2. Mermaid Diagram Features
+
+```
+┌─────────────────────────────────────┐
+│ Diagram 1              [Copy] ←NEW │
+├─────────────────────────────────────┤
+│  [Rendered Mermaid Diagram]         │
+│  (Actual visual diagram, not code)  │
+└─────────────────────────────────────┘
 ```
 
-### 2. API Endpoint (Backend)
-**Endpoint**: `POST /agent/walkthrough/generate?session_id={id}&type={type}`
+- **Visual Rendering**: Diagrams render as actual graphics
+- **Copy Button**: Copy Mermaid code to clipboard
+- **Multiple Diagrams**: Each section can have multiple diagrams
+- **Auto-Refresh**: Diagrams re-render when sections expand
 
-**Parameters**:
-- `session_id`: Project session ID
-- `type`: "text", "image", or "video"
+### 3. Enhanced Section Display
 
-**What it does**:
-- Loads project data (user stories, architecture, sprint plan)
-- Calls Walkthrough Agent to generate walkthrough
-- Saves to `/backend/data/projects/{session_id}/walkthrough_{type}.json`
-- Returns walkthrough JSON
+**Expandable Sections**:
+- Click to expand/collapse
+- Shows duration or timestamp
+- Smooth animations
 
-### 3. Walkthrough Generator Component (Frontend)
-**File**: `frontend/src/components/WalkthroughGenerator.tsx`
+**Content Types**:
+- **Text Content**: Main explanation
+- **Voiceover** (Video only): Purple-highlighted script
+- **Visual Cues** (Video only): List of visual effects
+- **Diagrams**: Rendered Mermaid graphics
+- **Code Snippets**: Syntax-highlighted code
 
-**Features**:
-- ✅ Beautiful gradient header
-- ✅ 3 walkthrough type cards (Text/Image/Video)
-- ✅ Visual selection with icons
-- ✅ Generate button with loading state
-- ✅ Comprehensive walkthrough display:
-  - Overview
-  - Expandable sections
-  - Diagrams (Mermaid code)
-  - Code snippets with syntax highlighting
-  - Setup instructions
-  - Key concepts
+### 4. Tab System
 
-### 4. Mission Control Integration
-**File**: `frontend/src/pages/MissionControl.tsx`
+```
+┌─────────────────────────────────────────────────────┐
+│ [📄 Text-Based] [🖼️ Image-Based] [🎥 Video-Based]  │
+│                                                     │
+│ Currently viewing: Text-Based Walkthrough           │
+│ ...content...                                       │
+└─────────────────────────────────────────────────────┘
+```
 
-**Changes**:
-- Replaced `CodeWalkthrough` with `WalkthroughGenerator`
-- Integrated into existing "Generate Code Walkthrough" button
-- Shows/hides with toggle
+- **Active Tab**: Highlighted in blue
+- **Disabled Tabs**: Grayed out if not generated
+- **Quick Switch**: Click to switch between types
+- **Status Indicator**: Shows "(Not generated)" for missing walkthroughs
 
-## How It Works
+## How to Use
 
-### User Flow
+### Generate Walkthroughs
 
-1. **Click "Generate Code Walkthrough"** button in Mission Control
-2. **Select walkthrough type**:
-   - 📄 **Text-Based**: Markdown documentation
-   - 🖼️ **Image-Based**: Visual diagrams
-   - 🎥 **Video-Based**: Animated script
-
+1. **Click "Generate Code Walkthrough"** in Mission Control
+2. **Select type**: Text, Image, or Video
 3. **Click "Generate Walkthrough"**
-4. **Wait for generation** (loading indicator)
-5. **View walkthrough**:
-   - Read overview
-   - Expand sections
-   - View diagrams
-   - See code examples
-   - Follow setup instructions
+4. **Wait** for generation (shows loading spinner)
+5. **View** automatically switches to View mode
 
-## Walkthrough Types
+### View Existing Walkthroughs
 
-### 1. Text-Based
-**Best for**: Developers who want detailed documentation
+1. **Click "View Existing"** button
+2. **Select tab**: Text, Image, or Video
+3. **Expand sections** to see details
+4. **Copy diagrams** using Copy button
+5. **Read content**, view diagrams, see code examples
 
-**Includes**:
-- Project structure overview
-- Component explanations
-- Code snippets with comments
-- Mermaid architecture diagrams
-- Setup and running instructions
-- Design patterns and best practices
+### Generate Missing Walkthroughs
 
-### 2. Image-Based
-**Best for**: Visual learners
+1. **In View mode**, click on disabled tab
+2. **Click "Generate {type} walkthrough"** button
+3. **Generates** that specific type
+4. **Switches** to show the new walkthrough
 
-**Includes**:
-- Component architecture diagrams
-- Data flow diagrams
-- API endpoint structure
-- Database schema (ERD)
-- User interaction flows
-- Visual code structure
+## Walkthrough Type Differences
 
-### 3. Video-Based
-**Best for**: Creating tutorial videos
+### Text-Based
+- **Focus**: Detailed documentation
+- **Content**: Code explanations, setup instructions
+- **Diagrams**: Architecture, data flow
+- **Best for**: Developers reading documentation
 
-**Includes**:
-- Scene-by-scene script
-- Timestamps for each section
-- Voiceover script
-- Visual cues (zoom, highlight, transition)
-- Code walkthrough animations
-- On-screen text and callouts
+### Image-Based
+- **Focus**: Visual diagrams
+- **Content**: Mostly Mermaid diagrams
+- **Diagrams**: Component architecture, API structure, DB schema
+- **Best for**: Visual learners, presentations
 
-## Example Output
+### Video-Based
+- **Focus**: Animated tutorial script
+- **Content**: Voiceover scripts, visual cues, timestamps
+- **Diagrams**: Key concept diagrams
+- **Best for**: Creating video tutorials
 
-### Text-Based Walkthrough
+## Example: Video Walkthrough
 
 ```json
 {
-  "walkthrough_type": "text",
-  "title": "Code Walkthrough: FamilyFlow App",
-  "overview": "A comprehensive family calendar and task management application...",
-  "sections": [
-    {
-      "section_id": "SEC-001",
-      "title": "Project Structure",
-      "content": "The project follows a modern full-stack architecture...",
-      "diagrams": [
-        "graph TD\n  A[Frontend] --> B[API]\n  B --> C[Database]"
-      ],
-      "code_snippets": [
-        {
-          "file": "src/App.tsx",
-          "language": "typescript",
-          "code": "import React from 'react'...",
-          "explanation": "Main application component..."
-        }
-      ]
-    }
+  "section_id": "SEC-001",
+  "title": "Introduction and Project Overview",
+  "timestamp": "0:00 - 0:30",
+  "voiceover": "Welcome to the FamilyFlow walkthrough...",
+  "visual_cues": [
+    "Zoom into project logo",
+    "Highlight key features",
+    "Transition to architecture diagram"
   ],
-  "setup_instructions": {
-    "prerequisites": ["Node.js 18+", "npm"],
-    "installation_steps": [
-      "npm install",
-      "npm run dev"
-    ]
-  },
-  "key_concepts": [
-    {
-      "concept": "React Hooks",
-      "explanation": "Used for state management",
-      "examples": ["useState", "useEffect"]
-    }
-  ],
-  "estimated_reading_time": "15 minutes"
+  "diagrams": ["graph TD\n  A[App] --> B[Calendar]"],
+  "duration": "30 seconds"
 }
 ```
 
-## UI Components
-
-### Walkthrough Type Selection
-
+**Displays as**:
 ```
-┌─────────────────────────────────────────────────────┐
-│  Code Walkthrough Generator                         │
-│  Generate comprehensive documentation...            │
-├─────────────────────────────────────────────────────┤
-│  Select Walkthrough Type                            │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐         │
-│  │    📄    │  │    🖼️    │  │    🎥    │         │
-│  │Text-Based│  │Image-Based│  │Video-Based│        │
-│  │Markdown  │  │  Visual   │  │ Animated  │        │
-│  └──────────┘  └──────────┘  └──────────┘         │
-│                                                     │
-│  [👁️ Generate Walkthrough]                         │
-└─────────────────────────────────────────────────────┘
+▼ Introduction and Project Overview (0:00 - 0:30)
+  
+  🎥 Voiceover Script
+  "Welcome to the FamilyFlow walkthrough..."
+  
+  Visual Cues:
+  • Zoom into project logo
+  • Highlight key features
+  • Transition to architecture diagram
+  
+  Diagrams:
+  [Rendered Mermaid Diagram showing App → Calendar]
 ```
 
-### Generated Walkthrough Display
+## Technical Implementation
 
-```
-┌─────────────────────────────────────────────────────┐
-│  Code Walkthrough: FamilyFlow App     15 minutes   │
-├─────────────────────────────────────────────────────┤
-│  Overview                                           │
-│  A comprehensive family calendar and task...        │
-│                                                     │
-│  Sections                                           │
-│  ▼ Project Structure (2 minutes)                    │
-│    The project follows a modern full-stack...      │
-│    Diagrams: [Mermaid code...]                     │
-│    Code Examples: [src/App.tsx...]                 │
-│                                                     │
-│  ▶ Component Architecture (3 minutes)               │
-│  ▶ API Endpoints (4 minutes)                        │
-│                                                     │
-│  Setup Instructions                                 │
-│  Prerequisites: Node.js 18+, npm                    │
-│  1. npm install                                     │
-│  2. npm run dev                                     │
-│                                                     │
-│  Key Concepts                                       │
-│  React Hooks | State Management | API Integration  │
-└─────────────────────────────────────────────────────┘
+### Mermaid Integration
+
+```typescript
+import mermaid from 'mermaid';
+
+// Initialize
+useEffect(() => {
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    securityLevel: 'loose',
+  });
+}, []);
+
+// Render
+<div className="mermaid">
+  {diagram}
+</div>
 ```
 
-## Files Created/Modified
+### Tab State Management
 
-### Created:
-1. `backend/app/agents/engineering/walkthrough_agent.py` - Walkthrough Agent
-2. `frontend/src/components/WalkthroughGenerator.tsx` - UI component
+```typescript
+const [walkthroughs, setWalkthroughs] = useState<{
+  text: any | null;
+  image: any | null;
+  video: any | null;
+}>({
+  text: null,
+  image: null,
+  video: null
+});
 
-### Modified:
-1. `backend/app/main.py` - Added agent registration and endpoint
-2. `frontend/src/pages/MissionControl.tsx` - Integrated WalkthroughGenerator
-
-## API Usage
-
-### Generate Text Walkthrough
-```bash
-curl -X POST "http://localhost:8050/agent/walkthrough/generate?session_id=392a52dd-119c-46c9-9513-726e5066c289&type=text"
+const [activeViewTab, setActiveViewTab] = useState<WalkthroughType>('text');
 ```
 
-### Generate Image Walkthrough
-```bash
-curl -X POST "http://localhost:8050/agent/walkthrough/generate?session_id=392a52dd-119c-46c9-9513-726e5066c289&type=image"
+### Auto-Load Existing
+
+```typescript
+useEffect(() => {
+  loadExistingWalkthroughs();
+}, [sessionId]);
+
+const loadExistingWalkthroughs = async () => {
+  for (const type of ['text', 'image', 'video']) {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/projects/${sessionId}/walkthrough_${type}`
+      );
+      setWalkthroughs(prev => ({ ...prev, [type]: response.data.data }));
+    } catch (err) {
+      // Not generated yet
+    }
+  }
+};
 ```
 
-### Generate Video Walkthrough
-```bash
-curl -X POST "http://localhost:8050/agent/walkthrough/generate?session_id=392a52dd-119c-46c9-9513-726e5066c289&type=video"
-```
+## Files Modified
 
-## Testing the Implementation
-
-### Step 1: Restart Backend
-```bash
-# Backend needs to pick up new agent
-# Restart if already running
-```
-
-### Step 2: Access UI
-1. Navigate to Mission Control
-2. Scroll to bottom
-3. Click "Generate Code Walkthrough" button
-
-### Step 3: Generate Walkthrough
-1. Select walkthrough type (Text/Image/Video)
-2. Click "Generate Walkthrough"
-3. Wait for generation
-4. View results
-
-### Step 4: Explore Walkthrough
-1. Read overview
-2. Expand sections
-3. View diagrams
-4. Check code snippets
-5. Follow setup instructions
-
-## Benefits
-
-### For Developers
-- **Quick Onboarding**: New team members understand codebase faster
-- **Documentation**: Auto-generated, always up-to-date
-- **Learning**: Understand design patterns and architecture
-
-### For Project Managers
-- **Visibility**: See what was built
-- **Communication**: Share with stakeholders
-- **Documentation**: Maintain project knowledge
-
-### For Users
-- **Transparency**: Understand how the app works
-- **Trust**: See the quality of code
-- **Education**: Learn from the implementation
+1. **`frontend/src/components/WalkthroughGenerator.tsx`** - Complete rewrite
+2. **`backend/app/services/project_storage.py`** - Added `save_project_name()`
+3. **`backend/app/main.py`** - Updated `/session/start` endpoint
+4. **`backend/data/projects/.../metadata.json`** - Added project name
 
 ## Next Steps
 
-### Phase 1: Basic Walkthrough ✅ COMPLETE
-- [x] Create Walkthrough Agent
-- [x] Add API endpoint
-- [x] Create UI component
-- [x] Integrate into Mission Control
+### Refresh Frontend
+```bash
+# Frontend should auto-reload
+# If not, refresh browser (Cmd+R or Ctrl+R)
+```
 
-### Phase 2: Enhanced Features (Future)
-- [ ] Export walkthrough as PDF
-- [ ] Generate actual video from script
-- [ ] Interactive code explorer
-- [ ] Live code execution examples
-- [ ] Comparison with best practices
+### Test Features
 
-### Phase 3: Advanced Features (Future)
-- [ ] AI-powered code review
-- [ ] Security analysis
-- [ ] Performance optimization suggestions
-- [ ] Accessibility audit
-- [ ] SEO recommendations
+1. **View Existing Walkthroughs**:
+   - Click "Generate Code Walkthrough"
+   - Click "View Existing"
+   - See all 3 tabs (Text, Image, Video)
+   - All should be available since you generated them
 
-## Troubleshooting
+2. **Check Mermaid Rendering**:
+   - Click on Image-Based tab
+   - Expand sections
+   - See rendered diagrams (not code)
 
-### Walkthrough Not Generated
+3. **Check Video Display**:
+   - Click on Video-Based tab
+   - Expand sections
+   - See voiceover scripts with purple background
+   - See visual cues as bullet list
 
-**Check**:
-1. Backend is running
-2. Project data exists (user stories, architecture, sprint plan)
-3. Check logs for errors
+4. **Generate New**:
+   - Click "Generate New"
+   - Select a type
+   - Generate
+   - Automatically switches to View mode
 
-### Empty Walkthrough
+## Benefits
 
-**Possible Causes**:
-1. Missing project data
-2. Agent needs more context
+✅ **Better UX**: Clear separation between generate and view  
+✅ **Visual Diagrams**: Mermaid renders properly  
+✅ **All Types Visible**: Can view all 3 walkthroughs  
+✅ **Project Name**: Shows correct name everywhere  
+✅ **Copy Diagrams**: Easy to copy Mermaid code  
+✅ **Video Scripts**: Properly formatted with voiceover and cues  
 
-**Solution**: Ensure all previous steps are complete
-
-### UI Not Showing
-
-**Check**:
-1. Frontend is refreshed
-2. "Generate Code Walkthrough" button is clicked
-3. Component is imported correctly
-
-## Related Documentation
-
-- E2E Testing: `docs/E2E_TESTING.md`
-- Story Map: `docs/STORY_MAP.md`
-- Dependency Handling: `docs/DEPENDENCY_HANDLING.md`
+The walkthrough generator is now fully functional with all requested features! 🎉
