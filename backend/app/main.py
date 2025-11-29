@@ -46,6 +46,7 @@ app_settings = AppSettings(
 
 # Register Agents
 from app.agents.engineering.e2e_test_agent import E2ETestAgent
+from app.agents.engineering.walkthrough_agent import WalkthroughAgent
 
 # Initialize agents
 idea_agent = IdeaGeneratorAgent()
@@ -59,6 +60,7 @@ frontend_dev_agent = FrontendDevAgent()
 qa_agent = QAAgent()
 debugger_agent = DebuggerAgent()
 e2e_test_agent = E2ETestAgent()
+walkthrough_agent = WalkthroughAgent()
 
 orchestrator.register_agent("idea_generator", idea_agent)
 orchestrator.register_agent("product_requirements", prd_agent)
@@ -71,6 +73,7 @@ orchestrator.register_agent("frontend_dev", frontend_dev_agent)
 orchestrator.register_agent("qa_agent", qa_agent)
 orchestrator.register_agent("debugger_agent", debugger_agent)
 orchestrator.register_agent("e2e_test", e2e_test_agent)
+orchestrator.register_agent("walkthrough", walkthrough_agent)
 
 # ... (previous models)
 
@@ -384,6 +387,69 @@ async def generate_e2e_tests(session_id: str):
         logger.error(f"Failed to generate E2E tests: {e}")
         session.add_log(f"❌ Failed to generate E2E tests: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/agent/walkthrough/generate")
+async def generate_walkthrough(session_id: str, type: str = "text"):
+    """
+    Generate code walkthrough in text, image, or video format.
+    
+    Args:
+        session_id: Project session ID
+        type: Walkthrough type - "text", "image", or "video"
+    """
+    session = orchestrator.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    # Validate walkthrough type
+    if type not in ["text", "image", "video"]:
+        raise HTTPException(status_code=400, detail="Invalid walkthrough type. Must be 'text', 'image', or 'video'")
+    
+    try:
+        # Load project data
+        user_stories_data = project_storage.load_step(session_id, "user_stories")
+        architecture_data = project_storage.load_step(session_id, "architecture")
+        sprint_plan_data = project_storage.load_step(session_id, "sprint_plan")
+        
+        # Get project metadata
+        metadata = project_storage.get_project_summary(session_id)
+        project_name = metadata.get("project_name", "Untitled Project") if metadata else "Untitled Project"
+        
+        # Prepare project data
+        project_data = {
+            "project_name": project_name,
+            "user_stories": user_stories_data if isinstance(user_stories_data, list) else [],
+            "architecture": architecture_data if isinstance(architecture_data, dict) else {},
+            "sprint_plan": sprint_plan_data if isinstance(sprint_plan_data, list) else [],
+            "code_files": {
+                "summary": f"Generated code for {project_name}"
+            }
+        }
+        
+        session.add_log(f"📝 Generating {type.upper()} walkthrough...")
+        
+        result = await walkthrough_agent.generate_walkthrough(
+            walkthrough_type=type,
+            project_data=project_data,
+            session_id=session_id
+        )
+        
+        session.add_log(f"✓ Generated {type} walkthrough with {len(result.get('sections', []))} sections")
+        
+        # Save walkthrough
+        try:
+            file_path = project_storage.save_step(session_id, f"walkthrough_{type}", result)
+            session.add_log(f"💾 Saved walkthrough to {file_path}")
+        except Exception as e:
+            logger.error(f"Failed to save walkthrough: {e}")
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Failed to generate walkthrough: {e}")
+        session.add_log(f"❌ Failed to generate walkthrough: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/agent/software_architect/run")
 async def run_software_architect(session_id: str, request: DesignArchitectureRequest):

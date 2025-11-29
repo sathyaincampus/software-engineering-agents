@@ -6,6 +6,7 @@ import CodeViewer from '../components/CodeViewer';
 import CodeWalkthrough from '../components/CodeWalkthrough';
 import StoryMapViewer from '../components/StoryMapViewer';
 import TestPlanViewer from '../components/TestPlanViewer';
+import WalkthroughGenerator from '../components/WalkthroughGenerator';
 import { useProject } from '../context/ProjectContext';
 import {
     Lightbulb,
@@ -998,7 +999,7 @@ const MissionControl: React.FC = () => {
                         {/* Code Walkthrough */}
                         {showWalkthrough && sessionId && (
                             <div className="mt-6">
-                                <CodeWalkthrough sessionId={sessionId} />
+                                <WalkthroughGenerator sessionId={sessionId} onClose={() => setShowWalkthrough(false)} />
                             </div>
                         )}
                     </div>
