@@ -631,442 +631,453 @@ const MissionControl: React.FC = () => {
     };
 
     return (
-        <div className="grid grid-cols-12 gap-8 h-[calc(100vh-8rem)]">
-            {/* Left Column: Workflow */}
-            <div className={`${logsCollapsed ? 'col-span-11' : 'col-span-8'} space-y-8 overflow-y-auto pr-4 pb-20 transition-all duration-300`}>
+        <div className="relative h-[calc(100vh-8rem)]">
+            <div className={`grid gap-8 h-full transition-all duration-300 ${logsCollapsed ? 'grid-cols-1' : 'grid-cols-12'}`}>
+                {/* Left Column: Workflow */}
+                <div className={`${logsCollapsed ? 'col-span-1' : 'col-span-8'} space-y-8 overflow-y-auto pr-4 pb-20`}>
 
-                {/* Header */}
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight mb-2">Mission Control</h2>
-                    <p className="text-gray-500">Orchestrate your AI engineering team from a single command center.</p>
-                </div>
-
-                {/* Step 0: Initialization (Hero Section) */}
-                {activeStep === 0 && (
-                    <div className="relative overflow-hidden rounded-3xl border border-[hsl(var(--border))] bg-gradient-to-b from-[hsl(var(--card))] to-[hsl(var(--background))] shadow-2xl text-center space-y-8 max-w-3xl mx-auto mt-10 p-12">
-                        {/* Decorative Background Elements */}
-                        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                            <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-                            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-700" />
-                        </div>
-
-                        <div className="relative z-10">
-                            <div className="w-24 h-24 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-blue-500/30 transform hover:scale-105 transition-transform duration-300">
-                                <Sparkles className="text-white w-12 h-12" />
+                    {/* Header */}
+                    <div>
+                        <h2 className="text-3xl font-bold tracking-tight mb-2">Mission Control</h2>
+                        <p className="text-gray-500">Orchestrate your AI engineering team from a single command center.</p>
+                    </div>
+                    {/* Step 0: Initialization (Hero Section) */}
+                    {activeStep === 0 && (
+                        <div className="relative overflow-hidden rounded-3xl border border-[hsl(var(--border))] bg-gradient-to-b from-[hsl(var(--card))] to-[hsl(var(--background))] shadow-2xl text-center space-y-8 max-w-3xl mx-auto mt-10 p-12">
+                            {/* Decorative Background Elements */}
+                            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                                <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+                                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-700" />
                             </div>
 
-                            <h3 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--foreground))] to-gray-500 mb-4">
-                                Build the Future, Autonomously.
-                            </h3>
-                            <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed">
-                                Initialize a new engineering session. Your AI squad is ready to strategize, design, and build your vision from zero to one.
-                            </p>
-
-                            <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto mt-10">
-                                <div className="flex-1 relative group">
-                                    <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-200"></div>
-                                    <input
-                                        type="text"
-                                        placeholder="Project Name (e.g. Mars Colony OS)"
-                                        className="relative w-full bg-[hsl(var(--card))] text-[hsl(var(--foreground))] border border-[hsl(var(--border))] rounded-lg px-5 py-3.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm"
-                                        value={projectName}
-                                        onChange={(e) => setProjectName(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && startSession()}
-                                    />
+                            <div className="relative z-10">
+                                <div className="w-24 h-24 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-blue-500/30 transform hover:scale-105 transition-transform duration-300">
+                                    <Sparkles className="text-white w-12 h-12" />
                                 </div>
-                                <button
-                                    onClick={startSession}
-                                    disabled={loading}
-                                    className="relative px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group"
-                                >
-                                    {loading ? <Loader2 className="animate-spin" /> : <Play size={20} className="fill-current" />}
-                                    <span>Initialize</span>
-                                </button>
+
+                                <h3 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--foreground))] to-gray-500 mb-4">
+                                    Build the Future, Autonomously.
+                                </h3>
+                                <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed">
+                                    Initialize a new engineering session. Your AI squad is ready to strategize, design, and build your vision from zero to one.
+                                </p>
+
+                                <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto mt-10">
+                                    <div className="flex-1 relative group">
+                                        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-200"></div>
+                                        <input
+                                            type="text"
+                                            placeholder="Project Name (e.g. Mars Colony OS)"
+                                            className="relative w-full bg-[hsl(var(--card))] text-[hsl(var(--foreground))] border border-[hsl(var(--border))] rounded-lg px-5 py-3.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm"
+                                            value={projectName}
+                                            onChange={(e) => setProjectName(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && startSession()}
+                                        />
+                                    </div>
+                                    <button
+                                        onClick={startSession}
+                                        disabled={loading}
+                                        className="relative px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group"
+                                    >
+                                        {loading ? <Loader2 className="animate-spin" /> : <Play size={20} className="fill-current" />}
+                                        <span>Initialize</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
-
-                {/* Step 1: Strategy */}
-                <StepCard
-                    title="Strategic Planning"
-                    icon={Lightbulb}
-                    isActive={activeStep === 1}
-                    isComplete={activeStep > 1}
-                    action={activeStep === 1 && selectedIdea && (
-                        <button onClick={generatePRD} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
-                            Approve Strategy & Generate PRD <ArrowRight size={18} />
-                        </button>
                     )}
-                >
-                    <div className="flex gap-4">
-                        <input
-                            type="text"
-                            placeholder="Describe your app idea (e.g. 'A marketplace for used spaceships')...."
-                            className="flex-1 input-field"
-                            value={keywords}
-                            onChange={(e) => setKeywords(e.target.value)}
-                        />
-                        <button onClick={generateIdeas} disabled={loading} className="btn-secondary px-6 rounded-lg font-bold">
-                            {loading ? <Loader2 className="animate-spin" /> : 'Brainstorm'}
-                        </button>
-                    </div>
 
-                    {ideas && (
-                        <div className="grid grid-cols-2 gap-4 mt-4">
-                            {ideas.map((idea, idx) => (
-                                <div
-                                    key={idx}
-                                    onClick={() => setSelectedIdea(idea)}
-                                    className={`p-5 rounded-xl border cursor-pointer transition-all duration-200 group ${selectedIdea === idea
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-500'
-                                        : 'border-[hsl(var(--border))] hover:border-gray-400 dark:hover:border-gray-600 bg-[hsl(var(--background))]'
-                                        }`}
-                                >
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h4 className="font-bold text-lg group-hover:text-blue-500 transition-colors">{idea.title}</h4>
-                                        {selectedIdea === idea && <CheckCircle className="text-blue-500" size={18} />}
+                    {/* Step 1: Strategy */}
+                    <StepCard
+                        title="Strategic Planning"
+                        icon={Lightbulb}
+                        isActive={activeStep === 1}
+                        isComplete={activeStep > 1}
+                        action={activeStep === 1 && selectedIdea && (
+                            <button onClick={generatePRD} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
+                                Approve Strategy & Generate PRD <ArrowRight size={18} />
+                            </button>
+                        )}
+                    >
+                        <div className="flex gap-4">
+                            <input
+                                type="text"
+                                placeholder="Describe your app idea (e.g. 'A marketplace for used spaceships')...."
+                                className="flex-1 input-field"
+                                value={keywords}
+                                onChange={(e) => setKeywords(e.target.value)}
+                            />
+                            <button onClick={generateIdeas} disabled={loading} className="btn-secondary px-6 rounded-lg font-bold">
+                                {loading ? <Loader2 className="animate-spin" /> : 'Brainstorm'}
+                            </button>
+                        </div>
+
+                        {ideas && (
+                            <div className="grid grid-cols-2 gap-4 mt-4">
+                                {ideas.map((idea, idx) => (
+                                    <div
+                                        key={idx}
+                                        onClick={() => setSelectedIdea(idea)}
+                                        className={`p-5 rounded-xl border cursor-pointer transition-all duration-200 group ${selectedIdea === idea
+                                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-500'
+                                            : 'border-[hsl(var(--border))] hover:border-gray-400 dark:hover:border-gray-600 bg-[hsl(var(--background))]'
+                                            }`}
+                                    >
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h4 className="font-bold text-lg group-hover:text-blue-500 transition-colors">{idea.title}</h4>
+                                            {selectedIdea === idea && <CheckCircle className="text-blue-500" size={18} />}
+                                        </div>
+                                        <p className="text-sm text-gray-500 leading-relaxed">{idea.pitch}</p>
                                     </div>
-                                    <p className="text-sm text-gray-500 leading-relaxed">{idea.pitch}</p>
+                                ))}
+                            </div>
+                        )}
+                    </StepCard>
+
+                    {/* Step 2: PRD */}
+                    <StepCard
+                        title="Product Requirements"
+                        icon={FileText}
+                        isActive={activeStep === 2}
+                        isComplete={activeStep > 2}
+                        onRegenerate={() => generatePRD()}
+                        action={activeStep === 2 && (
+                            <button onClick={analyzePRD} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
+                                Analyze Requirements <ArrowRight size={18} />
+                            </button>
+                        )}
+                    >
+                        <MarkdownViewer content={prd || ''} title="Product Requirements Document" />
+                    </StepCard>
+
+                    {/* Step 3: Analysis */}
+                    <StepCard
+                        title="Requirement Analysis"
+                        icon={Search}
+                        isActive={activeStep === 3}
+                        isComplete={activeStep > 3}
+                        onRegenerate={() => analyzePRD()}
+                        action={activeStep === 3 && (
+                            <button onClick={designArchitecture} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
+                                Design Architecture <ArrowRight size={18} />
+                            </button>
+                        )}
+                    >
+                        <div className="grid grid-cols-2 gap-4">
+                            {userStories?.map((story, i) => (
+                                <div key={i} className="p-4 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] hover:shadow-md transition-shadow">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-xs font-mono text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">{story.id}</span>
+                                        <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${story.priority === 'High' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'
+                                            }`}>{story.priority}</span>
+                                    </div>
+                                    <p className="font-medium text-sm">{story.title}</p>
                                 </div>
                             ))}
                         </div>
-                    )}
-                </StepCard>
+                    </StepCard>
 
-                {/* Step 2: PRD */}
-                <StepCard
-                    title="Product Requirements"
-                    icon={FileText}
-                    isActive={activeStep === 2}
-                    isComplete={activeStep > 2}
-                    onRegenerate={() => generatePRD()}
-                    action={activeStep === 2 && (
-                        <button onClick={analyzePRD} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
-                            Analyze Requirements <ArrowRight size={18} />
-                        </button>
-                    )}
-                >
-                    <MarkdownViewer content={prd || ''} title="Product Requirements Document" />
-                </StepCard>
-
-                {/* Step 3: Analysis */}
-                <StepCard
-                    title="Requirement Analysis"
-                    icon={Search}
-                    isActive={activeStep === 3}
-                    isComplete={activeStep > 3}
-                    onRegenerate={() => analyzePRD()}
-                    action={activeStep === 3 && (
-                        <button onClick={designArchitecture} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
-                            Design Architecture <ArrowRight size={18} />
-                        </button>
-                    )}
-                >
-                    <div className="grid grid-cols-2 gap-4">
-                        {userStories?.map((story, i) => (
-                            <div key={i} className="p-4 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] hover:shadow-md transition-shadow">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-xs font-mono text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">{story.id}</span>
-                                    <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${story.priority === 'High' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'
-                                        }`}>{story.priority}</span>
-                                </div>
-                                <p className="font-medium text-sm">{story.title}</p>
-                            </div>
-                        ))}
-                    </div>
-                </StepCard>
-
-                {/* Step 4: Architecture */}
-                <StepCard
-                    title="System Architecture"
-                    icon={Cpu}
-                    isActive={activeStep === 4}
-                    isComplete={activeStep > 4}
-                    onRegenerate={() => designArchitecture()}
-                    action={activeStep === 4 && (
-                        <button onClick={createSprintPlan} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
-                            Create Sprint Plan <ArrowRight size={18} />
-                        </button>
-                    )}
-                >
-                    {architecture && (
-                        <ArchitectureViewer data={architecture} />
-                    )}
-                </StepCard>
-
-                {/* Step 5: Engineering */}
-                <StepCard
-                    title="Engineering Sprint"
-                    icon={Code}
-                    isActive={activeStep === 5}
-                    isComplete={activeStep > 5}
-                    onRegenerate={() => createSprintPlan()}
-                >
-                    <div className="space-y-6">
-                        {/* Tab Navigation */}
-                        <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
-                            <button
-                                onClick={() => setSprintView('tasks')}
-                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${sprintView === 'tasks'
-                                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-                                    }`}
-                            >
-                                Task List
+                    {/* Step 4: Architecture */}
+                    <StepCard
+                        title="System Architecture"
+                        icon={Cpu}
+                        isActive={activeStep === 4}
+                        isComplete={activeStep > 4}
+                        onRegenerate={() => designArchitecture()}
+                        action={activeStep === 4 && (
+                            <button onClick={createSprintPlan} disabled={loading} className="w-full btn-primary py-3 rounded-xl flex items-center justify-center gap-2">
+                                Create Sprint Plan <ArrowRight size={18} />
                             </button>
-                            <button
-                                onClick={() => setSprintView('storymap')}
-                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${sprintView === 'storymap'
-                                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-                                    }`}
-                            >
-                                Story Map
-                            </button>
-                            <button
-                                onClick={() => setSprintView('tests')}
-                                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${sprintView === 'tests'
-                                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-                                    }`}
-                            >
-                                E2E Tests
-                            </button>
-                        </div>
-
-                        {/* Task List View */}
-                        {sprintView === 'tasks' && (
-                            <div className="space-y-3">
-                                {(Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).map((task: any, i: number) => {
-                                    const status = taskStatuses[task.task_id] || 'pending';
-                                    return (
-                                        <div key={i} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${status === 'error' ? 'border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-900/10' :
-                                            status === 'complete' ? 'border-green-300 dark:border-green-800 bg-green-50 dark:bg-green-900/10' :
-                                                status === 'loading' ? 'border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/10' :
-                                                    'border-[hsl(var(--border))] bg-[hsl(var(--background))]'
-                                            }`}>
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-mono text-gray-500">
-                                                    {i + 1}
-                                                </div>
-                                                <div>
-                                                    <h5 className="font-medium text-sm">{task.title}</h5>
-                                                    <span className="text-xs text-gray-500">{task.task_id}</span>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-xs px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300 border border-purple-100 dark:border-purple-800">
-                                                    {task.assignee}
-                                                </span>
-                                                <StatusBadge status={status} />
-                                                {/* Retry button for failed tasks */}
-                                                {status === 'error' && (
-                                                    <button
-                                                        onClick={() => retryTask(task)}
-                                                        className="px-3 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
-                                                        title="Retry this task"
-                                                    >
-                                                        <RefreshCw size={12} />
-                                                        Retry
-                                                    </button>
-                                                )}
-                                                {/* Run button for pending tasks */}
-                                                {status === 'pending' && Object.keys(taskStatuses).length > 0 && (
-                                                    <button
-                                                        onClick={() => retryTask(task)}
-                                                        className="px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
-                                                        title="Run this task"
-                                                    >
-                                                        <Play size={12} />
-                                                        Run
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
                         )}
-
-                        {/* Story Map View */}
-                        {sprintView === 'storymap' && sessionId && (
-                            <StoryMapViewer sessionId={sessionId} />
+                    >
+                        {architecture && (
+                            <ArchitectureViewer data={architecture} />
                         )}
+                    </StepCard>
 
-                        {/* E2E Tests View */}
-                        {sprintView === 'tests' && sessionId && (
-                            <TestPlanViewer sessionId={sessionId} />
-                        )}
-
-                        {Object.values(taskStatuses).some(s => s === 'loading') && (
-                            <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 flex items-center justify-center gap-3 text-blue-600 dark:text-blue-400">
-                                <Loader2 className="animate-spin" />
-                                ```
-                                <span className="font-medium">Agents are actively coding...</span>
-                            </div>
-                        )}
-
-                        {Object.values(taskStatuses).every(s => s === 'complete') && Object.keys(taskStatuses).length > 0 && (
-                            <div className="mt-6 space-y-3">
-                                <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-800 flex items-center justify-center gap-3 text-green-600 dark:text-green-400">
-                                    <CheckCircle />
-                                    <span className="font-medium">Sprint successfully completed!</span>
-                                </div>
+                    {/* Step 5: Engineering */}
+                    <StepCard
+                        title="Engineering Sprint"
+                        icon={Code}
+                        isActive={activeStep === 5}
+                        isComplete={activeStep > 5}
+                        onRegenerate={() => createSprintPlan()}
+                    >
+                        <div className="space-y-6">
+                            {/* Tab Navigation */}
+                            <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
                                 <button
-                                    onClick={generateE2ETests}
-                                    disabled={loading}
-                                    className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                                    onClick={() => setSprintView('tasks')}
+                                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${sprintView === 'tasks'
+                                        ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                        }`}
                                 >
-                                    🧪 Generate E2E Test Plan
+                                    Task List
+                                </button>
+                                <button
+                                    onClick={() => setSprintView('storymap')}
+                                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${sprintView === 'storymap'
+                                        ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                        }`}
+                                >
+                                    Story Map
+                                </button>
+                                <button
+                                    onClick={() => setSprintView('tests')}
+                                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${sprintView === 'tests'
+                                        ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                        }`}
+                                >
+                                    E2E Tests
                                 </button>
                             </div>
-                        )}
 
-                        {/* Sprint Control Buttons */}
-                        {Object.keys(taskStatuses).length === 0 && (Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).length > 0 && (
-                            <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800">
-                                <button
-                                    onClick={() => runSprint(false)}
-                                    disabled={loading}
-                                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
-                                >
-                                    <Play size={18} />
-                                    Resume Sprint Execution
-                                </button>
-                            </div>
-                        )}
+                            {/* Task List View */}
+                            {sprintView === 'tasks' && (
+                                <div className="space-y-3">
+                                    {(Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).map((task: any, i: number) => {
+                                        const status = taskStatuses[task.task_id] || 'pending';
+                                        return (
+                                            <div key={i} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${status === 'error' ? 'border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-900/10' :
+                                                status === 'complete' ? 'border-green-300 dark:border-green-800 bg-green-50 dark:bg-green-900/10' :
+                                                    status === 'loading' ? 'border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/10' :
+                                                        'border-[hsl(var(--border))] bg-[hsl(var(--background))]'
+                                                }`}>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-mono text-gray-500">
+                                                        {i + 1}
+                                                    </div>
+                                                    <div>
+                                                        <h5 className="font-medium text-sm">{task.title}</h5>
+                                                        <span className="text-xs text-gray-500">{task.task_id}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-xs px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300 border border-purple-100 dark:border-purple-800">
+                                                        {task.assignee}
+                                                    </span>
+                                                    <StatusBadge status={status} />
+                                                    {/* Retry button for failed tasks */}
+                                                    {status === 'error' && (
+                                                        <button
+                                                            onClick={() => retryTask(task)}
+                                                            className="px-3 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
+                                                            title="Retry this task"
+                                                        >
+                                                            <RefreshCw size={12} />
+                                                            Retry
+                                                        </button>
+                                                    )}
+                                                    {/* Run button for pending tasks */}
+                                                    {status === 'pending' && Object.keys(taskStatuses).length > 0 && (
+                                                        <button
+                                                            onClick={() => retryTask(task)}
+                                                            className="px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-1.5 transition-colors"
+                                                            title="Run this task"
+                                                        >
+                                                            <Play size={12} />
+                                                            Run
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
 
-                        {/* Resume Sprint Button - shows when there are incomplete tasks */}
-                        {Object.keys(taskStatuses).length > 0 &&
-                            !Object.values(taskStatuses).every(s => s === 'complete') &&
-                            !Object.values(taskStatuses).some(s => s === 'loading') && (
-                                <div className="mt-6 p-4 rounded-xl bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-800">
-                                    <div className="mb-3 text-sm text-orange-700 dark:text-orange-300 text-center">
-                                        {Object.values(taskStatuses).filter(s => s === 'error').length} failed, {' '}
-                                        {Object.values(taskStatuses).filter(s => s === 'pending').length} pending
+                            {/* Story Map View */}
+                            {sprintView === 'storymap' && sessionId && (
+                                <StoryMapViewer sessionId={sessionId} />
+                            )}
+
+                            {/* E2E Tests View */}
+                            {sprintView === 'tests' && sessionId && (
+                                <TestPlanViewer sessionId={sessionId} />
+                            )}
+
+                            {Object.values(taskStatuses).some(s => s === 'loading') && (
+                                <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 flex items-center justify-center gap-3 text-blue-600 dark:text-blue-400">
+                                    <Loader2 className="animate-spin" />
+                                    ```
+                                    <span className="font-medium">Agents are actively coding...</span>
+                                </div>
+                            )}
+
+                            {Object.values(taskStatuses).every(s => s === 'complete') && Object.keys(taskStatuses).length > 0 && (
+                                <div className="mt-6 space-y-3">
+                                    <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-800 flex items-center justify-center gap-3 text-green-600 dark:text-green-400">
+                                        <CheckCircle />
+                                        <span className="font-medium">Sprint successfully completed!</span>
                                     </div>
                                     <button
-                                        onClick={() => runSprint(true)}
+                                        onClick={generateE2ETests}
                                         disabled={loading}
-                                        className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                                        className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                                     >
-                                        <RefreshCw size={18} />
-                                        Resume Sprint (Continue from where it left off)
+                                        🧪 Generate E2E Test Plan
                                     </button>
                                 </div>
                             )}
 
-
-                        {/* Code Browser Button */}
-                        {Object.values(taskStatuses).some(s => s === 'complete') && (
-                            <div className="mt-6 pt-6 border-t border-[hsl(var(--border))]">
-                                <button
-                                    onClick={() => {
-                                        if (!showCodeBrowser) {
-                                            fetchProjectFiles();
-                                        } else {
-                                            setShowCodeBrowser(false);
-                                        }
-                                    }}
-                                    className="w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl flex items-center justify-center gap-2 transition-colors"
-                                >
-                                    <Layout size={18} />
-                                    {showCodeBrowser ? 'Hide Code Viewer' : 'View & Debug Code'}
-                                </button>
-                            </div>
-                        )}
-
-                        {/* Code Viewer with Debugging */}
-                        {showCodeBrowser && projectFiles.length > 0 && (
-                            <div className="mt-6">
-                                <CodeViewer
-                                    sessionId={sessionId || ''}
-                                    files={projectFiles}
-                                    onRefresh={fetchProjectFiles}
-                                />
-                            </div>
-                        )}
-
-                        {/* Code Walkthrough Button - Always show, positioned below code viewer if open */}
-                        {Object.values(taskStatuses).some(s => s === 'complete') && (
-                            <div className="mt-4">
-                                <button
-                                    onClick={() => setShowWalkthrough(!showWalkthrough)}
-                                    className="w-full py-3 bg-purple-100 dark:bg-purple-900/20 hover:bg-purple-200 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-xl flex items-center justify-center gap-2 transition-colors font-semibold"
-                                >
-                                    <FileText size={18} />
-                                    {showWalkthrough ? 'Hide Walkthrough Generator' : 'Generate Code Walkthrough'}
-                                </button>
-                            </div>
-                        )}
-
-                        {/* Code Walkthrough */}
-                        {showWalkthrough && sessionId && (
-                            <div className="mt-6">
-                                <WalkthroughGenerator sessionId={sessionId} onClose={() => setShowWalkthrough(false)} />
-                            </div>
-                        )}
-                    </div>
-                </StepCard>
-
-            </div>
-
-            {/* Right Column: Logs */}
-            <div className={`${logsCollapsed ? 'col-span-1' : 'col-span-4'} transition-all duration-300`}>
-                <div className="sticky top-8 bg-[#0d1117] rounded-2xl border border-gray-800 shadow-2xl overflow-hidden flex flex-col h-[calc(100vh-10rem)]">
-                    <div className="p-4 border-b border-gray-800 flex items-center justify-between bg-[#161b22]">
-                        <div className="flex items-center gap-2 text-gray-400">
-                            {!logsCollapsed && (
-                                <>
-                                    <Terminal size={16} />
-                                    <span className="text-xs font-bold uppercase tracking-wider">System Logs</span>
-                                </>
-                            )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                            {!logsCollapsed && (
-                                <div className="flex gap-1.5">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50" />
+                            {/* Sprint Control Buttons */}
+                            {Object.keys(taskStatuses).length === 0 && (Array.isArray(sprintPlan) ? sprintPlan : (sprintPlan?.sprint_plan || [])).length > 0 && (
+                                <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800">
+                                    <button
+                                        onClick={() => runSprint(false)}
+                                        disabled={loading}
+                                        className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                                    >
+                                        <Play size={18} />
+                                        Resume Sprint Execution
+                                    </button>
                                 </div>
                             )}
+
+                            {/* Resume Sprint Button - shows when there are incomplete tasks */}
+                            {Object.keys(taskStatuses).length > 0 &&
+                                !Object.values(taskStatuses).every(s => s === 'complete') &&
+                                !Object.values(taskStatuses).some(s => s === 'loading') && (
+                                    <div className="mt-6 p-4 rounded-xl bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-800">
+                                        <div className="mb-3 text-sm text-orange-700 dark:text-orange-300 text-center">
+                                            {Object.values(taskStatuses).filter(s => s === 'error').length} failed, {' '}
+                                            {Object.values(taskStatuses).filter(s => s === 'pending').length} pending
+                                        </div>
+                                        <button
+                                            onClick={() => runSprint(true)}
+                                            disabled={loading}
+                                            className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                                        >
+                                            <RefreshCw size={18} />
+                                            Resume Sprint (Continue from where it left off)
+                                        </button>
+                                    </div>
+                                )}
+
+
+                            {/* Code Browser Button */}
+                            {Object.values(taskStatuses).some(s => s === 'complete') && (
+                                <div className="mt-6 pt-6 border-t border-[hsl(var(--border))]">
+                                    <button
+                                        onClick={() => {
+                                            if (!showCodeBrowser) {
+                                                fetchProjectFiles();
+                                            } else {
+                                                setShowCodeBrowser(false);
+                                            }
+                                        }}
+                                        className="w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                                    >
+                                        <Layout size={18} />
+                                        {showCodeBrowser ? 'Hide Code Viewer' : 'View & Debug Code'}
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Code Viewer with Debugging */}
+                            {showCodeBrowser && projectFiles.length > 0 && (
+                                <div className="mt-6">
+                                    <CodeViewer
+                                        sessionId={sessionId || ''}
+                                        files={projectFiles}
+                                        onRefresh={fetchProjectFiles}
+                                    />
+                                </div>
+                            )}
+
+                            {/* Code Walkthrough Button - Always show, positioned below code viewer if open */}
+                            {Object.values(taskStatuses).some(s => s === 'complete') && (
+                                <div className="mt-4">
+                                    <button
+                                        onClick={() => setShowWalkthrough(!showWalkthrough)}
+                                        className="w-full py-3 bg-purple-100 dark:bg-purple-900/20 hover:bg-purple-200 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-xl flex items-center justify-center gap-2 transition-colors font-semibold"
+                                    >
+                                        <FileText size={18} />
+                                        {showWalkthrough ? 'Hide Walkthrough Generator' : 'Generate Code Walkthrough'}
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Code Walkthrough */}
+                            {showWalkthrough && sessionId && (
+                                <div className="mt-6">
+                                    <WalkthroughGenerator sessionId={sessionId} onClose={() => setShowWalkthrough(false)} />
+                                </div>
+                            )}
+                        </div>
+                    </StepCard>
+
+                </div>
+
+                {/* Right Column: Logs - Only show in grid when expanded */}
+                {!logsCollapsed && (
+                    <div className="col-span-4">
+                        <div className="sticky top-8 bg-[#0d1117] rounded-2xl border border-gray-800 shadow-2xl overflow-hidden flex flex-col h-[calc(100vh-10rem)]">
+                            <div className="p-4 border-b border-gray-800 flex items-center justify-between bg-[#161b22]">
+                                <div className="flex items-center gap-2 text-gray-400">
+                                    <Terminal size={16} />
+                                    <span className="text-xs font-bold uppercase tracking-wider">System Logs</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex gap-1.5">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50" />
+                                    </div>
+                                    <button
+                                        onClick={toggleLogs}
+                                        className="p-1 hover:bg-gray-800 rounded transition-colors text-gray-400 hover:text-white"
+                                        title="Collapse logs"
+                                    >
+                                        <ChevronRight size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-4 font-mono text-xs space-y-3">
+                                {logs.length === 0 && (
+                                    <div className="text-gray-600 italic text-center mt-10">
+                                        Waiting for system events...
+                                    </div>
+                                )}
+                                {logs.map((log, i) => (
+                                    <div key={i} className="flex gap-3 animate-in fade-in slide-in-from-bottom-1 duration-300">
+                                        <span className="text-gray-600 shrink-0">{log.split(']')[0]}]</span>
+                                        <span className="text-green-400/90 break-words">{log.split(']')[1]}</span>
+                                    </div>
+                                ))}
+                                <div ref={logsEndRef} />
+                            </div>
+                            {loading && (
+                                <div className="p-2 bg-blue-500/10 border-t border-blue-500/20 text-blue-400 text-xs flex items-center justify-center gap-2">
+                                    <Loader2 size={10} className="animate-spin" /> Processing...
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Collapsed Logs - Fixed position when collapsed */}
+            {logsCollapsed && (
+                <div className="fixed top-20 right-4 z-20">
+                    <div className="bg-[#0d1117] rounded-xl border border-gray-800 shadow-2xl overflow-hidden">
+                        <div className="p-2 bg-[#161b22]">
                             <button
                                 onClick={toggleLogs}
                                 className="p-1 hover:bg-gray-800 rounded transition-colors text-gray-400 hover:text-white"
-                                title={logsCollapsed ? "Expand logs" : "Collapse logs"}
+                                title="Expand logs"
                             >
-                                {logsCollapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+                                <ChevronLeft size={16} />
                             </button>
                         </div>
                     </div>
-                    {!logsCollapsed && (
-                        <div className="flex-1 overflow-y-auto p-4 font-mono text-xs space-y-3">
-                            {logs.length === 0 && (
-                                <div className="text-gray-600 italic text-center mt-10">
-                                    Waiting for system events...
-                                </div>
-                            )}
-                            {logs.map((log, i) => (
-                                <div key={i} className="flex gap-3 animate-in fade-in slide-in-from-bottom-1 duration-300">
-                                    <span className="text-gray-600 shrink-0">{log.split(']')[0]}]</span>
-                                    <span className="text-green-400/90 break-words">{log.split(']')[1]}</span>
-                                </div>
-                            ))}
-                            <div ref={logsEndRef} />
-                        </div>
-                    )}
-                    {loading && (
-                        <div className="p-2 bg-blue-500/10 border-t border-blue-500/20 text-blue-400 text-xs flex items-center justify-center gap-2">
-                            <Loader2 size={10} className="animate-spin" /> Processing...
-                        </div>
-                    )}
                 </div>
-            </div>
+            )}
         </div>
     );
 };
 
 export default MissionControl;
-

@@ -131,10 +131,10 @@ const ProjectSidebar = () => {
                                 <button
                                     key={project.session_id}
                                     onClick={() => handleProjectClick(project.session_id)}
-                                    className={`w - full text - left p - 3 rounded - lg transition - all ${isActive
-                                        ? 'bg-blue-600/20 border border-blue-500/50'
-                                        : 'hover:bg-gray-800/50 border border-transparent'
-                                        } `}
+                                    className={`w-full text-left p-3 rounded-lg transition-all ${isActive
+                                            ? 'bg-blue-600/20 border border-blue-500/50'
+                                            : 'hover:bg-gray-800/50 border border-transparent'
+                                        }`}
                                 >
                                     <div className="flex items-start gap-2">
                                         {isActive ? (
@@ -158,9 +158,9 @@ const ProjectSidebar = () => {
                                                 </div>
                                                 <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
                                                     <div
-                                                        className={`h - full transition - all ${isActive ? 'bg-blue-500' : 'bg-gray-600'
-                                                            } `}
-                                                        style={{ width: `${progress}% ` }}
+                                                        className={`h-full transition-all ${isActive ? 'bg-blue-500' : 'bg-gray-600'
+                                                            }`}
+                                                        style={{ width: `${progress}%` }}
                                                     />
                                                 </div>
                                             </div>

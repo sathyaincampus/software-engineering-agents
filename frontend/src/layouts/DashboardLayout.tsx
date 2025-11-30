@@ -55,6 +55,22 @@ const DashboardLayout: React.FC = () => {
 
     const NavItem = ({ to, icon: Icon, label }: any) => {
         const isActive = location.pathname === to;
+
+        if (sidebarCollapsed) {
+            return (
+                <Link
+                    to={to}
+                    className={`group flex items-center justify-center mx-2 py-2.5 rounded-lg transition-all duration-200 ${isActive
+                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200'
+                        }`}
+                    title={label}
+                >
+                    <Icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${isActive ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200'}`} />
+                </Link>
+            );
+        }
+
         return (
             <Link
                 to={to}
@@ -74,10 +90,10 @@ const DashboardLayout: React.FC = () => {
         <div className="flex h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))] overflow-hidden font-sans">
             {/* Sidebar */}
             <aside className={`${sidebarCollapsed ? 'w-16' : 'w-72'} bg-[hsl(var(--card))] border-r border-[hsl(var(--border))] flex flex-col shadow-2xl z-20 transition-all duration-300`}>
-                {/* Logo Area */}
-                <div className="p-6 flex items-center space-x-3">
-                    {!sidebarCollapsed && (
-                        <>
+                {/* Logo Area with Toggle */}
+                {!sidebarCollapsed ? (
+                    <div className="p-6 flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
                                 <Cpu className="text-white w-6 h-6" />
                             </div>
@@ -85,14 +101,29 @@ const DashboardLayout: React.FC = () => {
                                 <h1 className="text-lg font-bold tracking-tight">ZeroToOne AI</h1>
                                 <p className="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Engineering Agent</p>
                             </div>
-                        </>
-                    )}
-                    {sidebarCollapsed && (
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 mx-auto">
+                        </div>
+                        <button
+                            onClick={toggleSidebar}
+                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-500 hover:text-gray-900 dark:hover:text-gray-200"
+                            title="Collapse sidebar"
+                        >
+                            <X size={18} />
+                        </button>
+                    </div>
+                ) : (
+                    <div className="p-3 flex flex-col items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
                             <Cpu className="text-white w-6 h-6" />
                         </div>
-                    )}
-                </div>
+                        <button
+                            onClick={toggleSidebar}
+                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-500 hover:text-gray-900 dark:hover:text-gray-200"
+                            title="Expand sidebar"
+                        >
+                            <Menu size={18} />
+                        </button>
+                    </div>
+                )}
 
                 {/* Navigation */}
                 <nav className="mt-2 flex-1 space-y-1">
@@ -101,17 +132,17 @@ const DashboardLayout: React.FC = () => {
                             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Platform</p>
                         </div>
                     )}
-                    <NavItem to="/" icon={LayoutDashboard} label={sidebarCollapsed ? "" : "Mission Control"} />
-                    <NavItem to="/boardroom" icon={Layers} label={sidebarCollapsed ? "" : "Boardroom"} />
-                    <NavItem to="/projects" icon={Folder} label={sidebarCollapsed ? "" : "Projects"} />
+                    <NavItem to="/" icon={LayoutDashboard} label="Mission Control" />
+                    <NavItem to="/boardroom" icon={Layers} label="Boardroom" />
+                    <NavItem to="/projects" icon={Folder} label="Projects" />
 
                     {!sidebarCollapsed && (
                         <div className="px-6 pb-2 pt-6">
                             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Assets</p>
                         </div>
                     )}
-                    <NavItem to="/artifacts" icon={FileText} label={sidebarCollapsed ? "" : "Artifacts"} />
-                    <NavItem to="/showcase" icon={Video} label={sidebarCollapsed ? "" : "Showcase"} />
+                    <NavItem to="/artifacts" icon={FileText} label="Artifacts" />
+                    <NavItem to="/showcase" icon={Video} label="Showcase" />
                 </nav>
 
                 {/* User / Footer */}
@@ -153,18 +184,7 @@ const DashboardLayout: React.FC = () => {
                 {/* Header */}
                 <header className="h-16 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))/80 backdrop-blur-md flex items-center justify-between px-8 z-10 sticky top-0">
                     <div className="flex items-center gap-4">
-                        <button
-                            onClick={toggleSidebar}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-500 hover:text-gray-900 dark:hover:text-gray-200"
-                            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                        >
-                            {sidebarCollapsed ? <Menu size={20} /> : <X size={20} />}
-                        </button>
-                        <div className="flex items-center text-gray-500 text-sm">
-                            <Command size={14} className="mr-2" />
-                            <span className="font-mono">Cmd + K</span>
-                            <span className="mx-2">to search...</span>
-                        </div>
+                        {/* Empty - toggle is now in sidebar */}
                     </div>
 
                     <div className="flex items-center space-x-4">
