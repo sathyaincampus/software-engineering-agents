@@ -15,12 +15,20 @@ interface SystemDiagram {
     code?: string;
 }
 
+interface SequenceDiagram {
+    name: string;
+    description: string;
+    format?: string;
+    code?: string;
+}
+
 interface ArchitectureData {
     tech_stack?: TechStack;
     system_diagram?: SystemDiagram;
     backend_diagram?: SystemDiagram;
     frontend_diagram?: SystemDiagram;
-    sequence_diagram?: SystemDiagram;
+    sequence_diagram?: SystemDiagram;  // Backward compatibility
+    sequence_diagrams?: SequenceDiagram[];  // New: multiple diagrams
     api_design_principles?: any[];
     data_model?: any;
 }
@@ -31,10 +39,10 @@ interface ArchitectureViewerProps {
 
 const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
     const [copied, setCopied] = useState(false);
-    const [copiedSequence, setCopiedSequence] = useState(false);
+    const [copiedSequence, setCopiedSequence] = useState<Set<number>>(new Set()); // Track per-diagram
     const [copiedBackend, setCopiedBackend] = useState(false);
     const [copiedFrontend, setCopiedFrontend] = useState(false);
-    const [zoomedDiagram, setZoomedDiagram] = useState<'system' | 'backend' | 'frontend' | 'sequence' | null>(null);
+    const [zoomedDiagram, setZoomedDiagram] = useState<string | null>(null); // Allow any string
     const [systemError, setSystemError] = useState<string | null>(null);
     const [backendError, setBackendError] = useState<string | null>(null);
     const [frontendError, setFrontendError] = useState<string | null>(null);
@@ -161,10 +169,18 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                     const id = `zoom-frontend-${Date.now()}`;
                     const { svg } = await mermaid.render(id, data.frontend_diagram.code);
                     zoomFrontendRef.current.innerHTML = svg;
-                } else if (zoomedDiagram === 'sequence' && data.sequence_diagram?.code && zoomSequenceRef.current) {
-                    const id = `zoom-sequence-${Date.now()}`;
-                    const { svg } = await mermaid.render(id, data.sequence_diagram.code);
-                    zoomSequenceRef.current.innerHTML = svg;
+                } else if (zoomedDiagram?.startsWith('sequence-')) {
+                    // Handle sequence-0, sequence-1, etc.
+                    const index = parseInt(zoomedDiagram.split('-')[1]);
+                    const sequenceDiagrams = data.sequence_diagrams ||
+                        (data.sequence_diagram ? [{ ...data.sequence_diagram }] : []);
+                    const diagram = sequenceDiagrams[index];
+
+                    if (diagram?.code && zoomSequenceRef.current) {
+                        const id = `zoom-sequence-${index}-${Date.now()}`;
+                        const { svg } = await mermaid.render(id, diagram.code);
+                        zoomSequenceRef.current.innerHTML = svg;
+                    }
                 }
             } catch (e) {
                 console.error('Mermaid zoom rendering error:', e);
@@ -174,7 +190,7 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
         if (zoomedDiagram) {
             renderZoomedDiagram();
         }
-    }, [zoomedDiagram, data.system_diagram, data.backend_diagram, data.frontend_diagram, data.sequence_diagram]);
+    }, [zoomedDiagram, data.system_diagram, data.backend_diagram, data.frontend_diagram, data.sequence_diagrams, data.sequence_diagram]);
 
     const copyMermaidCode = () => {
         if (data.system_diagram?.code) {
@@ -200,12 +216,16 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
         }
     };
 
-    const copySequenceDiagram = () => {
-        if (data.sequence_diagram?.code) {
-            navigator.clipboard.writeText(data.sequence_diagram.code);
-            setCopiedSequence(true);
-            setTimeout(() => setCopiedSequence(false), 2000);
-        }
+    const copySequenceDiagram = (index: number, code: string) => {
+        navigator.clipboard.writeText(code);
+        setCopiedSequence(prev => new Set(prev).add(index));
+        setTimeout(() => {
+            setCopiedSequence(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(index);
+                return newSet;
+            });
+        }, 2000);
     };
 
     const renderTechStack = () => {
@@ -449,42 +469,84 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                 </div>
             )}
 
-            {/* Sequence Diagram */}
-            {data.sequence_diagram?.code && (
-                <div>
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-3xl font-bold">Sequence Diagram</h2>
-                        <button
-                            onClick={copySequenceDiagram}
-                            className="flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-lg transition-colors">
-                            {copiedSequence ? <Check size={16} /> : <Copy size={16} />}
-                            {copiedSequence ? 'Copied!' : 'Copy Mermaid Code'}
-                        </button>
+            {/* Sequence Diagrams - Multiple */}
+            {(() => {
+                // Support both old (single) and new (array) formats
+                const sequenceDiagrams = data.sequence_diagrams ||
+                    (data.sequence_diagram ? [{
+                        name: "User Flow",
+                        description: "Main user flow through the system",
+                        ...data.sequence_diagram
+                    }] : []);
+
+                return sequenceDiagrams.length > 0 && (
+                    <div>
+                        <h2 className="text-3xl font-bold mb-6">Sequence Diagrams</h2>
+                        <div className="space-y-6">
+                            {sequenceDiagrams.map((diagram: any, index: number) => (
+                                <div key={index}>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h3 className="text-2xl font-bold">{diagram.name}</h3>
+                                            {diagram.description && (
+                                                <p className="text-gray-400 mt-1">{diagram.description}</p>
+                                            )}
+                                        </div>
+                                        <button
+                                            onClick={() => {
+                                                if (diagram.code) {
+                                                    copySequenceDiagram(index, diagram.code);
+                                                }
+                                            }}
+                                            className="flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-lg transition-colors"
+                                        >
+                                            {copiedSequence.has(index) ? <Check size={16} /> : <Copy size={16} />}
+                                            {copiedSequence.has(index) ? 'Copied!' : 'Copy Mermaid Code'}
+                                        </button>
+                                    </div>
+                                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-700 overflow-x-auto relative group">
+                                        <button
+                                            onClick={() => setZoomedDiagram(`sequence-${index}` as any)}
+                                            className="absolute top-4 right-4 p-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                            title="Zoom diagram"
+                                        >
+                                            <Maximize2 size={16} />
+                                        </button>
+                                        <div
+                                            ref={el => {
+                                                if (el && diagram.code) {
+                                                    const renderDiagram = async () => {
+                                                        try {
+                                                            el.innerHTML = '';
+                                                            const id = `sequence-${index}-${Date.now()}`;
+                                                            const { svg } = await mermaid.render(id, diagram.code!);
+                                                            el.innerHTML = svg;
+                                                        } catch (e: any) {
+                                                            console.error('Sequence diagram rendering error:', e);
+                                                            el.innerHTML = `<div class="mt-4 p-4 bg-red-900/20 border border-red-500/50 rounded-lg">
+                                                                <p class="text-red-400 font-semibold mb-2">⚠️ Diagram Rendering Error:</p>
+                                                                <p class="text-red-300 text-sm mb-3">${e.message}</p>
+                                                                <details class="text-xs">
+                                                                    <summary class="cursor-pointer text-gray-400 hover:text-white">Show Raw Mermaid Code</summary>
+                                                                    <pre class="mt-2 p-3 bg-black/50 rounded overflow-x-auto text-gray-300">
+                                                                        ${diagram.code}
+                                                                    </pre>
+                                                                </details>
+                                                            </div>`;
+                                                        }
+                                                    };
+                                                    renderDiagram();
+                                                }
+                                            }}
+                                            className="mermaid-container"
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-700 overflow-x-auto relative group">
-                        <button
-                            onClick={() => setZoomedDiagram('sequence')}
-                            className="absolute top-4 right-4 p-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                            title="Zoom diagram"
-                        >
-                            <Maximize2 size={16} />
-                        </button>
-                        <div ref={sequenceDiagramRef} className="mermaid-container" />
-                        {sequenceError && (
-                            <div className="mt-4 p-4 bg-red-900/20 border border-red-500/50 rounded-lg">
-                                <p className="text-red-400 font-semibold mb-2">⚠️ Diagram Rendering Error:</p>
-                                <p className="text-red-300 text-sm mb-3">{sequenceError}</p>
-                                <details className="text-xs">
-                                    <summary className="cursor-pointer text-gray-400 hover:text-white">Show Raw Mermaid Code</summary>
-                                    <pre className="mt-2 p-3 bg-black/50 rounded overflow-x-auto text-gray-300">
-                                        {data.sequence_diagram.code}
-                                    </pre>
-                                </details>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
+                );
+            })()}
 
             {/* Database Schema */}
             {renderDatabaseSchema()}
@@ -510,10 +572,18 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                         </button>
                         <div className="p-8 flex-1 overflow-auto">
                             <h2 className="text-2xl font-bold mb-6 text-white">
-                                {zoomedDiagram === 'system' ? 'System Architecture Diagram' :
-                                    zoomedDiagram === 'backend' ? 'Backend Processing Architecture' :
-                                        zoomedDiagram === 'frontend' ? 'Frontend UI Architecture' :
-                                            'Sequence Diagram'}
+                                {(() => {
+                                    if (zoomedDiagram === 'system') return 'System Architecture Diagram';
+                                    if (zoomedDiagram === 'backend') return 'Backend Processing Architecture';
+                                    if (zoomedDiagram === 'frontend') return 'Frontend UI Architecture';
+                                    if (zoomedDiagram?.startsWith('sequence-')) {
+                                        const index = parseInt(zoomedDiagram.split('-')[1]);
+                                        const sequenceDiagrams = data.sequence_diagrams ||
+                                            (data.sequence_diagram ? [{ name: "User Flow", ...data.sequence_diagram }] : []);
+                                        return sequenceDiagrams[index]?.name || 'Sequence Diagram';
+                                    }
+                                    return 'Diagram';
+                                })()}
                             </h2>
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl">
                                 {zoomedDiagram === 'system' ? (

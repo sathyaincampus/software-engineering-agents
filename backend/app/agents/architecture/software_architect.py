@@ -312,10 +312,20 @@ class SoftwareArchitectAgent:
                 "format": "mermaid",
                 "code": "flowchart TD\\n    UI[User Interface]\\n    Components[React Components]\\n    State[State Management]\\n    UI --> Components\\n    Components --> State"
               },
-              "sequence_diagram": {
-                "format": "mermaid",
-                "code": "sequenceDiagram\\n    participant Client\\n    participant API\\n    Client->>API: Request"
-              },
+              "sequence_diagrams": [
+                {
+                  "name": "User Login Flow",
+                  "description": "User authentication and session creation",
+                  "format": "mermaid",
+                  "code": "sequenceDiagram\\n    participant Client\\n    participant API\\n    participant Auth\\n    participant DB\\n    Client->>API: POST /login\\n    API->>Auth: Validate\\n    Auth->>DB: Find User\\n    DB-->>Auth: User Data\\n    Auth-->>API: JWT Token\\n    API-->>Client: Success"
+                },
+                {
+                  "name": "Create Resource Flow",
+                  "description": "Creating a new resource in the system",
+                  "format": "mermaid",
+                  "code": "sequenceDiagram\\n    participant Client\\n    participant API\\n    participant Service\\n    participant DB\\n    Client->>API: POST /resource\\n    API->>Service: Create\\n    Service->>DB: Insert\\n    DB-->>Service: Created\\n    Service-->>API: Resource\\n    API-->>Client: Success"
+                }
+              ],
               "api_design_principles": [
                 {
                   "principle": "RESTful Design",
@@ -336,15 +346,19 @@ class SoftwareArchitectAgent:
             }
             
             ## REQUIREMENTS:
-            1. Generate ALL FOUR diagrams:
+            1. Generate ALL diagrams:
                - system_diagram (flowchart): Overall system architecture
                - backend_diagram (flowchart): Backend processing architecture with services, APIs, databases
                - frontend_diagram (flowchart): Frontend UI architecture with components, state, routing
-               - sequence_diagram: User request flow through the system
+               - sequence_diagrams (array of 3-5 diagrams): Different user flows and scenarios
             2. System diagram shows high-level architecture components
             3. Backend diagram shows detailed backend services, processing engine, storage layers
             4. Frontend diagram shows UI layers, components, state management, API communication
-            5. Sequence diagram shows a typical user request flow
+            5. Sequence diagrams show DIFFERENT user scenarios:
+               - Each diagram should have a unique "name" and "description"
+               - Cover key user flows (e.g., login, create resource, update, delete, sync, notification)
+               - Show happy path for each scenario
+               - Include 3-5 different flows based on the project requirements
             6. Use proper Mermaid syntax - NO syntax errors allowed
             7. Format tech_stack as nested objects (not arrays)
             8. Each API principle must have "principle" and "description" fields

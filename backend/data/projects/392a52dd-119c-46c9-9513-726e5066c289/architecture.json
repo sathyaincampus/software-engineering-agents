@@ -38,8 +38,68 @@
     "format": "mermaid",
     "code": "flowchart TD\n    subgraph User[USER LAYER]\n        Parent[Parent User]\n        Child[Child User]\n        Guest[Guest User]\n    end\n\n    subgraph UI[MOBILE APPLICATION]\n        LoginScreen[Login Screen]\n        HomeScreen[Home Dashboard]\n        CalendarView[Calendar View]\n        TaskList[Task List]\n        RewardStore[Reward Store]\n        ProfileView[Profile View]\n        NotifCenter[Notification Center]\n    end\n\n    subgraph Components[REACT NATIVE COMPONENTS]\n        AuthComp[Auth Components]\n        CalendarComp[Calendar Components]\n        TaskComp[Task Components]\n        RewardComp[Reward Components]\n        ProfileComp[Profile Components]\n        NotifComp[Notification Components]\n    end\n\n    subgraph State[STATE MANAGEMENT]\n        ReduxStore[Redux Store]\n        AuthSlice[Auth Slice]\n        UserSlice[User Slice]\n        EventSlice[Event Slice]\n        TaskSlice[Task Slice]\n        RewardSlice[Reward Slice]\n        NotifSlice[Notification Slice]\n    end\n\n    subgraph API_Layer[API COMMUNICATION]\n        AuthAPI[Auth API Client]\n        UserAPI[User API Client]\n        EventAPI[Event API Client]\n        TaskAPI[Task API Client]\n        RewardAPI[Reward API Client]\n        SyncAPI[Sync API Client]\n        WebSocket[WebSocket Client]\n    end\n\n    subgraph Backend[BACKEND SERVICES]\n        ExpressAPI[Express.js API]\n        SocketServer[Socket.IO Server]\n    end\n\n    subgraph Data[DATA PERSISTENCE]\n        AsyncStorage[AsyncStorage]\n        SecureStore[Secure Store]\n    end\n\n    Parent --> LoginScreen\n    Child --> LoginScreen\n    Guest --> LoginScreen\n\n    LoginScreen --> HomeScreen\n    HomeScreen --> CalendarView\n    HomeScreen --> TaskList\n    HomeScreen --> RewardStore\n    HomeScreen --> ProfileView\n    HomeScreen --> NotifCenter\n\n    CalendarView --> CalendarComp\n    TaskList --> TaskComp\n    RewardStore --> RewardComp\n    ProfileView --> ProfileComp\n    NotifCenter --> NotifComp\n    LoginScreen --> AuthComp\n\n    AuthComp --> ReduxStore\n    CalendarComp --> ReduxStore\n    TaskComp --> ReduxStore\n    RewardComp --> ReduxStore\n    ProfileComp --> ReduxStore\n    NotifComp --> ReduxStore\n\n    ReduxStore --> AuthSlice\n    ReduxStore --> UserSlice\n    ReduxStore --> EventSlice\n    ReduxStore --> TaskSlice\n    ReduxStore --> RewardSlice\n    ReduxStore --> NotifSlice\n\n    AuthSlice --> AuthAPI\n    UserSlice --> UserAPI\n    EventSlice --> EventAPI\n    TaskSlice --> TaskAPI\n    RewardSlice --> RewardAPI\n    EventSlice --> SyncAPI\n    NotifSlice --> WebSocket\n\n    AuthAPI --> ExpressAPI\n    UserAPI --> ExpressAPI\n    EventAPI --> ExpressAPI\n    TaskAPI --> ExpressAPI\n    RewardAPI --> ExpressAPI\n    SyncAPI --> ExpressAPI\n    WebSocket --> SocketServer\n\n    AuthSlice --> SecureStore\n    UserSlice --> AsyncStorage\n"
   },
-  "sequence_diagram": {
-    "format": "mermaid",
-    "code": "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant AuthService\n    participant PrimaryDB\n    participant Cache\n\n    Client->>+APIGateway: POST /auth/login\n    APIGateway->>+AuthService: Login Request\n    AuthService->>+PrimaryDB: Find User by Email\n    PrimaryDB-->>-AuthService: User Record\n    AuthService->>+Cache: Store Session Token\n    Cache-->>-AuthService: Success\n    AuthService-->>-APIGateway: JWT Token\n    APIGateway-->>-Client: Login Success Response"
-  }
+  "sequence_diagrams": [
+    {
+      "name": "User Authentication Flow",
+      "description": "Parent or child user logs in with email/password or Google OAuth, receives JWT token, and session is cached",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant AuthService\n    participant PrimaryDB\n    participant Cache\n    participant GoogleAPI\n\n    Client->>+APIGateway: POST /api/v1/auth/login\n    APIGateway->>+AuthService: Validate Credentials\n    AuthService->>+PrimaryDB: Find User by Email\n    PrimaryDB-->>-AuthService: User Record\n    AuthService->>AuthService: Verify Password Hash\n    AuthService->>+Cache: Store Session Token\n    Cache-->>-AuthService: Session Stored\n    AuthService->>AuthService: Generate JWT Token\n    AuthService-->>-APIGateway: JWT Token + User Data\n    APIGateway-->>-Client: Login Success Response"
+    },
+    {
+      "name": "Create Calendar Event Flow",
+      "description": "Parent creates a family event, stores it in database, and syncs with Google Calendar",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant CalendarService\n    participant PrimaryDB\n    participant SyncService\n    participant GoogleAPI\n    participant NotificationService\n    participant SocketIO\n\n    Client->>+APIGateway: POST /api/v1/events\n    APIGateway->>+CalendarService: Create Event Request\n    CalendarService->>+PrimaryDB: Insert Event Record\n    PrimaryDB-->>-CalendarService: Event Created\n    CalendarService->>+SyncService: Sync to Google Calendar\n    SyncService->>+GoogleAPI: Create Calendar Event\n    GoogleAPI-->>-SyncService: Event Created in Google\n    SyncService-->>-CalendarService: Sync Complete\n    CalendarService->>+NotificationService: Notify Family Members\n    NotificationService->>+SocketIO: Push Notification\n    SocketIO-->>Client: Real-time Event Notification\n    SocketIO-->>-NotificationService: Notification Sent\n    NotificationService-->>-CalendarService: Notifications Delivered\n    CalendarService-->>-APIGateway: Event Created Successfully\n    APIGateway-->>-Client: Success Response with Event Data"
+    },
+    {
+      "name": "Complete Task and Earn Points Flow",
+      "description": "Child completes an assigned task, earns points, and parent receives approval notification",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant ChildClient\n    participant APIGateway\n    participant TaskService\n    participant PrimaryDB\n    participant RewardService\n    participant NotificationService\n    participant SocketIO\n    participant ParentClient\n\n    ChildClient->>+APIGateway: PUT /api/v1/tasks/:id/complete\n    APIGateway->>+TaskService: Mark Task Complete\n    TaskService->>+PrimaryDB: Update Task Status\n    PrimaryDB-->>-TaskService: Task Updated\n    TaskService->>TaskService: Calculate Points Earned\n    TaskService->>+RewardService: Award Points to User\n    RewardService->>+PrimaryDB: Update User Points\n    PrimaryDB-->>-RewardService: Points Updated\n    RewardService-->>-TaskService: Points Awarded\n    TaskService->>+NotificationService: Notify Parent\n    NotificationService->>+SocketIO: Push to Parent\n    SocketIO-->>-ParentClient: Task Completed Notification\n    NotificationService-->>-TaskService: Parent Notified\n    TaskService-->>-APIGateway: Task Completed Successfully\n    APIGateway-->>-ChildClient: Success Response with Points"
+    },
+    {
+      "name": "Redeem Reward Flow",
+      "description": "Child redeems points for a reward, parent receives approval request, and approves the redemption",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant ChildClient\n    participant APIGateway\n    participant RewardService\n    participant PrimaryDB\n    participant UserService\n    participant NotificationService\n    participant SocketIO\n    participant ParentClient\n\n    ChildClient->>+APIGateway: POST /api/v1/rewards/redeem\n    APIGateway->>+RewardService: Redeem Reward Request\n    RewardService->>+PrimaryDB: Check User Points Balance\n    PrimaryDB-->>-RewardService: Current Points\n    RewardService->>RewardService: Validate Sufficient Points\n    RewardService->>+PrimaryDB: Create Redemption Record\n    PrimaryDB-->>-RewardService: Redemption Created\n    RewardService->>+NotificationService: Request Parent Approval\n    NotificationService->>+SocketIO: Push Approval Request\n    SocketIO-->>-ParentClient: Reward Redemption Approval Needed\n    NotificationService-->>-RewardService: Approval Request Sent\n    RewardService-->>-APIGateway: Redemption Pending Approval\n    APIGateway-->>-ChildClient: Pending Approval Response\n    ParentClient->>+APIGateway: POST /api/v1/rewards/approve\n    APIGateway->>+RewardService: Approve Redemption\n    RewardService->>+UserService: Deduct Points\n    UserService->>+PrimaryDB: Update User Points\n    PrimaryDB-->>-UserService: Points Deducted\n    UserService-->>-RewardService: Points Updated\n    RewardService->>+PrimaryDB: Update Redemption Status\n    PrimaryDB-->>-RewardService: Status Updated\n    RewardService->>+NotificationService: Notify Child\n    NotificationService->>+SocketIO: Push Approval Notification\n    SocketIO-->>-ChildClient: Reward Approved Notification\n    NotificationService-->>-RewardService: Child Notified\n    RewardService-->>-APIGateway: Redemption Approved\n    APIGateway-->>-ParentClient: Success Response"
+    },
+    {
+      "name": "Google Calendar Sync Flow",
+      "description": "Google Calendar webhook triggers sync, updates local events, and notifies family members of changes",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant GoogleAPI\n    participant APIGateway\n    participant SyncService\n    participant PrimaryDB\n    participant CalendarService\n    participant Cache\n    participant NotificationService\n    participant SocketIO\n    participant Client\n\n    GoogleAPI->>+APIGateway: Webhook: Calendar Changed\n    APIGateway->>+SyncService: Process Sync Event\n    SyncService->>+GoogleAPI: Fetch Updated Events\n    GoogleAPI-->>-SyncService: Event Data\n    SyncService->>+PrimaryDB: Query Existing Events\n    PrimaryDB-->>-SyncService: Local Events\n    SyncService->>SyncService: Compare and Detect Changes\n    SyncService->>+PrimaryDB: Update Changed Events\n    PrimaryDB-->>-SyncService: Events Updated\n    SyncService->>+Cache: Invalidate Event Cache\n    Cache-->>-SyncService: Cache Cleared\n    SyncService->>+CalendarService: Trigger Event Update\n    CalendarService->>+NotificationService: Notify Family of Changes\n    NotificationService->>+SocketIO: Push Sync Notification\n    SocketIO-->>-Client: Calendar Updated Notification\n    NotificationService-->>-CalendarService: Notifications Sent\n    CalendarService-->>-SyncService: Update Complete\n    SyncService-->>-APIGateway: Sync Successful\n    APIGateway-->>-GoogleAPI: Webhook Acknowledged"
+    },
+    {
+      "name": "Real-time Notification Flow",
+      "description": "Server-side event triggers real-time notification delivery via WebSocket to connected clients",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant ServerEvent\n    participant NotificationService\n    participant PrimaryDB\n    participant SocketIO\n    participant WebSocket\n    participant Client\n\n    ServerEvent->>+NotificationService: Trigger Notification\n    NotificationService->>+PrimaryDB: Create Notification Record\n    PrimaryDB-->>-NotificationService: Notification Saved\n    NotificationService->>NotificationService: Format Notification Message\n    NotificationService->>+SocketIO: Emit to User Room\n    SocketIO->>+WebSocket: Send via WebSocket\n    WebSocket-->>-Client: Push Notification Received\n    Client->>Client: Display Notification\n    Client->>+WebSocket: Acknowledge Receipt\n    WebSocket->>+SocketIO: Delivery Confirmed\n    SocketIO-->>-NotificationService: Notification Delivered\n    NotificationService->>+PrimaryDB: Update Read Status\n    PrimaryDB-->>-NotificationService: Status Updated\n    NotificationService-->>-ServerEvent: Notification Complete"
+    }
+  ],
+  "api_design_principles": [
+    {
+      "principle": "RESTful Design",
+      "description": "Use standard HTTP methods (GET, POST, PUT, DELETE) and resource-based URLs. Ensure responses are in JSON format."
+    },
+    {
+      "principle": "Statelessness",
+      "description": "Each request from a client to the server must contain all of the information necessary to understand and complete the request. Server should not store client context between requests."
+    },
+    {
+      "principle": "Authentication and Authorization",
+      "description": "Implement JWT for session management. Use OAuth 2.0 for third-party authentication (Google Sign-In). Ensure proper authorization checks for all endpoints."
+    },
+    {
+      "principle": "Versioning",
+      "description": "Implement API versioning (e.g., /api/v1/...) to allow for future modifications without breaking existing clients."
+    },
+    {
+      "principle": "Error Handling",
+      "description": "Provide consistent and informative error responses with appropriate HTTP status codes and error messages."
+    },
+    {
+      "principle": "Idempotency",
+      "description": "Design critical operations (e.g., task completion, reward redemption) to be idempotent where possible to prevent duplicate actions."
+    }
+  ]
 }
