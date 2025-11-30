@@ -1,6 +1,6 @@
 {
   "walkthrough_type": "image",
-  "title": "Code Walkthrough: Untitled Project",
+  "title": "Code Walkthrough: FamilyFlow",
   "overview": "This project walkthrough uses visual diagrams to illustrate the architecture, data flow, and key interactions of the FamilyFlow application. It highlights how the React Native frontend communicates with the Node.js/Express.js backend, the role of microservices, and the integration with various third-party services and cloud infrastructure.",
   "sections": [
     {

@@ -8,9 +8,10 @@ const API_BASE_URL = 'http://localhost:8050';
 
 interface Project {
     session_id: string;
+    project_name: string;
     created_at: string;
-    last_updated: string;
-    steps_completed: number;
+    last_modified: string;
+    steps_completed: string[];
 }
 
 interface ProjectFile {
@@ -85,7 +86,10 @@ const ProjectHistory: React.FC = () => {
     };
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleString();
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'N/A';
+        return date.toLocaleString();
     };
 
     const formatSize = (bytes: number) => {
@@ -121,9 +125,9 @@ const ProjectHistory: React.FC = () => {
                                     }`}
                             >
                                 <div className="flex items-start justify-between mb-2">
-                                    <div className="flex items-center gap-2">
-                                        <FileText size={20} className="text-blue-500" />
-                                        <span className="font-mono text-sm text-gray-500">
+                                    <div className="flex-1">
+                                        <h3 className="font-bold text-base mb-1">{project.project_name}</h3>
+                                        <span className="font-mono text-xs text-gray-500">
                                             {project.session_id.substring(0, 8)}...
                                         </span>
                                     </div>
@@ -140,11 +144,11 @@ const ProjectHistory: React.FC = () => {
                                 <div className="flex items-center gap-4 text-xs text-gray-500">
                                     <div className="flex items-center gap-1">
                                         <Clock size={12} />
-                                        {formatDate(project.last_updated)}
+                                        {formatDate(project.last_modified)}
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <FileText size={12} />
-                                        {project.steps_completed} steps
+                                        {project.steps_completed.length} steps
                                     </div>
                                 </div>
                             </div>

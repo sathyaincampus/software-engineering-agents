@@ -1,6 +1,6 @@
 {
   "walkthrough_type": "text",
-  "title": "Code Walkthrough: Untitled Project",
+  "title": "Code Walkthrough: FamilyFlow",
   "overview": "This project is a comprehensive family management application designed to help parents organize schedules, tasks, and rewards for their children. It features a React Native mobile frontend and a Node.js/Express.js backend, leveraging modern technologies for a robust and scalable solution. Key features include shared family calendars, task management, a gamified rewards system, and synchronization with Google Calendar.",
   "sections": [
     {
