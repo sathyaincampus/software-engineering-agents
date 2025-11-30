@@ -18,6 +18,8 @@ interface SystemDiagram {
 interface ArchitectureData {
     tech_stack?: TechStack;
     system_diagram?: SystemDiagram;
+    backend_diagram?: SystemDiagram;
+    frontend_diagram?: SystemDiagram;
     sequence_diagram?: SystemDiagram;
     api_design_principles?: any[];
     data_model?: any;
@@ -30,12 +32,20 @@ interface ArchitectureViewerProps {
 const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
     const [copied, setCopied] = useState(false);
     const [copiedSequence, setCopiedSequence] = useState(false);
-    const [zoomedDiagram, setZoomedDiagram] = useState<'system' | 'sequence' | null>(null);
+    const [copiedBackend, setCopiedBackend] = useState(false);
+    const [copiedFrontend, setCopiedFrontend] = useState(false);
+    const [zoomedDiagram, setZoomedDiagram] = useState<'system' | 'backend' | 'frontend' | 'sequence' | null>(null);
     const [systemError, setSystemError] = useState<string | null>(null);
+    const [backendError, setBackendError] = useState<string | null>(null);
+    const [frontendError, setFrontendError] = useState<string | null>(null);
     const [sequenceError, setSequenceError] = useState<string | null>(null);
     const systemDiagramRef = useRef<HTMLDivElement>(null);
+    const backendDiagramRef = useRef<HTMLDivElement>(null);
+    const frontendDiagramRef = useRef<HTMLDivElement>(null);
     const sequenceDiagramRef = useRef<HTMLDivElement>(null);
     const zoomSystemRef = useRef<HTMLDivElement>(null);
+    const zoomBackendRef = useRef<HTMLDivElement>(null);
+    const zoomFrontendRef = useRef<HTMLDivElement>(null);
     const zoomSequenceRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -69,6 +79,42 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                     console.error('Mermaid rendering error:', e);
                     if (isMounted) {
                         setSystemError(e.message || 'Failed to render diagram');
+                    }
+                }
+            }
+
+            // Render backend diagram
+            if (data.backend_diagram?.code && backendDiagramRef.current) {
+                try {
+                    backendDiagramRef.current.innerHTML = '';
+                    const id = `backend-diagram-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    const { svg } = await mermaid.render(id, data.backend_diagram.code);
+                    if (isMounted && backendDiagramRef.current) {
+                        backendDiagramRef.current.innerHTML = svg;
+                        setBackendError(null);
+                    }
+                } catch (e: any) {
+                    console.error('Mermaid rendering error:', e);
+                    if (isMounted) {
+                        setBackendError(e.message || 'Failed to render diagram');
+                    }
+                }
+            }
+
+            // Render frontend diagram
+            if (data.frontend_diagram?.code && frontendDiagramRef.current) {
+                try {
+                    frontendDiagramRef.current.innerHTML = '';
+                    const id = `frontend-diagram-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    const { svg } = await mermaid.render(id, data.frontend_diagram.code);
+                    if (isMounted && frontendDiagramRef.current) {
+                        frontendDiagramRef.current.innerHTML = svg;
+                        setFrontendError(null);
+                    }
+                } catch (e: any) {
+                    console.error('Mermaid rendering error:', e);
+                    if (isMounted) {
+                        setFrontendError(e.message || 'Failed to render diagram');
                     }
                 }
             }
@@ -107,6 +153,14 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                     const id = `zoom-system-${Date.now()}`;
                     const { svg } = await mermaid.render(id, data.system_diagram.code);
                     zoomSystemRef.current.innerHTML = svg;
+                } else if (zoomedDiagram === 'backend' && data.backend_diagram?.code && zoomBackendRef.current) {
+                    const id = `zoom-backend-${Date.now()}`;
+                    const { svg } = await mermaid.render(id, data.backend_diagram.code);
+                    zoomBackendRef.current.innerHTML = svg;
+                } else if (zoomedDiagram === 'frontend' && data.frontend_diagram?.code && zoomFrontendRef.current) {
+                    const id = `zoom-frontend-${Date.now()}`;
+                    const { svg } = await mermaid.render(id, data.frontend_diagram.code);
+                    zoomFrontendRef.current.innerHTML = svg;
                 } else if (zoomedDiagram === 'sequence' && data.sequence_diagram?.code && zoomSequenceRef.current) {
                     const id = `zoom-sequence-${Date.now()}`;
                     const { svg } = await mermaid.render(id, data.sequence_diagram.code);
@@ -120,13 +174,29 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
         if (zoomedDiagram) {
             renderZoomedDiagram();
         }
-    }, [zoomedDiagram, data.system_diagram, data.sequence_diagram]);
+    }, [zoomedDiagram, data.system_diagram, data.backend_diagram, data.frontend_diagram, data.sequence_diagram]);
 
     const copyMermaidCode = () => {
         if (data.system_diagram?.code) {
             navigator.clipboard.writeText(data.system_diagram.code);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
+        }
+    };
+
+    const copyBackendDiagram = () => {
+        if (data.backend_diagram?.code) {
+            navigator.clipboard.writeText(data.backend_diagram.code);
+            setCopiedBackend(true);
+            setTimeout(() => setCopiedBackend(false), 2000);
+        }
+    };
+
+    const copyFrontendDiagram = () => {
+        if (data.frontend_diagram?.code) {
+            navigator.clipboard.writeText(data.frontend_diagram.code);
+            setCopiedFrontend(true);
+            setTimeout(() => setCopiedFrontend(false), 2000);
         }
     };
 
@@ -303,6 +373,82 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                 </div>
             )}
 
+            {/* Backend Processing Architecture */}
+            {data.backend_diagram?.code && (
+                <div>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-3xl font-bold">Backend Processing Architecture</h2>
+                        <button
+                            onClick={copyBackendDiagram}
+                            className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg transition-colors"
+                        >
+                            {copiedBackend ? <Check size={16} /> : <Copy size={16} />}
+                            {copiedBackend ? 'Copied!' : 'Copy Mermaid Code'}
+                        </button>
+                    </div>
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-700 overflow-x-auto relative group">
+                        <button
+                            onClick={() => setZoomedDiagram('backend')}
+                            className="absolute top-4 right-4 p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                            title="Zoom diagram"
+                        >
+                            <Maximize2 size={16} />
+                        </button>
+                        <div ref={backendDiagramRef} className="mermaid-container" />
+                        {backendError && (
+                            <div className="mt-4 p-4 bg-red-900/20 border border-red-500/50 rounded-lg">
+                                <p className="text-red-400 font-semibold mb-2">⚠️ Diagram Rendering Error:</p>
+                                <p className="text-red-300 text-sm mb-3">{backendError}</p>
+                                <details className="text-xs">
+                                    <summary className="cursor-pointer text-gray-400 hover:text-white">Show Raw Mermaid Code</summary>
+                                    <pre className="mt-2 p-3 bg-black/50 rounded overflow-x-auto text-gray-300">
+                                        {data.backend_diagram?.code}
+                                    </pre>
+                                </details>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Frontend UI Architecture */}
+            {data.frontend_diagram?.code && (
+                <div>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-3xl font-bold">Frontend UI Architecture</h2>
+                        <button
+                            onClick={copyFrontendDiagram}
+                            className="flex items-center gap-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg transition-colors"
+                        >
+                            {copiedFrontend ? <Check size={16} /> : <Copy size={16} />}
+                            {copiedFrontend ? 'Copied!' : 'Copy Mermaid Code'}
+                        </button>
+                    </div>
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-700 overflow-x-auto relative group">
+                        <button
+                            onClick={() => setZoomedDiagram('frontend')}
+                            className="absolute top-4 right-4 p-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                            title="Zoom diagram"
+                        >
+                            <Maximize2 size={16} />
+                        </button>
+                        <div ref={frontendDiagramRef} className="mermaid-container" />
+                        {frontendError && (
+                            <div className="mt-4 p-4 bg-red-900/20 border border-red-500/50 rounded-lg">
+                                <p className="text-red-400 font-semibold mb-2">⚠️ Diagram Rendering Error:</p>
+                                <p className="text-red-300 text-sm mb-3">{frontendError}</p>
+                                <details className="text-xs">
+                                    <summary className="cursor-pointer text-gray-400 hover:text-white">Show Raw Mermaid Code</summary>
+                                    <pre className="mt-2 p-3 bg-black/50 rounded overflow-x-auto text-gray-300">
+                                        {data.frontend_diagram?.code}
+                                    </pre>
+                                </details>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {/* Sequence Diagram */}
             {data.sequence_diagram?.code && (
                 <div>
@@ -364,11 +510,18 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                         </button>
                         <div className="p-8 flex-1 overflow-auto">
                             <h2 className="text-2xl font-bold mb-6 text-white">
-                                {zoomedDiagram === 'system' ? 'System Architecture Diagram' : 'Sequence Diagram'}
+                                {zoomedDiagram === 'system' ? 'System Architecture Diagram' :
+                                    zoomedDiagram === 'backend' ? 'Backend Processing Architecture' :
+                                        zoomedDiagram === 'frontend' ? 'Frontend UI Architecture' :
+                                            'Sequence Diagram'}
                             </h2>
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl">
                                 {zoomedDiagram === 'system' ? (
                                     <div ref={zoomSystemRef} className="mermaid-container" />
+                                ) : zoomedDiagram === 'backend' ? (
+                                    <div ref={zoomBackendRef} className="mermaid-container" />
+                                ) : zoomedDiagram === 'frontend' ? (
+                                    <div ref={zoomFrontendRef} className="mermaid-container" />
                                 ) : (
                                     <div ref={zoomSequenceRef} className="mermaid-container" />
                                 )}

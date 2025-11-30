@@ -142,11 +142,132 @@ class SoftwareArchitectAgent:
             
             ### 🎯 CRITICAL: DIAGRAM FIELD MAPPING
             
-            - system_diagram field = FLOWCHART (shows components and connections)
-            - sequence_diagram field = SEQUENCE DIAGRAM (shows message flow over time)
+            You MUST generate 4 separate diagrams:
+            
+            1. **system_diagram** = FLOWCHART showing high-level system architecture
+               - Shows: Client, API Gateway, Services, Databases
+               - Focus: Overall system components and how they connect
+            
+            2. **backend_diagram** = FLOWCHART showing detailed backend architecture
+               - Shows: API endpoints, Processing engine, Services, Storage layers, AI services
+               - Focus: Backend processing flow, data transformation, storage
+               - Include: Input layer, Processing layer, Storage layer, Output layer
+            
+            3. **frontend_diagram** = FLOWCHART showing frontend UI architecture
+               - Shows: User layer, UI components, State management, API communication
+               - Focus: Frontend structure, component hierarchy, data flow
+               - Include: User interactions, Component tree, State flow, API calls
+            
+            4. **sequence_diagram** = SEQUENCE DIAGRAM showing user request flow
+               - Shows: Message flow between components over time
+               - Focus: Single user action from start to finish
+            
+            ### 📐 BACKEND DIAGRAM EXAMPLE
+            
+            **Structure**: Input → Processing → Storage → Output
+            
+            ```
+            flowchart TD
+                subgraph Input[INPUT LAYER]
+                    PDF[PDF Upload]
+                    Batch[Batch Processing]
+                end
+                
+                subgraph API[API GATEWAY]
+                    FastAPI[FastAPI Server]
+                    PostExtract[POST /extract]
+                    PostBatch[POST /batch]
+                end
+                
+                subgraph Processing[PROCESSING ENGINE]
+                    Agent[Extraction Agent]
+                    PyMuPDF[PyMuPDF Tool]
+                    Vision[Vision API]
+                end
+                
+                subgraph Storage[STORAGE LAYER]
+                    SQLite[(SQLite DB)]
+                    ChromaDB[(ChromaDB)]
+                    FileSystem[File System]
+                end
+                
+                subgraph Output[OUTPUT LAYER]
+                    JSON[JSON Response]
+                    Vectors[RAG Vectors]
+                end
+                
+                PDF --> FastAPI
+                Batch --> FastAPI
+                FastAPI --> PostExtract
+                FastAPI --> PostBatch
+                PostExtract --> Agent
+                PostBatch --> Agent
+                Agent --> PyMuPDF
+                Agent --> Vision
+                PyMuPDF --> SQLite
+                Vision --> ChromaDB
+                SQLite --> JSON
+                ChromaDB --> Vectors
+                FileSystem --> JSON
+            ```
+            
+            ### 🎨 FRONTEND DIAGRAM EXAMPLE
+            
+            **Structure**: User → UI → Components → State → API
+            
+            ```
+            flowchart TD
+                subgraph User[USER LAYER]
+                    Installer[Installer Role]
+                    Manager[Manager Role]
+                    Admin[Admin Role]
+                end
+                
+                subgraph UI[FRONTEND APPLICATIONS]
+                    ChatUI[Chat Interface]
+                    JobView[Job Packet View]
+                    Dashboard[Telemetry Dashboard]
+                end
+                
+                subgraph API_Layer[API COMMUNICATION]
+                    PostChat[POST /chat]
+                    GetJob[GET /job]
+                    GetTelemetry[GET /telemetry]
+                end
+                
+                subgraph Backend[BACKEND SERVICES]
+                    FastAPI_Server[FastAPI Server]
+                    JobService[Job Service]
+                    RAGService[RAG Service]
+                    Storage[Storage Service]
+                end
+                
+                subgraph Data[DATA LAYER]
+                    SQLite[(SQLite DB)]
+                    ChromaDB[(ChromaDB)]
+                    Files[File System]
+                end
+                
+                Installer --> ChatUI
+                Manager --> JobView
+                Admin --> Dashboard
+                ChatUI --> PostChat
+                JobView --> GetJob
+                Dashboard --> GetTelemetry
+                PostChat --> FastAPI_Server
+                GetJob --> FastAPI_Server
+                GetTelemetry --> FastAPI_Server
+                FastAPI_Server --> JobService
+                FastAPI_Server --> RAGService
+                FastAPI_Server --> Storage
+                JobService --> SQLite
+                RAGService --> ChromaDB
+                Storage --> Files
+            ```
             
             DO NOT put a sequence diagram in the system_diagram field!
             DO NOT put a flowchart in the sequence_diagram field!
+            ALWAYS use subgraphs to organize backend and frontend diagrams!
             
             ## OUTPUT FORMAT:
             
@@ -183,6 +304,14 @@ class SoftwareArchitectAgent:
                 "format": "mermaid",
                 "code": "flowchart TD\\n    Client[Client Apps]\\n    API[API Gateway]\\n    Client --> API"
               },
+              "backend_diagram": {
+                "format": "mermaid",
+                "code": "flowchart TD\\n    API[API Gateway]\\n    Services[Backend Services]\\n    DB[(Database)]\\n    API --> Services\\n    Services --> DB"
+              },
+              "frontend_diagram": {
+                "format": "mermaid",
+                "code": "flowchart TD\\n    UI[User Interface]\\n    Components[React Components]\\n    State[State Management]\\n    UI --> Components\\n    Components --> State"
+              },
               "sequence_diagram": {
                 "format": "mermaid",
                 "code": "sequenceDiagram\\n    participant Client\\n    participant API\\n    Client->>API: Request"
@@ -207,13 +336,19 @@ class SoftwareArchitectAgent:
             }
             
             ## REQUIREMENTS:
-            1. Generate BOTH system_diagram (flowchart) AND sequence_diagram
-            2. System diagram shows architecture components and their relationships
-            3. Sequence diagram shows a typical user request flow through the system
-            4. Use proper Mermaid syntax - NO syntax errors allowed
-            5. Format tech_stack as nested objects (not arrays)
-            6. Each API principle must have "principle" and "description" fields
-            7. Output ONLY valid JSON, no markdown code blocks
+            1. Generate ALL FOUR diagrams:
+               - system_diagram (flowchart): Overall system architecture
+               - backend_diagram (flowchart): Backend processing architecture with services, APIs, databases
+               - frontend_diagram (flowchart): Frontend UI architecture with components, state, routing
+               - sequence_diagram: User request flow through the system
+            2. System diagram shows high-level architecture components
+            3. Backend diagram shows detailed backend services, processing engine, storage layers
+            4. Frontend diagram shows UI layers, components, state management, API communication
+            5. Sequence diagram shows a typical user request flow
+            6. Use proper Mermaid syntax - NO syntax errors allowed
+            7. Format tech_stack as nested objects (not arrays)
+            8. Each API principle must have "principle" and "description" fields
+            9. Output ONLY valid JSON, no markdown code blocks
             """
         )
         self.app = App(name="zero_to_one", root_agent=self.agent)
