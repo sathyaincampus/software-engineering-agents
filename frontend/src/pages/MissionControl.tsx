@@ -962,11 +962,17 @@ const MissionControl: React.FC = () => {
                         {Object.values(taskStatuses).some(s => s === 'complete') && (
                             <div className="mt-6 pt-6 border-t border-[hsl(var(--border))]">
                                 <button
-                                    onClick={fetchProjectFiles}
+                                    onClick={() => {
+                                        if (!showCodeBrowser) {
+                                            fetchProjectFiles();
+                                        } else {
+                                            setShowCodeBrowser(false);
+                                        }
+                                    }}
                                     className="w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl flex items-center justify-center gap-2 transition-colors"
                                 >
                                     <Layout size={18} />
-                                    {showCodeBrowser ? 'Refresh Project Files' : 'View & Debug Code'}
+                                    {showCodeBrowser ? 'Hide Code Viewer' : 'View & Debug Code'}
                                 </button>
                             </div>
                         )}
@@ -982,7 +988,7 @@ const MissionControl: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Code Walkthrough Button */}
+                        {/* Code Walkthrough Button - Always show, positioned below code viewer if open */}
                         {Object.values(taskStatuses).some(s => s === 'complete') && (
                             <div className="mt-4">
                                 <button
