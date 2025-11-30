@@ -38,13 +38,30 @@ const WalkthroughGenerator: React.FC<WalkthroughGeneratorProps> = ({ sessionId }
 
     // Initialize mermaid - fit diagrams by default
     useEffect(() => {
+        const isDarkMode = document.documentElement.classList.contains('dark');
+
         mermaid.initialize({
             startOnLoad: true,
-            theme: 'default',
+            theme: isDarkMode ? 'dark' : 'default',
             securityLevel: 'loose',
             flowchart: { useMaxWidth: true },
             er: { useMaxWidth: true },
-            sequence: { useMaxWidth: true }
+            sequence: { useMaxWidth: true },
+            themeVariables: isDarkMode ? {} : {
+                primaryColor: '#3b82f6',
+                primaryTextColor: '#1f2937',
+                primaryBorderColor: '#60a5fa',
+                lineColor: '#6b7280',
+                secondaryColor: '#10b981',
+                tertiaryColor: '#f59e0b',
+                background: '#ffffff',
+                mainBkg: '#ffffff',
+                secondBkg: '#f3f4f6',
+                tertiaryBkg: '#e5e7eb',
+                textColor: '#1f2937',
+                border1: '#d1d5db',
+                border2: '#9ca3af'
+            }
         });
     }, []);
 
@@ -440,7 +457,7 @@ const WalkthroughViewer: React.FC<{
                                     )}
 
                                     {/* Visual Cues (for video type) */}
-                                    {section.visual_cues && section.visual_cues.length > 0 && (
+                                    {section.visual_cues && Array.isArray(section.visual_cues) && section.visual_cues.length > 0 && (
                                         <div>
                                             <h5 className="text-sm font-semibold mb-2">Visual Cues</h5>
                                             <ul className="list-disc list-inside text-sm space-y-1">

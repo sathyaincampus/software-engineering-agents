@@ -57,10 +57,28 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
     const zoomSequenceRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        // Detect if dark mode is active
+        const isDarkMode = document.documentElement.classList.contains('dark');
+
         mermaid.initialize({
             startOnLoad: false,
-            theme: 'dark',
+            theme: isDarkMode ? 'dark' : 'default',
             securityLevel: 'loose',
+            themeVariables: isDarkMode ? {} : {
+                primaryColor: '#3b82f6',
+                primaryTextColor: '#1f2937',
+                primaryBorderColor: '#60a5fa',
+                lineColor: '#6b7280',
+                secondaryColor: '#10b981',
+                tertiaryColor: '#f59e0b',
+                background: '#ffffff',
+                mainBkg: '#ffffff',
+                secondBkg: '#f3f4f6',
+                tertiaryBkg: '#e5e7eb',
+                textColor: '#1f2937',
+                border1: '#d1d5db',
+                border2: '#9ca3af'
+            }
         });
     }, []);
 
@@ -235,18 +253,18 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {/* Frontend */}
                 {data.tech_stack.frontend && (
-                    <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/30 rounded-xl p-6">
+                    <div className="bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-500/10 dark:to-blue-600/10 border border-blue-400 dark:border-blue-500/30 rounded-xl p-6">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 bg-blue-500/20 rounded-lg">
-                                <Code className="text-blue-400" size={24} />
+                            <div className="p-2 bg-blue-200 dark:bg-blue-500/20 rounded-lg">
+                                <Code className="text-blue-700 dark:text-blue-400" size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-blue-400">Frontend</h3>
+                            <h3 className="text-xl font-bold text-blue-700 dark:text-blue-400">Frontend</h3>
                         </div>
                         <div className="space-y-3">
                             {Object.entries(data.tech_stack.frontend).map(([key, value]) => (
                                 <div key={key} className="flex flex-col gap-1">
-                                    <span className="text-gray-400 text-sm uppercase tracking-wide">{key.replace(/_/g, ' ')}</span>
-                                    <span className="text-white font-semibold text-lg">{String(value)}</span>
+                                    <span className="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wide">{key.replace(/_/g, ' ')}</span>
+                                    <span className="text-gray-900 dark:text-white font-semibold text-lg">{String(value)}</span>
                                 </div>
                             ))}
                         </div>
@@ -255,18 +273,18 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
 
                 {/* Backend */}
                 {data.tech_stack.backend && (
-                    <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/30 rounded-xl p-6">
+                    <div className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-500/10 dark:to-green-600/10 border border-green-400 dark:border-green-500/30 rounded-xl p-6">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 bg-green-500/20 rounded-lg">
-                                <Server className="text-green-400" size={24} />
+                            <div className="p-2 bg-green-200 dark:bg-green-500/20 rounded-lg">
+                                <Server className="text-green-700 dark:text-green-400" size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-green-400">Backend</h3>
+                            <h3 className="text-xl font-bold text-green-700 dark:text-green-400">Backend</h3>
                         </div>
                         <div className="space-y-3">
                             {Object.entries(data.tech_stack.backend).map(([key, value]) => (
                                 <div key={key} className="flex flex-col gap-1">
-                                    <span className="text-gray-400 text-sm uppercase tracking-wide">{key.replace(/_/g, ' ')}</span>
-                                    <span className="text-white font-semibold text-lg">{String(value)}</span>
+                                    <span className="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wide">{key.replace(/_/g, ' ')}</span>
+                                    <span className="text-gray-900 dark:text-white font-semibold text-lg">{String(value)}</span>
                                 </div>
                             ))}
                         </div>
@@ -275,18 +293,18 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
 
                 {/* Database */}
                 {data.tech_stack.database && (
-                    <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/30 rounded-xl p-6">
+                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-500/10 dark:to-purple-600/10 border border-purple-400 dark:border-purple-500/30 rounded-xl p-6">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 bg-purple-500/20 rounded-lg">
-                                <Database className="text-purple-400" size={24} />
+                            <div className="p-2 bg-purple-200 dark:bg-purple-500/20 rounded-lg">
+                                <Database className="text-purple-700 dark:text-purple-400" size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-purple-400">Database</h3>
+                            <h3 className="text-xl font-bold text-purple-700 dark:text-purple-400">Database</h3>
                         </div>
                         <div className="space-y-3">
                             {Object.entries(data.tech_stack.database).map(([key, value]) => (
                                 <div key={key} className="flex flex-col gap-1">
-                                    <span className="text-gray-400 text-sm uppercase tracking-wide">{key.replace(/_/g, ' ')}</span>
-                                    <span className="text-white font-semibold text-lg">{String(value)}</span>
+                                    <span className="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wide">{key.replace(/_/g, ' ')}</span>
+                                    <span className="text-gray-900 dark:text-white font-semibold text-lg">{String(value)}</span>
                                 </div>
                             ))}
                         </div>
@@ -295,18 +313,18 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
 
                 {/* DevOps */}
                 {data.tech_stack.devops && (
-                    <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border border-orange-500/30 rounded-xl p-6">
+                    <div className="bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-500/10 dark:to-orange-600/10 border border-orange-400 dark:border-orange-500/30 rounded-xl p-6">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 bg-orange-500/20 rounded-lg">
-                                <Cloud className="text-orange-400" size={24} />
+                            <div className="p-2 bg-orange-200 dark:bg-orange-500/20 rounded-lg">
+                                <Cloud className="text-orange-700 dark:text-orange-400" size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-orange-400">DevOps</h3>
+                            <h3 className="text-xl font-bold text-orange-700 dark:text-orange-400">DevOps</h3>
                         </div>
                         <div className="space-y-3">
                             {Object.entries(data.tech_stack.devops).map(([key, value]) => (
                                 <div key={key} className="flex flex-col gap-1">
-                                    <span className="text-gray-400 text-sm uppercase tracking-wide">{key.replace(/_/g, ' ')}</span>
-                                    <span className="text-white font-semibold text-lg">{String(value)}</span>
+                                    <span className="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wide">{key.replace(/_/g, ' ')}</span>
+                                    <span className="text-gray-900 dark:text-white font-semibold text-lg">{String(value)}</span>
                                 </div>
                             ))}
                         </div>
@@ -324,19 +342,19 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                 <h3 className="text-2xl font-bold mb-4">Database Schema</h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {data.data_model.schema.map((table: any, idx: number) => (
-                        <div key={idx} className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
-                            <h4 className="text-lg font-bold text-blue-400 mb-3">{table.table}</h4>
+                        <div key={idx} className="bg-gray-100 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-lg p-4">
+                            <h4 className="text-lg font-bold text-blue-700 dark:text-blue-400 mb-3">{table.table}</h4>
                             <div className="space-y-1 text-sm font-mono">
                                 {table.columns?.map((col: any, colIdx: number) => (
-                                    <div key={colIdx} className="flex items-center gap-2 text-gray-300">
-                                        <span className={col.primary_key ? 'text-yellow-400' : 'text-gray-500'}>
+                                    <div key={colIdx} className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                                        <span className={col.primary_key ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-400 dark:text-gray-500'}>
                                             {col.primary_key ? '🔑' : '  '}
                                         </span>
-                                        <span className="text-green-400">{col.name}</span>
-                                        <span className="text-gray-500">:</span>
-                                        <span className="text-purple-400">{col.type}</span>
-                                        {col.not_null && <span className="text-red-400 text-xs">NOT NULL</span>}
-                                        {col.unique && <span className="text-blue-400 text-xs">UNIQUE</span>}
+                                        <span className="text-green-700 dark:text-green-400">{col.name}</span>
+                                        <span className="text-gray-500 dark:text-gray-500">:</span>
+                                        <span className="text-purple-700 dark:text-purple-400">{col.type}</span>
+                                        {col.not_null && <span className="text-red-600 dark:text-red-400 text-xs">NOT NULL</span>}
+                                        {col.unique && <span className="text-blue-600 dark:text-blue-400 text-xs">UNIQUE</span>}
                                     </div>
                                 ))}
                             </div>
@@ -608,9 +626,9 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
                     <h2 className="text-3xl font-bold mb-4">API Design Principles</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {data.api_design_principles.map((principle: any, idx: number) => (
-                            <div key={idx} className="bg-gray-800/30 border border-gray-700 rounded-lg p-4">
-                                <h4 className="font-bold text-blue-400 mb-2">{principle.principle}</h4>
-                                <p className="text-gray-300 text-sm">{principle.description}</p>
+                            <div key={idx} className="bg-gray-100 dark:bg-gray-800/30 border border-gray-300 dark:border-gray-700 rounded-lg p-4">
+                                <h4 className="font-bold text-blue-700 dark:text-blue-400 mb-2">{principle.principle}</h4>
+                                <p className="text-gray-700 dark:text-gray-300 text-sm">{principle.description}</p>
                             </div>
                         ))}
                     </div>

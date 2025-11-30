@@ -96,8 +96,19 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
         try {
             const API_BASE_URL = 'http://localhost:8050';
 
-            // Load all saved steps
-            const steps = ['ideas', 'prd', 'user_stories', 'architecture', 'ui_design', 'sprint_plan', 'backend_code', 'frontend_code', 'qa_review'];
+            // Load all saved steps (including keywords)
+            const steps = ['keywords', 'ideas', 'prd', 'user_stories', 'architecture', 'ui_design', 'sprint_plan', 'backend_code', 'frontend_code', 'qa_review'];
+
+            let loadedKeywords: string = '';
+            let loadedIdeas: any[] = [];
+            let loadedPrd: string | null = null;
+            let loadedUserStories: any[] = [];
+            let loadedArchitecture: any | null = null;
+            let loadedUiDesign: any | null = null;
+            let loadedSprintPlan: any | null = null;
+            let loadedBackendCode: any | null = null;
+            let loadedFrontendCode: any | null = null;
+            let loadedQaReview: any | null = null;
 
             for (const step of steps) {
                 try {
@@ -106,34 +117,63 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
                         const data = await res.json();
 
                         switch (step) {
+                            case 'keywords':
+                                // Load saved keywords
+                                if (data.data && typeof data.data === 'object' && 'keywords' in data.data) {
+                                    loadedKeywords = data.data.keywords;
+                                    setKeywords(loadedKeywords);
+                                } else if (typeof data.data === 'string') {
+                                    loadedKeywords = data.data;
+                                    setKeywords(loadedKeywords);
+                                }
+                                break;
                             case 'ideas':
                                 // Ensure it's an array
-                                setIdeas(Array.isArray(data.data) ? data.data : []);
+                                loadedIdeas = Array.isArray(data.data) ? data.data : [];
+                                setIdeas(loadedIdeas);
+                                // Set the first idea as selected if ideas exist
+                                if (loadedIdeas.length > 0) {
+                                    setSelectedIdea(loadedIdeas[0]);
+                                    // Only extract keywords if they weren't already loaded
+                                    if (!loadedKeywords) {
+                                        const firstIdea = loadedIdeas[0];
+                                        const extractedKeywords = firstIdea.pitch || firstIdea.title || '';
+                                        setKeywords(extractedKeywords);
+                                    }
+                                }
                                 break;
                             case 'prd':
-                                setPrd(data.data);
+                                loadedPrd = data.data;
+                                setPrd(loadedPrd);
                                 break;
                             case 'user_stories':
                                 // Ensure it's an array
-                                setUserStories(Array.isArray(data.data) ? data.data : []);
+                                loadedUserStories = Array.isArray(data.data) ? data.data : [];
+                                setUserStories(loadedUserStories);
                                 break;
                             case 'architecture':
-                                setArchitecture(data.data);
+                                loadedArchitecture = data.data;
+                                setArchitecture(loadedArchitecture);
                                 break;
                             case 'ui_design':
-                                setUiDesign(data.data);
+                                loadedUiDesign = data.data;
+                                setUiDesign(loadedUiDesign);
                                 break;
                             case 'sprint_plan':
-                                setSprintPlan(data.data);
+                                loadedSprintPlan = data.data;
+                                setSprintPlan(loadedSprintPlan);
                                 break;
                             case 'backend_code':
-                                setBackendCode(data.data);
+                                loadedBackendCode = data.data;
+                                setBackendCode(loadedBackendCode);
                                 break;
                             case 'frontend_code':
-                                setFrontendCode(data.data);
+                                loadedFrontendCode = data.data;
+                                setFrontendCode(loadedFrontendCode);
                                 break;
                             case 'qa_review':
-                                setQaReview(data.data);
+                                loadedQaReview = data.data;
+                                setQaReview(loadedQaReview);
                                 break;
                         }
                     }
@@ -147,14 +187,14 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
             setSessionId(sessionId);
 
             // Determine active step based on what's loaded
-            if (qaReview) setActiveStep(8);
-            else if (frontendCode || backendCode) setActiveStep(7);
-            else if (sprintPlan) setActiveStep(6);
-            else if (uiDesign) setActiveStep(5);
-            else if (architecture) setActiveStep(4);
-            else if (userStories.length > 0) setActiveStep(3);
-            else if (prd) setActiveStep(2);
-            else if (ideas.length > 0) setActiveStep(1);
+            if (loadedQaReview) setActiveStep(8);
+            else if (loadedFrontendCode || loadedBackendCode) setActiveStep(7);
+            else if (loadedSprintPlan) setActiveStep(6);
+            else if (loadedUiDesign) setActiveStep(5);
+            else if (loadedArchitecture) setActiveStep(4);
+            else if (loadedUserStories.length > 0) setActiveStep(3);
+            else if (loadedPrd) setActiveStep(2);
+            else if (loadedIdeas.length > 0) setActiveStep(1);
 
         } catch (error) {
             console.error('Failed to load project:', error);

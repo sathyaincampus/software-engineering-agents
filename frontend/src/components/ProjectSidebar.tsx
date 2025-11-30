@@ -83,10 +83,10 @@ const ProjectSidebar = () => {
 
     if (!expanded) {
         return (
-            <div className="w-12 bg-gray-900/50 border-r border-gray-800 flex flex-col items-center py-4">
+            <div className="w-12 bg-gray-100 dark:bg-gray-900/50 border-r border-gray-300 dark:border-gray-800 flex flex-col items-center py-4">
                 <button
                     onClick={toggleExpanded}
-                    className="p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white"
+                    className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                     title="Expand projects"
                 >
                     <ChevronRight size={20} />
@@ -96,16 +96,16 @@ const ProjectSidebar = () => {
     }
 
     return (
-        <div className="w-64 bg-gray-900/50 border-r border-gray-800 flex flex-col">
+        <div className="w-64 bg-gray-100 dark:bg-gray-900/50 border-r border-gray-300 dark:border-gray-800 flex flex-col">
             {/* Header */}
-            <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+            <div className="p-4 border-b border-gray-300 dark:border-gray-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <Folder className="text-blue-400" size={18} />
-                    <h3 className="font-semibold text-sm">Recent Projects</h3>
+                    <Folder className="text-blue-600 dark:text-blue-400" size={18} />
+                    <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Recent Projects</h3>
                 </div>
                 <button
                     onClick={toggleExpanded}
-                    className="p-1 hover:bg-gray-800 rounded transition-colors text-gray-400 hover:text-white"
+                    className="p-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                 >
                     <ChevronRight size={16} className="rotate-180" />
                 </button>
@@ -114,11 +114,11 @@ const ProjectSidebar = () => {
             {/* Projects List */}
             <div className="flex-1 overflow-y-auto">
                 {loading ? (
-                    <div className="p-4 text-center text-gray-500 text-sm">
+                    <div className="p-4 text-center text-gray-500 dark:text-gray-500 text-sm">
                         Loading projects...
                     </div>
                 ) : projects.length === 0 ? (
-                    <div className="p-4 text-center text-gray-500 text-sm">
+                    <div className="p-4 text-center text-gray-500 dark:text-gray-500 text-sm">
                         No projects yet
                     </div>
                 ) : (
@@ -132,33 +132,33 @@ const ProjectSidebar = () => {
                                     key={project.session_id}
                                     onClick={() => handleProjectClick(project.session_id)}
                                     className={`w-full text-left p-3 rounded-lg transition-all ${isActive
-                                            ? 'bg-blue-600/20 border border-blue-500/50'
-                                            : 'hover:bg-gray-800/50 border border-transparent'
+                                        ? 'bg-blue-100 dark:bg-blue-600/20 border border-blue-500'
+                                        : 'hover:bg-gray-200 dark:hover:bg-gray-800/50 border border-transparent'
                                         }`}
                                 >
                                     <div className="flex items-start gap-2">
                                         {isActive ? (
-                                            <FolderOpen className="text-blue-400 flex-shrink-0 mt-0.5" size={16} />
+                                            <FolderOpen className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" size={16} />
                                         ) : (
-                                            <Folder className="text-gray-500 flex-shrink-0 mt-0.5" size={16} />
+                                            <Folder className="text-gray-500 dark:text-gray-500 flex-shrink-0 mt-0.5" size={16} />
                                         )}
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-sm font-medium truncate">
+                                            <div className="text-sm font-medium truncate text-gray-900 dark:text-white">
                                                 {project.project_name || `Project ${project.session_id.slice(0, 8)}`}
                                             </div>
-                                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                                            <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-500 mt-1">
                                                 <Clock size={10} />
                                                 <span>{formatDate(project.last_modified)}</span>
                                             </div>
                                             {/* Progress Bar */}
                                             <div className="mt-2">
-                                                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                                <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-500 mb-1">
                                                     <span>{progress}% complete</span>
                                                     <span>{project.steps_completed.length}/9</span>
                                                 </div>
-                                                <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
+                                                <div className="h-1 bg-gray-300 dark:bg-gray-800 rounded-full overflow-hidden">
                                                     <div
-                                                        className={`h-full transition-all ${isActive ? 'bg-blue-500' : 'bg-gray-600'
+                                                        className={`h-full transition-all ${isActive ? 'bg-blue-600 dark:bg-blue-500' : 'bg-gray-400 dark:bg-gray-600'
                                                             }`}
                                                         style={{ width: `${progress}%` }}
                                                     />
@@ -174,10 +174,10 @@ const ProjectSidebar = () => {
             </div>
 
             {/* Footer */}
-            <div className="p-3 border-t border-gray-800">
+            <div className="p-3 border-t border-gray-300 dark:border-gray-800">
                 <button
                     onClick={fetchProjects}
-                    className="w-full text-xs text-gray-400 hover:text-white transition-colors py-2 hover:bg-gray-800 rounded"
+                    className="w-full text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors py-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded"
                 >
                     Refresh Projects
                 </button>

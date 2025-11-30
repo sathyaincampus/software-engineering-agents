@@ -524,9 +524,16 @@ async def run_idea_generator(session_id: str, request: GenerateIdeasRequest):
         
         # Save to filesystem
         try:
+            # Save ideas
             file_path = project_storage.save_step(session_id, "ideas", result)
-            logger.info(f"[IdeaGenerator] Saved to {file_path}")
+            logger.info(f"[IdeaGenerator] Saved ideas to {file_path}")
             session.add_log(f"💾 Saved ideas to {file_path}")
+            
+            # Save keywords for future loading
+            keywords_data = {"keywords": request.keywords}
+            keywords_path = project_storage.save_step(session_id, "keywords", keywords_data)
+            logger.info(f"[IdeaGenerator] Saved keywords to {keywords_path}")
+            session.add_log(f"💾 Saved keywords to {keywords_path}")
         except Exception as e:
             logger.error(f"[IdeaGenerator] Failed to save: {e}")
         
