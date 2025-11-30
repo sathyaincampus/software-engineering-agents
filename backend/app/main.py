@@ -25,7 +25,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="ZeroToOne AI API", version="1.0")
+app = FastAPI(title="SparkToShip AI API", version="1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -484,7 +484,7 @@ async def run_ux_designer(session_id: str, request: DesignUIRequest):
 
 @app.get("/")
 async def root():
-    return {"message": "ZeroToOne AI Backend is running"}
+    return {"message": "SparkToShip Backend is running"}
 
 @app.post("/session/start")
 async def start_session(request: StartSessionRequest):

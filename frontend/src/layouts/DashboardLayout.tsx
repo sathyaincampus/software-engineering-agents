@@ -9,7 +9,7 @@ import {
     Sun,
     Settings as SettingsIcon,
     LogOut,
-    Cpu,
+
     Command,
     Folder,
     Menu,
@@ -94,11 +94,13 @@ const DashboardLayout: React.FC = () => {
                 {!sidebarCollapsed ? (
                     <div className="p-6 flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
-                                <Cpu className="text-white w-6 h-6" />
-                            </div>
+                            <img
+                                src={darkMode ? "/logo-dark.png" : "/logo-light.png"}
+                                alt="SparkToShip Logo"
+                                className="w-10 h-10 rounded-xl shadow-lg shadow-blue-600/20"
+                            />
                             <div>
-                                <h1 className="text-lg font-bold tracking-tight">ZeroToOne AI</h1>
+                                <h1 className="text-lg font-bold tracking-tight">SparkToShip AI</h1>
                                 <p className="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Engineering Agent</p>
                             </div>
                         </div>
@@ -112,9 +114,11 @@ const DashboardLayout: React.FC = () => {
                     </div>
                 ) : (
                     <div className="p-3 flex flex-col items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
-                            <Cpu className="text-white w-6 h-6" />
-                        </div>
+                        <img
+                            src={darkMode ? "/logo-dark.png" : "/logo-light.png"}
+                            alt="SparkToShip Logo"
+                            className="w-10 h-10 rounded-xl shadow-lg shadow-blue-600/20"
+                        />
                         <button
                             onClick={toggleSidebar}
                             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-500 hover:text-gray-900 dark:hover:text-gray-200"

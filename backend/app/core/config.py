@@ -5,7 +5,7 @@ import os
 class Settings(BaseSettings):
     GOOGLE_API_KEY: str
     MODEL_NAME: str = "gemini-2.0-flash-exp"
-    PROJECT_NAME: str = "ZeroToOne AI"
+    PROJECT_NAME: str = "SparkToShip AI"
 
     class Config:
         env_file = ".env"
