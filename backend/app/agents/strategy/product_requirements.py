@@ -31,7 +31,7 @@ class ProductRequirementsAgent:
 
     async def generate_prd(self, idea_context: Dict[str, Any], session_id: str) -> str:
         prompt = f"Generate a PRD for the following idea context: {idea_context}"
-        from app.utils.adk_helper import collect_response, parse_json_response
+        from app.utils.adk_helper import collect_response, extract_markdown_from_codeblocks
         
         message = Content(parts=[Part(text=prompt)])
         
@@ -40,4 +40,7 @@ class ProductRequirementsAgent:
             session_id=session_id,
             new_message=message
         ))
-        return str(response)
+        
+        # Strip markdown code blocks if present
+        clean_response = extract_markdown_from_codeblocks(response)
+        return clean_response

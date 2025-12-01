@@ -1,0 +1,225 @@
+{
+  "tech_stack": {
+    "frontend": {
+      "framework": "React Native",
+      "language": "TypeScript",
+      "state_management": "Redux Toolkit",
+      "ui_library": "NativeBase"
+    },
+    "backend": {
+      "language": "Node.js",
+      "framework": "Express.js",
+      "authentication": "Firebase Authentication",
+      "realtime": "Firebase Firestore Realtime Updates",
+      "cloud_provider": "Google Cloud Platform",
+      "deployment": "Firebase Hosting / Cloud Functions"
+    },
+    "database": {
+      "primary": "Firebase Firestore",
+      "caching": "Local Device Storage (AsyncStorage)"
+    },
+    "devops": {
+      "ci_cd": "GitHub Actions",
+      "containerization": "Docker (for local dev/testing)",
+      "cloud_infrastructure": "Firebase Platform",
+      "monitoring": "Firebase Performance Monitoring",
+      "testing": "Jest, React Testing Library"
+    }
+  },
+  "system_diagram": {
+    "format": "mermaid",
+    "code": "flowchart TD\n    subgraph Client Applications\n        MobileApp[Mobile App - iOS/Android]\n        WebClient[Web Client (Optional)]\n    end\n    API[Firebase Authentication & Firestore]\n    PushService[Firebase Cloud Messaging]\n    \n    MobileApp --> API\n    WebClient --> API\n    API --> MobileApp\n    API --> WebClient\n    PushService --> MobileApp\n    API --> PushService"
+  },
+  "backend_diagram": {
+    "format": "mermaid",
+    "code": "flowchart TD\n    subgraph Client Interface\n        MobileApp[Mobile App]\n    end\n    subgraph Firebase Services\n        Auth[Firebase Authentication]\n        Firestore[Firebase Firestore]\n        FCM[Firebase Cloud Messaging]\n    end\n    \n    MobileApp -- Authentication Requests --> Auth\n    Auth -- User Data --> Firestore\n    MobileApp -- Habit Data Operations --> Firestore\n    Firestore -- Realtime Data --> MobileApp\n    Firestore -- Triggers --> FCM\n    FCM -- Push Notifications --> MobileApp"
+  },
+  "frontend_diagram": {
+    "format": "mermaid",
+    "code": "flowchart TD\n    subgraph User Interaction Layer\n        UI[UI Components]\n    end\n    subgraph State Management\n        State[Redux Store]\n    end\n    subgraph Data Layer\n        APIClient[Firebase API Client]\n        LocalStorage[Local Cache]\n    end\n    subgraph Services\n        AuthService[Authentication Service]\n        HabitService[Habit Service]\n        NotificationService[Notification Service]\n    end\n    \n    UI --> State\n    State --> UI\n    UI --> AuthService\n    UI --> HabitService\n    State --> AuthService\n    State --> HabitService\n    AuthService --> APIClient\n    HabitService --> APIClient\n    AuthService --> LocalStorage\n    HabitService --> LocalStorage\n    APIClient --> Auth\n    APIClient --> Firestore\n    NotificationService --> FCM\n    HabitService --> NotificationService\n    \n    subgraph Firebase Platform\n        Auth[Firebase Authentication]\n        Firestore[Firebase Firestore]\n        FCM[Firebase Cloud Messaging]\n    end"
+  },
+  "sequence_diagrams": [
+    {
+      "name": "User Sign Up",
+      "description": "A new user creates an account using email and password.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client as MobileApp\n    participant FirebaseAuth as FirebaseAuth\n    participant Firestore as FirebaseFirestore\n    \n    Client->>+FirebaseAuth: SignUp(email, password)\n    FirebaseAuth-->>-Client: User Created\n    FirebaseAuth->>+Firestore: SetUserData(userId, {email})\n    Firestore-->>-FirebaseAuth: User Data Saved\n    FirebaseAuth-->>-Client: Success Response"
+    },
+    {
+      "name": "User Login",
+      "description": "An existing user logs in with their credentials.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client as MobileApp\n    participant FirebaseAuth as FirebaseAuth\n    participant Firestore as FirebaseFirestore\n    \n    Client->>+FirebaseAuth: SignIn(email, password)\n    FirebaseAuth-->>-Client: Authentication Token\n    FirebaseAuth->>+Firestore: GetUserData(userId)\n    Firestore-->>-FirebaseAuth: User Data\n    FirebaseAuth-->>-Client: Success Response + User Data"
+    },
+    {
+      "name": "Create and Log Micro-Habit",
+      "description": "A user creates a new micro-habit and checks it off for the day.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client as MobileApp\n    participant Firestore as FirebaseFirestore\n    participant FCM as FirebaseCloudMessaging\n    \n    Client->>+Firestore: CreateHabit({name, frequency, description})\n    Firestore-->>-Client: Habit Created Confirmation\n    Client->>+Firestore: LogHabitCompletion({habitId, date})\n    Firestore-->>-Client: Completion Logged + Streak Updated\n    Firestore -->> Client: Trigger Reminder Check (internal logic)\n    Client -->> FCM: Schedule Local Notification (if applicable)"
+    },
+    {
+      "name": "Offline Habit Check-in",
+      "description": "User checks in a habit while offline.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client as MobileApp\n    participant LocalCache[Local Storage]\n    participant Firestore as FirebaseFirestore\n    \n    Client(Offline): Mark Habit Completed\n    Client->>+LocalCache: SaveOfflineCheckin({habitId, date})\n    LocalCache-->>-Client: Confirmation\n    Client -->> Client: Display Local confirmation\n    Client(Online): Reconnect\n    Client->>+LocalCache: GetOfflineCheckins()\n    LocalCache-->>-Client: Offline Checkins List\n    Client->>+Firestore: SyncOfflineCheckins(CheckinsList)\n    Firestore-->>-Client: Sync Successful"
+    },
+    {
+      "name": "View Dashboard with Streaks",
+      "description": "User opens the app and views their habits and streaks.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client as MobileApp\n    participant Firestore as FirebaseFirestore\n    \n    Client->>Client: App Launch\n    Client->>+Firestore: FetchHabitsAndStreaks()\n    Firestore-->>-Client: Habits Data + Streak Data\n    Client->>Client: Render Dashboard with Animations"
+    }
+  ],
+  "api_design_principles": [
+    {
+      "principle": "Firebase as Backend-as-a-Service",
+      "description": "Leverage Firebase Authentication and Firestore for rapid development and scalability, offloading backend infrastructure management."
+    },
+    {
+      "principle": "Realtime Data Synchronization",
+      "description": "Utilize Firestore's real-time listeners to ensure the dashboard and habit status are always up-to-date across devices."
+    },
+    {
+      "principle": "Offline-First Approach",
+      "description": "Implement local caching and sync strategies to provide a seamless user experience even with intermittent network connectivity."
+    },
+    {
+      "principle": "Event-Driven Notifications",
+      "description": "Use Firebase Cloud Messaging to trigger timely reminders for habit check-ins."
+    }
+  ],
+  "data_model": {
+    "schema": [
+      {
+        "collection": "users",
+        "fields": [
+          {
+            "name": "uid",
+            "type": "string",
+            "description": "Firebase Authentication User ID"
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "description": "User's email address"
+          },
+          {
+            "name": "createdAt",
+            "type": "timestamp",
+            "description": "Timestamp of account creation"
+          }
+        ]
+      },
+      {
+        "collection": "habits",
+        "fields": [
+          {
+            "name": "habitId",
+            "type": "string",
+            "description": "Unique identifier for the habit"
+          },
+          {
+            "name": "userId",
+            "type": "string",
+            "description": "Reference to the user who owns the habit"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "description": "Name of the micro-habit"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "description": "Optional details about the habit"
+          },
+          {
+            "name": "frequency",
+            "type": "object",
+            "description": "Defines habit frequency (e.g., { type: 'daily' } or { type: 'weekly', days: [1, 3, 5] })"
+          },
+          {
+            "name": "reminderTime",
+            "type": "string",
+            "description": "Time for the daily reminder (e.g., '08:00')"
+          },
+          {
+            "name": "createdAt",
+            "type": "timestamp",
+            "description": "Timestamp of habit creation"
+          },
+          {
+            "name": "archived",
+            "type": "boolean",
+            "default": false,
+            "description": "Flag if habit is archived"
+          }
+        ]
+      },
+      {
+        "collection": "habitCompletions",
+        "fields": [
+          {
+            "name": "completionId",
+            "type": "string",
+            "description": "Unique identifier for the completion record"
+          },
+          {
+            "name": "userId",
+            "type": "string",
+            "description": "Reference to the user"
+          },
+          {
+            "name": "habitId",
+            "type": "string",
+            "description": "Reference to the completed habit"
+          },
+          {
+            "name": "completionDate",
+            "type": "date",
+            "description": "The date the habit was completed"
+          },
+          {
+            "name": "recordedAt",
+            "type": "timestamp",
+            "description": "Timestamp when the completion was recorded"
+          }
+        ]
+      },
+      {
+        "collection": "userSettings",
+        "fields": [
+          {
+            "name": "userId",
+            "type": "string",
+            "description": "Reference to the user"
+          },
+          {
+            "name": "premiumTheme",
+            "type": "string",
+            "description": "Selected premium theme identifier"
+          },
+          {
+            "name": "purchasedIcons",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of purchased icon identifiers"
+          },
+          {
+            "name": "dataExportPreference",
+            "type": "string",
+            "description": "User preference for data export"
+          },
+          {
+            "name": "notificationEnabled",
+            "type": "boolean",
+            "default": true,
+            "description": "Global notification setting"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "user_stories": [
+    {
+      "title": "User Account Creation",
+      "description": "As a new user, I want to create an account using my email and password so that I can start tracking my micro-habits and have my data stored securely.",
+      "acceptance_criteria": [
+        "User can navigate to a sign-up screen.",
+        "User can enter an email address and password.",
+        "User can confirm their password.",
+        "Upon successful submission, a user account is created.",
+        "User is redirected to the main dashboard or onboarding.",
+        "An error message is displayed if the email is already in use or passwords do not match."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "User Login",
+      "description": "As a registered user, I want to log in with my email and password so that I can securely access my habit tracking data.",
+      "acceptance_criteria": [
+        "User can navigate to a login screen.",
+        "User can enter their registered email and password.",
+        "Upon successful login, the user is directed to the dashboard.",
+        "An error message is displayed for incorrect credentials."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "User Logout",
+      "description": "As a logged-in user, I want to be able to log out of the application so that I can ensure my data remains private on shared devices.",
+      "acceptance_criteria": [
+        "There is a clear option to log out (e.g., in settings or profile menu).",
+        "Initiating logout returns the user to the login/signup screen.",
+        "The user's session is terminated."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Create a Micro-Habit",
+      "description": "As a user, I want to create a new micro-habit by providing a name, frequency, and optional description, so that I can start tracking small, achievable actions.",
+      "acceptance_criteria": [
+        "User can access an 'Add Habit' or 'Create Habit' function.",
+        "User can input a unique name for the habit.",
+        "User can select the frequency of the habit (e.g., daily, specific days of the week).",
+        "User can optionally add a description for more context.",
+        "The new habit is saved and appears on the main dashboard."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Log Daily Habit Completion",
+      "description": "As a user, I want to easily mark a micro-habit as completed for the day so that I can track my consistency and build positive streaks.",
+      "acceptance_criteria": [
+        "Each habit on the dashboard has a clear interactive element (e.g., button, checkbox) to mark it as done.",
+        "Tapping this element marks the habit as completed for the current day.",
+        "Visual feedback is provided upon successful completion (e.g., element changes state, animation plays).",
+        "The streak counter for that habit increments accordingly."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "View Current Streaks on Dashboard",
+      "description": "As a user, I want to see a dashboard that displays all my active micro-habits along with their current streak counts and animated visualizations, so that I can quickly monitor my progress and stay motivated.",
+      "acceptance_criteria": [
+        "The main dashboard screen lists all active micro-habits.",
+        "For each habit, the current consecutive streak (number of days) is clearly visible.",
+        "Animated visualizations are displayed to represent the streaks (e.g., a growing flame, a filling bar).",
+        "The dashboard updates in near real-time after a habit is checked in.",
+        "Habits are visually distinct and easy to identify."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Set Daily Reminders for Habits",
+      "description": "As a user, I want to set customizable daily reminders for my micro-habits so that I don't forget to check them in.",
+      "acceptance_criteria": [
+        "When creating or editing a habit, the user has the option to enable and configure a daily reminder.",
+        "User can specify the time for the reminder.",
+        "The app sends a push notification at the scheduled time.",
+        "Users can enable or disable reminders for individual habits.",
+        "Reminders are delivered accurately at the set times."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Data Synchronization Across Devices",
+      "description": "As a user, I want my habit data (habits, check-in history, streaks) to be automatically synced across all my devices using Firestore, so that I can access my progress seamlessly regardless of which device I'm using.",
+      "acceptance_criteria": [
+        "All user data is stored in a Firestore database.",
+        "When a user logs in on a new device, all their existing habit data is fetched and displayed.",
+        "Changes made on one device (e.g., adding a habit, checking in) are reflected on other logged-in devices within a reasonable time.",
+        "The sync process is reliable and maintains data integrity."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Offline Data Handling",
+      "description": "As a user, I want the app to function and allow me to check in to habits even when I am offline, with data syncing automatically once I reconnect, so that my tracking is never interrupted.",
+      "acceptance_criteria": [
+        "The app caches habit data locally.",
+        "Users can perform check-ins while offline.",
+        "The app visually indicates that the device is offline.",
+        "Once an internet connection is re-established, pending offline check-ins are automatically synced to Firestore.",
+        "The dashboard reflects the synced data upon successful connection."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "View Detailed Habit History",
+      "description": "As a user, I want to view a detailed history for each habit, including past completion dates and my longest streak, so that I can gain deeper insights into my performance over time.",
+      "acceptance_criteria": [
+        "User can tap on a habit from the dashboard to navigate to a detailed view.",
+        "This view displays the current streak.",
+        "This view displays the all-time longest streak for that habit.",
+        "A calendar or timeline visualization shows the days the habit was completed.",
+        "The historical data presented is accurate."
+      ],
+      "priority": "Medium"
+    },
+    {
+      "title": "Edit Habit Details",
+      "description": "As a user, I want to be able to edit the name, frequency, and reminder settings of my existing micro-habits so that I can adapt them as my routine evolves.",
+      "acceptance_criteria": [
+        "An 'Edit' option is available for each habit (e.g., on the habit detail screen).",
+        "User can modify the habit's name, frequency, and reminder time.",
+        "Saving the changes updates the habit details across the app and in storage.",
+        "Editing a habit does not reset its current streak unless the frequency change logically breaks it."
+      ],
+      "priority": "Medium"
+    },
+    {
+      "title": "Archive or Delete Habits",
+      "description": "As a user, I want to archive or delete habits I no longer track so that I can keep my dashboard clean and focused.",
+      "acceptance_criteria": [
+        "An option to 'Archive' or 'Delete' a habit is available.",
+        "Archiving removes the habit from the main dashboard but retains its history.",
+        "Deleting permanently removes the habit and all its associated data.",
+        "A confirmation prompt is shown before executing delete or archive actions to prevent accidental data loss."
+      ],
+      "priority": "Medium"
+    },
+    {
+      "title": "Password Reset Functionality",
+      "description": "As a user who has forgotten their password, I want to be able to reset it securely so that I can regain access to my account.",
+      "acceptance_criteria": [
+        "A 'Forgot Password?' link is present on the login screen.",
+        "User can enter their registered email address to initiate the reset.",
+        "An email with instructions or a reset link is sent to the user.",
+        "User can follow the email instructions to set a new password.",
+        "The new password allows the user to log in successfully."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Apply Purchased Customizations",
+      "description": "As a user who has made an in-app purchase, I want to apply premium themes and icon packs to personalize the app's appearance and my habits.",
+      "acceptance_criteria": [
+        "A section exists for managing purchased customizations (themes, icons).",
+        "User can select and apply a purchased theme.",
+        "User can select and apply purchased icons to their habits.",
+        "The app's UI and habit representations update to reflect the chosen customizations.",
+        "Applied customizations persist across app sessions and devices for the logged-in user."
+      ],
+      "priority": "Low"
+    },
+    {
+      "title": "Utilize Habit Templates",
+      "description": "As a user, I want to select from pre-defined habit templates during habit creation to quickly set up common micro-habits.",
+      "acceptance_criteria": [
+        "An option to 'Use Template' is available during habit creation.",
+        "A catalog of available templates is displayed.",
+        "Selecting a template pre-populates the habit name, frequency, and potentially duration/action.",
+        "User can then save the habit directly or modify the pre-filled details before saving."
+      ],
+      "priority": "Low"
+    },
+    {
+      "title": "Categorize Habits",
+      "description": "As a user, I want to group my habits into categories (e.g., Wellness, Productivity) so that I can organize them better and view them selectively.",
+      "acceptance_criteria": [
+        "User can create, name, and assign habits to categories.",
+        "The dashboard allows filtering or viewing habits by category.",
+        "Habits can be assigned to multiple categories or have no category.",
+        "Editing a habit allows changing its category."
+      ],
+      "priority": "Medium"
+    },
+    {
+      "title": "Data Export",
+      "description": "As a user, I want to export my habit tracking data (e.g., to a CSV file) so that I can analyze it externally or keep a personal backup.",
+      "acceptance_criteria": [
+        "An option to 'Export Data' is available (likely in settings).",
+        "User can choose a date range or export all data.",
+        "The data is generated in a common format like CSV.",
+        "User can share or save the exported file."
+      ],
+      "priority": "Low"
+    },
+    {
+      "title": "Home Screen Widget Access",
+      "description": "As a user, I want to have home screen widgets that allow for quick check-ins and viewing of my current streaks so that I can interact with the app without fully opening it.",
+      "acceptance_criteria": [
+        "Users can add MicroHabitFlow widgets to their device's home screen.",
+        "Widgets display current streak information for selected habits.",
+        "Widgets provide a button or tap area to quickly mark a habit as complete.",
+        "Widgets update their displayed information periodically or upon app interaction."
+      ],
+      "priority": "Low"
+    }
+  ]
+}

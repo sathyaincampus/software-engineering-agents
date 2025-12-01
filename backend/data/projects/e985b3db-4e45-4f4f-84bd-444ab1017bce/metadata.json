@@ -1,0 +1,15 @@
+{
+  "session_id": "e985b3db-4e45-4f4f-84bd-444ab1017bce",
+  "created_at": "2025-11-30T23:11:52.303685",
+  "steps_completed": [
+    "ideas",
+    "keywords",
+    "prd",
+    "user_stories",
+    "architecture",
+    "sprint_plan",
+    "story_map"
+  ],
+  "last_updated": "2025-11-30T23:15:03.395541",
+  "project_name": "task management app for remote teams"
+}

@@ -1,0 +1,172 @@
+name: CI Pipeline
+
+# Controls when the workflow will run
+# Runs on pushes to main and pull requests targeting main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This job builds and tests the backend application
+  backend_build_test:
+    name: Backend Build & Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Python environment
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Install dependencies (including dev dependencies)
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install --with dev
+
+      # Run linters and formatters
+      - name: Run Black (Code Formatter)
+        run: poetry run black --check . --exclude "(\.git|\.hg|\.mypy_cache|\.tox|__pycache__|venv)"
+
+      - name: Run Flake8 (Linter)
+        run: poetry run flake8 .
+
+      # Run security checks (optional but recommended)
+      - name: Run Bandit (Security Linter)
+        run: poetry run bandit -r . -x tests/
+
+      # Run tests with coverage
+      - name: Run backend tests with coverage
+        run: |
+          # Ensure .env.test is available or configure DB connection for testing
+          # cp .env.example .env.test # Example if you have a test env file
+          poetry run pytest --cov=app --cov-report=xml --cov-report=term-missing
+        env:
+          # Provide necessary environment variables for testing, e.g., database URL
+          # DATABASE_URL: postgresql://user:password@host:port/test_db
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/test_db_ci
+          SECRET_KEY: test_secret_key_for_ci
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+
+      # Upload coverage report
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # Store your Codecov token in GitHub secrets
+          fail_ci_if_error: true
+
+  # This job builds and tests the frontend application
+  frontend_build_test:
+    name: Frontend Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x' # Or your project's Node.js version
+          cache: 'npm' # Use npm cache
+
+      # Install frontend dependencies
+      - name: Install frontend dependencies
+        run: npm ci
+
+      # Run linters and formatters (if applicable, e.g., ESLint, Prettier)
+      - name: Run ESLint
+        run: npm run lint
+
+      # Run tests
+      - name: Run frontend tests
+        run: npm test
+        env:
+          CI: true # Set CI environment variable for tests
+          # Add any other necessary environment variables for frontend tests
+
+      # Build the frontend application for production
+      - name: Build frontend application
+        run: npm run build
+        env:
+          REACT_APP_API_URL: http://api.staging.example.com # Example API URL for staging build
+          # Add other build-time environment variables
+
+      # Optional: Upload build artifacts for later deployment
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: build/ # Or your frontend build output directory
+
+  # Deployment jobs can be added here (e.g., deploy_staging, deploy_production)
+  # These would typically depend on the 'build' jobs succeeding.
+  # Example: Deploy to Staging
+  deploy_staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [backend_build_test, frontend_build_test] # Run only if build & test jobs pass
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Only deploy on push to main
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Download frontend build artifact
+      - name: Download frontend build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: ./frontend_build
+
+      # Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Change to your AWS region
+
+      # Example: Deploy backend using Docker (assuming you have a Dockerfile)
+      # - name: Build and push backend Docker image
+      #   run: |
+      #     docker build -t your-dockerhub-username/sparktoship-backend:latest ./backend
+      #     docker push your-dockerhub-username/sparktoship-backend:latest
+
+      # Example: Deploy frontend static files to S3
+      - name: Sync frontend build to S3 bucket
+        run: aws s3 sync ./frontend_build s3://your-staging-bucket-name --delete
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1 # Change to your AWS region
+
+      # Example: Update ECS service or deploy to Kubernetes (requires more setup)
+      # - name: Deploy backend to Staging Environment (e.g., ECS/Kubernetes)
+      #   run: |
+      #     # Add deployment commands here (e.g., using kubectl, aws ecs update-service)
+      #     echo "Deploying backend to staging..."
+
+# Define a separate workflow for production deployment if needed, triggered manually or on tag
+# For example:
+# name: Production Deployment
+# on:
+#   release:
+#     types: [published]
+# jobs:
+#   deploy_production:
+#     # ... similar steps as deploy_staging but targeting production environment

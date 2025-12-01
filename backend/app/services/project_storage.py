@@ -32,7 +32,15 @@ class ProjectStorage:
             
         Returns:
             Path to saved file
+            
+        Raises:
+            ValueError: If data contains an error response
         """
+        # Check if data is an error response (dict with 'error' key)
+        if isinstance(data, dict) and "error" in data:
+            error_msg = data.get("error", "Unknown error")
+            raw_output = data.get("raw_output", "")
+            raise ValueError(f"Cannot save error response for {step_name}: {error_msg}. Raw output: {raw_output[:200]}...")        
         project_dir = self.get_project_dir(session_id)
         
         # Determine file extension and format

@@ -84,6 +84,28 @@ def extract_json_from_markdown(text: str) -> str:
     # If no code block found, return original text
     return text.strip()
 
+def extract_markdown_from_codeblocks(text: str) -> str:
+    """
+    Extract markdown content from markdown code blocks.
+    Handles formats like:
+    - ```markdown\n...\n```
+    - ```md\n...\n```
+    - Plain markdown
+    """
+    # Try to find markdown in code blocks
+    patterns = [
+        r'```markdown\s*\n(.*?)\n```',  # ```markdown ... ```
+        r'```md\s*\n(.*?)\n```',        # ```md ... ```
+    ]
+    
+    for pattern in patterns:
+        match = re.search(pattern, text, re.DOTALL)
+        if match:
+            return match.group(1).strip()
+    
+    # If no code block found, return original text
+    return text.strip()
+
 def parse_json_response(response: str) -> dict:
     """
     Parse JSON response, handling markdown code blocks and errors.
@@ -121,9 +143,11 @@ def parse_json_response(response: str) -> dict:
     
     except json.JSONDecodeError as e:
         # Return error with raw output for debugging
+        # Strip code blocks from raw output to avoid saving them
+        clean_output = extract_json_from_markdown(response)
         return {
             "error": f"Failed to parse JSON: {str(e)}",
-            "raw_output": response[:1000]  # Limit to first 1000 chars
+            "raw_output": clean_output[:1000]  # Limit to first 1000 chars
         }
     except Exception as e:
         return {

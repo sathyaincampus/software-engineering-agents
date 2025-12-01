@@ -1,0 +1,124 @@
+{
+  "user_stories": [
+    {
+      "title": "Create and manage tasks",
+      "description": "As a Project Manager, I want to create, edit, delete, assign, and prioritize tasks with due dates and statuses, so that I can effectively manage project workflows and delegate responsibilities.",
+      "acceptance_criteria": [
+        "Users can create new tasks with a title, description, due date, and priority.",
+        "Users can assign tasks to one or multiple team members.",
+        "Users can edit existing task details.",
+        "Users can delete tasks.",
+        "Users can define and update task statuses (e.g., To Do, In Progress, Under Review, Done).",
+        "Tasks are displayed in a list or Kanban board view.",
+        "Task status changes are reflected in real-time."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Communicate within tasks",
+      "description": "As a Team Member, I want to add comments and attachments to tasks, so that I can provide updates, ask questions, and share relevant files directly within the context of the task.",
+      "acceptance_criteria": [
+        "Users can add text comments to a task.",
+        "Users can upload files (attachments) to a task.",
+        "Comments and attachments are visible to all users with access to the task.",
+        "New comments and attachments trigger notifications to relevant team members."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Real-time task updates and notifications",
+      "description": "As a Project Manager and Team Member, I want to receive real-time notifications for task assignments, mentions, comments, and status changes, so that I am always aware of the latest project activity and can respond promptly.",
+      "acceptance_criteria": [
+        "Users receive in-app notifications when a task is assigned to them.",
+        "Users receive in-app notifications when they are mentioned in a task comment.",
+        "Users receive in-app notifications when a task they are involved in has a status change.",
+        "Users receive in-app notifications for new comments on tasks they are assigned to or follow.",
+        "Email notifications are sent for critical updates (configurable).",
+        "Users can configure basic notification preferences."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Collaborate via integrated chat and video",
+      "description": "As a Remote Team Member, I want to initiate direct messages and group chats, and participate in video conferences with screen sharing, so that I can communicate effectively with my colleagues without switching applications.",
+      "acceptance_criteria": [
+        "Users can send direct messages to individual team members.",
+        "Users can create and participate in group chat channels for projects or teams.",
+        "Users can initiate one-on-one video calls.",
+        "Users can initiate group video calls.",
+        "Users can share their screen during video calls.",
+        "Message history is available and searchable within chat conversations.",
+        "Users can see the presence status (online, away, in a call) of other team members."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Manage project documents",
+      "description": "As a Project Manager, I want to upload, store, and organize project-related files with basic version control, so that all necessary documents are easily accessible and trackable in a central location.",
+      "acceptance_criteria": [
+        "Users can upload files to the document repository.",
+        "Uploaded files are associated with projects or tasks.",
+        "The system automatically saves previous versions when a file is re-uploaded.",
+        "Users can organize files into folders or using tags.",
+        "Users can perform basic text searches for documents by name or content.",
+        "Permissions can be set for viewing and editing documents."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "Monitor team workload and performance",
+      "description": "As a Project Manager, I want to view a dashboard of overall team workload and basic reports on task completion rates and overdue tasks, so that I can assess team productivity and identify potential issues.",
+      "acceptance_criteria": [
+        "A dashboard displays the total number of tasks, tasks in progress, and completed tasks.",
+        "Reports show the percentage of tasks completed on time.",
+        "Reports highlight the number of overdue tasks.",
+        "Users can view the workload distribution among individual team members."
+      ],
+      "priority": "Medium"
+    },
+    {
+      "title": "User authentication and team creation",
+      "description": "As an Administrator, I want to register users, authenticate them securely, and create teams with defined roles, so that I can manage access and structure the organization within the platform.",
+      "acceptance_criteria": [
+        "Users can register using email and password.",
+        "Users can register/log in using Google SSO.",
+        "Users can register/log in using Microsoft SSO.",
+        "Administrators can create new teams.",
+        "Administrators can invite users to join teams.",
+        "Users can be assigned roles (e.g., Admin, Member)."
+      ],
+      "priority": "High"
+    },
+    {
+      "title": "View tasks in different formats",
+      "description": "As a Team Member, I want to view my assigned tasks in both a list format and a Kanban board format, so that I can choose the visualization that best suits my workflow and understanding.",
+      "acceptance_criteria": [
+        "Users can view tasks in a sortable list format.",
+        "Users can view tasks in a drag-and-drop Kanban board format.",
+        "The chosen view (list or board) is persistent or easily switchable."
+      ],
+      "priority": "Medium"
+    },
+    {
+      "title": "Basic document preview",
+      "description": "As a Team Member, I want to preview documents within the application before downloading them, so that I can quickly check the content and relevance of a file.",
+      "acceptance_criteria": [
+        "Users can click on a document attachment to open a preview within the application.",
+        "Common file types (e.g., .txt, .pdf, .jpg, .png) are supported for preview.",
+        "A clear indication is provided if a file type is not supported for preview."
+      ],
+      "priority": "Low"
+    },
+    {
+      "title": "Calendar Integration for Task Deadlines",
+      "description": "As a Project Manager, I want to integrate with external calendars (Google Calendar, Outlook Calendar) to display task deadlines, so that I can have a consolidated view of project timelines alongside other scheduled events.",
+      "acceptance_criteria": [
+        "Users can connect their Google Calendar account.",
+        "Users can connect their Outlook Calendar account.",
+        "Task due dates are automatically reflected as events in the connected calendar.",
+        "Changes to task due dates in TeamSync Hub update the calendar events."
+      ],
+      "priority": "Medium"
+    }
+  ]
+}
