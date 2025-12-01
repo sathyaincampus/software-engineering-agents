@@ -244,7 +244,7 @@ The demo showcases:
 
 ### 🎥 Video Demo
 Watch the full demonstration on YouTube:  
-[![SparkToShip Demo](https://img.shields.io/badge/YouTube-Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/sdwbgKfnk7c)
+[![SparkToShip Demo](https://img.shields.io/badge/YouTube-Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/o1i64FRntTY)
 
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
