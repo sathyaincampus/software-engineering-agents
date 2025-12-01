@@ -413,7 +413,7 @@ class ProjectSession(BaseModel):
 ```python
 model_factory = ModelFactory()
 model = model_factory.get_model()  # Returns current Gemini instance
-model_factory.update_config(api_key="new_key", model_name="gemini-1.5-pro")
+model_factory.update_config(api_key="new_key", model_name="gemini-2.5-pro")
 ```
 
 #### `project_storage.py` - Persistence Layer
@@ -1242,13 +1242,13 @@ Content-Type: application/json
 
 {
   "api_key": "AIza...",
-  "model_name": "gemini-1.5-pro"
+  "model_name": "gemini-2.5-pro"
 }
 
 Response: 200 OK
 {
   "message": "Settings updated successfully",
-  "model_name": "gemini-1.5-pro"
+  "model_name": "gemini-2.5-pro"
 }
 ```
 
@@ -1268,7 +1268,7 @@ PROJECT_NAME=SparkToShip AI
 **Model Options:**
 - `gemini-2.0-flash-exp` - Latest Flash model (fast, cost-effective)
 - `gemini-1.5-flash` - Stable Flash model
-- `gemini-1.5-pro` - Pro model (advanced reasoning)
+- `gemini-2.5-pro` - Pro model (advanced reasoning)
 
 ### Frontend Configuration
 

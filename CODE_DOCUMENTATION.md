@@ -302,7 +302,7 @@ model = model_factory.get_model()
 # Update configuration
 model_factory.update_config(
     api_key="new_api_key",
-    model_name="gemini-1.5-pro"
+    model_name="gemini-2.5-pro"
 )
 ```
 
