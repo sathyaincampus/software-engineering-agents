@@ -39,7 +39,7 @@ SparkToShip solves the "handover" problem with a dedicated `WalkthroughAgent`. I
 -   **Image Walkthrough**: Visual slides highlighting key components.
 -   **Video Walkthrough**: Scripted tours of the application logic.
 
-### ⚙️ Bring Your Own Model (BYOK)
+### ⚙️ Bring Your Own Model (BYOM)
 Full control over your AI infrastructure.
 -   **Custom API Keys**: Use your own Google Gemini API keys.
 -   **Model Selection**: Switch between **Gemini 2.5 pro** (for complex reasoning) and **Gemini 1.5 Flash** (for speed) directly from the settings.
