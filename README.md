@@ -227,6 +227,20 @@ The frontend is a modern React application with TypeScript, providing an intuiti
 
 📚 **For detailed architecture diagrams** including system overview, agent ecosystem, data flow, deployment architecture, and sequence diagrams, see [ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md).
 
+## 📸 Demo Screenshots
+
+Want to see SparkToShip in action? Check out our comprehensive visual walkthrough showing the complete workflow from idea to production:
+
+👉 **[View Demo Screenshots](./DEMO.md)**
+
+The demo showcases:
+- Model configuration and mission control
+- Idea generation and brainstorming
+- Product requirements and user personas
+- Architecture diagrams and technology stack
+- Engineering sprint and agent collaboration
+- Code generation, testing, and walkthroughs
+
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 
