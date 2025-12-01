@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** October 26, 2023
-**Author:** Product Requirements Agent (ZeroToOne AI)
+**Author:** Product Requirements Agent (SparkToShip AI)
 
 ---
 

@@ -15,7 +15,7 @@ class E2ETestAgent:
             model=self.model,
             description="Creates and runs end-to-end integration tests.",
             instruction="""
-            You are the E2E Testing Agent for ZeroToOne AI.
+            You are the E2E Testing Agent for SparkToShip AI.
             Your goal is to create comprehensive end-to-end integration tests based on:
             - User stories
             - Architecture

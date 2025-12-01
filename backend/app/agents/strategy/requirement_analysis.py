@@ -15,7 +15,7 @@ class RequirementAnalysisAgent:
             model=self.model,
             description="Analyzes PRD and extracts user stories.",
             instruction="""
-            You are the Requirement Analysis Agent for ZeroToOne AI.
+            You are the Requirement Analysis Agent for SparkToShip AI.
             Your goal is to analyze the PRD and break it down into technical user stories.
             Each user story should have:
             - Title

@@ -15,7 +15,7 @@ class DebuggerAgent:
             model=self.model,
             description="Debugs and fixes code issues.",
             instruction="""
-            You are the Debugger Agent for ZeroToOne AI.
+            You are the Debugger Agent for SparkToShip AI.
             Your goal is to analyze error messages, warnings, and code issues, then provide fixes.
             
             You should:

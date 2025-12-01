@@ -211,7 +211,7 @@ sparktoship/
 ### Backend
 - **Framework**: FastAPI
 - **AI Framework**: Google ADK 1.19.0+
-- **AI Models**: Gemini 2.0 Flash Exp / Gemini 1.5 Pro
+- **AI Models**: Gemini 2.0 Flash Exp / Gemini 2.5 pro
 - **Language**: Python 3.10+
 - **Session Management**: InMemorySessionService
 - **Storage**: File-based (JSON)

@@ -245,7 +245,7 @@ Get available models for a provider.
   },
   {
     "id": "gemini-1.5-pro",
-    "name": "Gemini 1.5 Pro",
+    "name": "Gemini 2.5 pro",
     "description": "Most capable model"
   }
 ]

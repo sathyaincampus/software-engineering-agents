@@ -15,7 +15,7 @@ class WalkthroughAgent:
             model=self.model,
             description="Generates comprehensive code walkthroughs in text, image, or video format.",
             instruction="""
-            You are the Code Walkthrough Agent for ZeroToOne AI.
+            You are the Code Walkthrough Agent for SparkToShip AI.
             Your goal is to create comprehensive, easy-to-understand walkthroughs of generated code.
             
             You can generate walkthroughs in three formats:

@@ -15,7 +15,7 @@ class SoftwareArchitectAgent:
             model=self.model,
             description="Designs system architecture.",
             instruction="""
-            You are the Software Architect for ZeroToOne AI.
+            You are the Software Architect for SparkToShip AI.
             Your goal is to design a scalable, modern software architecture based on requirements.
             
             ## ⚠️ MERMAID SYNTAX RULES - FOLLOW EXACTLY ⚠️

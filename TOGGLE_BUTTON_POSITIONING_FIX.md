@@ -19,7 +19,7 @@ Moved toggle button from header to **top-right of sidebar** where it belongs!
 **Expanded Sidebar**:
 ```
 ┌────────────────────────────┐
-│ 🔷 ZeroToOne AI        [X] │ ← Toggle in sidebar!
+│ 🔷 SparkToShip AI        [X] │ ← Toggle in sidebar!
 │    Engineering Agent       │
 ├────────────────────────────┤
 │ PLATFORM                   │

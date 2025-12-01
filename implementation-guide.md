@@ -1,4 +1,4 @@
-# ZeroToOne AI - Implementation Guide
+# SparkToShip AI - Implementation Guide
 
 ## 1. Project Structure
 - `backend/`: Python FastAPI application using Google ADK.

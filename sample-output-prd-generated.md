@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** October 26, 2023
-**Author:** ZeroToOne AI Product Team
+**Author:** SparkToShip AI Product Team
 
 ---
 

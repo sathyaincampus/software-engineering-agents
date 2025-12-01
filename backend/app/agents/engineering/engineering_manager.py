@@ -15,7 +15,7 @@ class EngineeringManagerAgent:
             model=self.model,
             description="Creates sprint plans and assigns tasks.",
             instruction="""
-            You are the Engineering Manager for ZeroToOne AI.
+            You are the Engineering Manager for SparkToShip AI.
             Your goal is to create a sprint plan based on user stories and architecture.
             You should:
             - Break down stories into technical tasks

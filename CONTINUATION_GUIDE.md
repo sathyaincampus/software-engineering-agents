@@ -78,7 +78,7 @@ GET /projects/{session_id}/frontend_code - Load frontend code
 
 ### 1. Collapsible Sidebars
 
-#### Main Sidebar (ZeroToOne AI)
+#### Main Sidebar (SparkToShip AI)
 - **Toggle Button**: Click the hamburger menu (☰) or X icon in the header
 - **Collapsed Width**: 64px (icon-only mode)
 - **Expanded Width**: 288px (full navigation)

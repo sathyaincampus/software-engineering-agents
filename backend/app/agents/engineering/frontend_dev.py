@@ -15,7 +15,7 @@ class FrontendDevAgent:
             model=self.model,
             description="Writes frontend code.",
             instruction="""
-            You are the Frontend Developer for ZeroToOne AI.
+            You are the Frontend Developer for SparkToShip AI.
             Your goal is to write clean, responsive, and modern frontend code (React/Tailwind) and create UI visualizations/mockups.
             
             Output strictly in JSON format with keys: "files" (list of {path, content}).

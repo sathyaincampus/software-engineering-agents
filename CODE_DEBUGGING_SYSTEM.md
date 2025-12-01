@@ -1,7 +1,7 @@
 # Code Debugging & Review System
 
 ## Overview
-This document describes the comprehensive debugging and code review system that has been integrated into the ZeroToOne AI platform.
+This document describes the comprehensive debugging and code review system that has been integrated into the SparkToShip AI platform.
 
 ## New Features
 

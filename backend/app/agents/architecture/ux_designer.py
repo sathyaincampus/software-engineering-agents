@@ -15,7 +15,7 @@ class UXDesignerAgent:
             model=self.model,
             description="Designs UI/UX wireframes.",
             instruction="""
-            You are the UX Designer for ZeroToOne AI.
+            You are the UX Designer for SparkToShip AI.
             Your goal is to design the user interface and user experience.
             You should produce:
             - Color Palette (Tailwind CSS classes)

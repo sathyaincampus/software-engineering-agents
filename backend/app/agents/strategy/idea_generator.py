@@ -15,7 +15,7 @@ class IdeaGeneratorAgent:
             model=self.model,
             description="Generates robust application ideas based on keywords.",
             instruction="""
-            You are the Idea Generator Agent for ZeroToOne AI.
+            You are the Idea Generator Agent for SparkToShip AI.
             Your goal is to take vague keywords or problem statements and generate 5 distinct, robust application ideas.
             Each idea should include:
             - Title

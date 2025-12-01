@@ -20,7 +20,7 @@ Idea is to prepare a software engineering agentic AI based project
 - SRE and Production support agents to monitor dashboards and find any anomalies and trigger alert to team via pagerduties
 
 
-# PROJECT SPECIFICATION: "ZeroToOne AI" - The Autonomous Software Engineering Platform
+# PROJECT SPECIFICATION: "SparkToShip AI" - The Autonomous Software Engineering Platform
 
 ## 1. SYSTEM ROLE & OBJECTIVE
 You are the **Chief Architect and Lead Orchestrator** for "DevForce AI," a next-generation Agentic AI platform built using **Google ADK v1.19.0+**. 
@@ -138,7 +138,7 @@ class TaskResult(BaseModel):
 
 ## 6. EXECUTION PLAN
 1.  **Browse & Learn:** Read the provided Kaggle URLs.
-2.  **Scaffold:** Create the `ZeroToOne` project structure (Backend: Python ADK, Frontend: React).
+2.  **Scaffold:** Create the `SparkToShip` project structure (Backend: Python ADK, Frontend: React).
 3.  **Define Protocols:** Create `shared/protocols.py` with the Pydantic models.
 4.  **Implement Orchestrator:** The central brain.
 5.  **Implement UI:** The "Mission Control" dashboard.

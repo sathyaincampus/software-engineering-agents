@@ -42,7 +42,7 @@ SparkToShip solves the "handover" problem with a dedicated `WalkthroughAgent`. I
 ### ⚙️ Bring Your Own Model (BYOK)
 Full control over your AI infrastructure.
 -   **Custom API Keys**: Use your own Google Gemini API keys.
--   **Model Selection**: Switch between **Gemini 1.5 Pro** (for complex reasoning) and **Gemini 1.5 Flash** (for speed) directly from the settings.
+-   **Model Selection**: Switch between **Gemini 2.5 pro** (for complex reasoning) and **Gemini 1.5 Flash** (for speed) directly from the settings.
 
 ### 🚀 Advanced Capabilities
 -   **Project Persistence**: Save and **Load Projects** to resume work anytime.
@@ -52,7 +52,7 @@ Full control over your AI infrastructure.
 ## 🛠️ Technology Stack
 
 -   **Framework**: Google ADK (Agent Development Kit)
--   **Models**: Google Gemini 1.5 Pro / Flash
+-   **Models**: Google Gemini 2.5 pro / Flash
 -   **Backend**: Python, FastAPI
 -   **Frontend**: React, TypeScript, Vite, TailwindCSS
 -   **Visualization**: Mermaid.js

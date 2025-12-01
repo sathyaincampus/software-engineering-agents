@@ -149,7 +149,7 @@ className={`w-full text-left p-3 rounded-lg transition-all ...`}
 ### Expanded Sidebar (288px width)
 ```
 ┌──────────────────────┐
-│ 🔷 ZeroToOne AI      │
+│ 🔷 SparkToShip AI      │
 │    Engineering Agent │
 ├──────────────────────┤
 │ PLATFORM             │

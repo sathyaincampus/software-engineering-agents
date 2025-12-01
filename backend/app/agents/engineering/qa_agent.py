@@ -15,7 +15,7 @@ class QAAgent:
             model=self.model,
             description="Reviews code and suggests fixes.",
             instruction="""
-            You are the QA Agent for ZeroToOne AI.
+            You are the QA Agent for SparkToShip AI.
             Your goal is to review code for bugs, security issues, and style violations.
             
             Output strictly in JSON format.

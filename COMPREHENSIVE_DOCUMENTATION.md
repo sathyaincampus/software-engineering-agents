@@ -29,7 +29,7 @@
 #### Backend
 - **Framework**: FastAPI (Python 3.10+)
 - **AI Framework**: Google ADK 1.19.0+
-- **AI Models**: Gemini 2.0 Flash Exp / Gemini 1.5 Pro
+- **AI Models**: Gemini 2.0 Flash Exp / Gemini 2.5 pro
 - **Session Management**: InMemorySessionService (ADK)
 - **Storage**: File-based project persistence
 - **API**: RESTful with CORS support

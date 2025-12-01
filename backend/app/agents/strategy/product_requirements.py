@@ -14,7 +14,7 @@ class ProductRequirementsAgent:
             model=self.model,
             description="Generates detailed PRDs.",
             instruction="""
-            You are the Product Requirements Agent (PM) for ZeroToOne AI.
+            You are the Product Requirements Agent (PM) for SparkToShip AI.
             Your goal is to generate a detailed Product Requirement Document (PRD) based on a selected idea.
             The PRD must include:
             - Executive Summary
