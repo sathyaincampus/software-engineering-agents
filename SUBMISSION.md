@@ -325,7 +325,7 @@ class ModelFactory:
 
 **Model Selection**: Users can switch between:
 - `gemini-2.5-flash-exp` for speed (code generation, QA)
-- `gemini-1.5-pro` for reasoning (architecture, debugging)
+- `gemini-2.5-pro` for reasoning (architecture, debugging)
 
 ### ✅ 7. Error Handling & Recovery
 
