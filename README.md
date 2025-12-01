@@ -4,8 +4,9 @@
 
 SparkToShip is an autonomous software engineering platform powered by Google's Agent Development Kit (ADK) and Gemini models. It orchestrates a team of specialized AI agents to plan, design, build, test, and debug full-stack web applications from a simple text prompt.
 
-## 🏆 Hackathon Track
-**Enterprise Agents**: Automating the software development lifecycle to improve developer productivity and business workflows.
+## 🏆 Kaggle Hackathon Submission
+**Competition**: [Google ADK Hackathon on Kaggle](https://www.kaggle.com/)  
+**Track**: Enterprise Agents - Automating the software development lifecycle to improve developer productivity and business workflows.
 
 ## 🌟 Why SparkToShip?
 
@@ -240,6 +241,10 @@ The demo showcases:
 - Architecture diagrams and technology stack
 - Engineering sprint and agent collaboration
 - Code generation, testing, and walkthroughs
+
+### 🎥 Video Demo
+Watch the full demonstration on YouTube:  
+[![SparkToShip Demo](https://img.shields.io/badge/YouTube-Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/sdwbgKfnk7c)
 
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
