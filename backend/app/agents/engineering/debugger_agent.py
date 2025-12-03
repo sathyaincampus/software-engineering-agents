@@ -1,15 +1,18 @@
+from google.adk import Agent, Runner
+from google.adk.apps import App
+from google.adk.models import Gemini
 from google.genai.types import Content, Part
-from app.core.base_agent import BaseAgent
+from app.core.services import session_service
 from app.core.model_config import ModelConfig
 from typing import Dict, Any, List
 import json
+import os
 
-class DebuggerAgent(BaseAgent):
+class DebuggerAgent:
     def __init__(self):
-        super().__init__(
-            name="debugger_agent",
-            description="Debugs and fixes code issues.",
-            instruction="""
+        self.name = "debugger_agent"
+        self.description = "Debugs and fixes code issues."
+        self.instruction = """
             You are the Debugger Agent for SparkToShip AI.
             Your goal is to analyze error messages, warnings, and code issues, then provide fixes.
             
@@ -24,7 +27,8 @@ class DebuggerAgent(BaseAgent):
             - "fixes": list of {path, content, explanation}
             - "severity": "critical"|"warning"|"info"
             """
-        )
+        self._runner = None
+        self._current_api_key = None
 
     async def debug_code(
         self, 
@@ -61,12 +65,29 @@ class DebuggerAgent(BaseAgent):
         
         from app.utils.adk_helper import collect_response, parse_json_response
         
-        # Get runner with current model configuration
-        runner = self._get_or_create_runner(model_config)
+        # Create or update runner with user's API key and model
+        if self._runner is None or self._current_api_key != model_config.api_key:
+            os.environ["GOOGLE_API_KEY"] = model_config.api_key
+            
+            model = Gemini(
+                model=model_config.model_name,
+                temperature=model_config.temperature
+            )
+            
+            agent = Agent(
+                name=self.name,
+                model=model,
+                description=self.description,
+                instruction=self.instruction
+            )
+            
+            app = App(name="spark_to_ship", root_agent=agent)
+            self._runner = Runner(app=app, session_service=session_service)
+            self._current_api_key = model_config.api_key
         
         message = Content(parts=[Part(text=prompt)])
         
-        response = await collect_response(runner.run_async(
+        response = await collect_response(self._runner.run_async(
             user_id="user",
             session_id=session_id,
             new_message=message
@@ -106,12 +127,29 @@ class DebuggerAgent(BaseAgent):
         
         from app.utils.adk_helper import collect_response, parse_json_response
         
-        # Get runner with current model configuration
-        runner = self._get_or_create_runner(model_config)
+        # Create or update runner with user's API key and model
+        if self._runner is None or self._current_api_key != model_config.api_key:
+            os.environ["GOOGLE_API_KEY"] = model_config.api_key
+            
+            model = Gemini(
+                model=model_config.model_name,
+                temperature=model_config.temperature
+            )
+            
+            agent = Agent(
+                name=self.name,
+                model=model,
+                description=self.description,
+                instruction=self.instruction
+            )
+            
+            app = App(name="spark_to_ship", root_agent=agent)
+            self._runner = Runner(app=app, session_service=session_service)
+            self._current_api_key = model_config.api_key
         
         message = Content(parts=[Part(text=prompt)])
         
-        response = await collect_response(runner.run_async(
+        response = await collect_response(self._runner.run_async(
             user_id="user",
             session_id=session_id,
             new_message=message

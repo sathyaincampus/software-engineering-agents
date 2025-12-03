@@ -1,3 +1,6 @@
+"""
+Template for ADK agent - use this pattern for all agents
+"""
 from google.adk import Agent, Runner
 from google.adk.apps import App
 from google.adk.models import Gemini
@@ -8,27 +11,16 @@ from typing import Dict, Any
 import json
 import os
 
-class FrontendDevAgent:
+class TemplateAgent:
     def __init__(self):
-        self.name = "frontend_dev"
-        self.description = "Writes frontend code."
-        self.instruction = """
-            You are the Frontend Developer for SparkToShip AI.
-            Your goal is to write clean, responsive, and modern frontend code (React/Tailwind) and create UI visualizations/mockups.
-            
-            Output strictly in JSON format with keys: "files" (list of {path, content}).
-            """
+        self.name = "agent_name"
+        self.description = "Agent description"
+        self.instruction = """Agent instruction"""
         self._runner = None
         self._current_api_key = None
 
-    async def write_code(self, task: Dict[str, Any], context: Dict[str, Any], session_id: str, model_config: ModelConfig) -> Dict[str, Any]:
-        prompt = f"""
-        Write code for the following task:
-        {json.dumps(task, indent=2)}
-        
-        Context (Architecture/Stack):
-        {json.dumps(context, indent=2)}
-        """
+    async def execute(self, params: Dict[str, Any], session_id: str, model_config: ModelConfig) -> Dict[str, Any]:
+        prompt = f"Your prompt here"
         from app.utils.adk_helper import collect_response, parse_json_response
         
         # Create or update runner with user's API key and model
@@ -58,6 +50,5 @@ class FrontendDevAgent:
             session_id=session_id,
             new_message=message
         ))
-        # Use robust JSON parsing
+        
         return parse_json_response(response)
-
