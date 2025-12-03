@@ -190,6 +190,81 @@ Full control over your AI infrastructure.
 
 3.  Open your browser at `http://localhost:5173`.
 
+## 🌐 Production Deployment
+
+Ready to deploy SparkToShip to production? We've prepared comprehensive guides for you!
+
+### 🎯 **RECOMMENDED: Option 2 - FastAPI Gateway + Vertex AI** ⭐
+
+**Best of both worlds** - Keep all features, zero frontend changes, optional Vertex AI integration!
+
+📦 **[START HERE: Deployment Package Summary](./DEPLOYMENT_PACKAGE_SUMMARY.md)** - Overview of all deployment materials
+
+🚀 **[Quick Start Guide](./DEPLOYMENT_QUICKSTART.md)** - Get started in 30 minutes
+
+📖 **[Complete Deployment Guide](./OPTION_2_DEPLOYMENT_GUIDE.md)** - Step-by-step instructions (2-3 hours)
+
+💰 **[Cost Optimization Guide](./COST_OPTIMIZATION_GUIDE.md)** - Make $300 credit last 12-25 months
+
+**Why Option 2?**
+- ✅ **Zero frontend changes** - Your UI works as-is
+- ✅ **All features preserved** - Project storage, debugging, code viewer
+- ✅ **Uses Vertex AI** - Optional integration for heavy workloads
+- ✅ **Flexible** - Start simple, add Vertex AI later
+- ✅ **Cost-effective** - $24/month (covered by free credit)
+- ✅ **Based on Kaggle notebooks** - Follows ADK best practices
+
+### 📊 Deployment Comparison
+
+Not sure which approach? Read the detailed comparison:
+
+📋 **[Deployment Comparison](./DEPLOYMENT_COMPARISON.md)** - Option 1 vs Option 2 analysis
+
+**Quick Summary:**
+- **Option 1** (Pure Vertex AI): $19/month, requires major refactor (4 weeks)
+- **Option 2** (FastAPI + Vertex AI): $24/month, zero changes (2 days) ⭐ **RECOMMENDED**
+
+### 🛠️ Helper Scripts
+
+We've included scripts to help you manage costs:
+
+```bash
+# Pause resources when not using (saves ~$18/month)
+./pause-sparktoship.sh
+
+# Resume when ready to work
+./resume-sparktoship.sh
+
+# Check daily costs (30 seconds)
+./daily-cost-check.sh
+```
+
+### 💰 Cost Management
+
+With smart management, your **$300 free credit lasts 12-25 months**!
+
+| Usage Pattern | Monthly Cost | Credit Lasts |
+|---------------|--------------|--------------|
+| Active 24/7 | $24 | 12.5 months |
+| Paused overnight | $12 | 25 months |
+| Paused (storage only) | $1 | 300 months! |
+
+**Recommended**: Pause overnight and weekends → $12/month → **25 months free!**
+
+### 📚 Additional Resources
+
+- 📖 [Vertex AI Deployment Guide](./VERTEX_AI_DEPLOYMENT_GUIDE.md) - Pure Vertex AI approach (Option 1)
+- 📖 [Cloud Run Deployment Guide](./GOOGLE_CLOUD_DEPLOYMENT_GUIDE.md) - Cloud Run only
+- 📚 [ADK Deployment Knowledge](./ADK_DEPLOYMENT_KNOWLEDGE.md) - Best practices from Kaggle notebooks
+- 🎓 [Kaggle Notebooks](./Google-ADK-Kaggle-Notebooks/) - Learning materials
+
+### 🎯 Quick Start (Right Now!)
+
+1. **Read the overview** (5 min): [DEPLOYMENT_PACKAGE_SUMMARY.md](./DEPLOYMENT_PACKAGE_SUMMARY.md)
+2. **Follow the guide** (2-3 hours): [OPTION_2_DEPLOYMENT_GUIDE.md](./OPTION_2_DEPLOYMENT_GUIDE.md)
+3. **Set up cost management** (15 min): [COST_OPTIMIZATION_GUIDE.md](./COST_OPTIMIZATION_GUIDE.md)
+4. **Deploy and enjoy!** 🚀
+
 ## 🏗️ Architecture
 
 SparkToShip uses a **Hub-and-Spoke** architecture where the `Orchestrator` manages the session and coordinates communication between agents.
