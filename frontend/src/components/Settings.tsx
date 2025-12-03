@@ -67,6 +67,7 @@ const Settings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
     useEffect(() => {
         if (isOpen) {
             loadSettings();
+            setShowApiKey(false);
         }
     }, [isOpen]);
 
