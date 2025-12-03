@@ -382,6 +382,12 @@ class SoftwareArchitectAgent:
     async def design_architecture(self, requirements: Dict[str, Any], session_id: str, model_config: ModelConfig) -> Dict[str, Any]:
         prompt = f"Design the software architecture for these requirements: {json.dumps(requirements)}"
         from app.utils.adk_helper import collect_response, parse_json_response
+        from app.utils.security import validate_api_key
+        
+        # Validate API key BEFORE using it
+        is_valid, error_msg = validate_api_key(model_config.api_key)
+        if not is_valid:
+            raise ValueError(error_msg)
         
         # Create or update runner with user's API key and model
         if self._runner is None or self._current_api_key != model_config.api_key:
