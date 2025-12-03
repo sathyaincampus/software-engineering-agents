@@ -267,9 +267,20 @@ const MissionControl: React.FC = () => {
                 addLog("⚠ Ideas generated but format unexpected (check console)");
             }
 
-        } catch (e) {
+        } catch (e: any) {
             console.error("Error generating ideas:", e);
-            addLog("✗ Error generating ideas");
+
+            // Extract detailed error message
+            const errorDetail = e.response?.data?.detail || e.message || "Unknown error";
+
+            // Check if it's an API key error
+            if (errorDetail.includes("API key")) {
+                addLog("❌ API Key Required");
+                addLog("💡 Please set your API key in Settings (click the gear icon)");
+                addLog(`   Error: ${errorDetail}`);
+            } else {
+                addLog(`✗ Error generating ideas: ${errorDetail}`);
+            }
         }
         finally { setLoading(false); }
     };

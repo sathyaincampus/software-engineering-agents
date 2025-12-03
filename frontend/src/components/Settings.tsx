@@ -32,6 +32,38 @@ const Settings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
     const [showApiKey, setShowApiKey] = useState(false);
 
+    // Load API key from localStorage on mount (encoded for basic obfuscation)
+    useEffect(() => {
+        const loadStoredApiKey = async () => {
+            try {
+                const stored = localStorage.getItem('sparktoship_api_key');
+                if (stored) {
+                    // Decode from base64 (basic obfuscation, not encryption)
+                    const decoded = atob(stored);
+                    setSettings(prev => ({ ...prev, api_key: decoded }));
+
+                    // Auto-send to backend so user doesn't need to re-enter
+                    try {
+                        await axios.post(`${API_BASE_URL}/settings`, {
+                            provider: settings.provider,
+                            model_name: settings.model_name,
+                            api_key: decoded,
+                            temperature: settings.temperature,
+                            timeout: settings.timeout
+                        });
+                        console.log('✅ API key loaded from storage and sent to backend');
+                    } catch (e) {
+                        console.error('Failed to send stored API key to backend:', e);
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load stored API key:', e);
+            }
+        };
+
+        loadStoredApiKey();
+    }, []);
+
     useEffect(() => {
         if (isOpen) {
             loadSettings();
@@ -52,7 +84,8 @@ const Settings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                 provider: res.data.provider,
                 model_name: res.data.model_name,
                 temperature: res.data.temperature,
-                timeout: res.data.timeout
+                timeout: res.data.timeout,
+                // Keep the API key from localStorage, don't overwrite
             }));
         } catch (e) {
             console.error('Failed to load settings:', e);
@@ -79,14 +112,29 @@ const Settings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
 
         try {
             await axios.post(`${API_BASE_URL}/settings`, settings);
+
+            // Store API key in localStorage (base64 encoded for basic obfuscation)
+            try {
+                const encoded = btoa(settings.api_key);
+                localStorage.setItem('sparktoship_api_key', encoded);
+            } catch (e) {
+                console.error('Failed to store API key:', e);
+            }
+
             setSaveStatus('success');
             setTimeout(() => {
                 setSaveStatus('idle');
                 onClose();
             }, 1500);
-        } catch (e) {
+        } catch (e: any) {
             console.error('Failed to save settings:', e);
             setSaveStatus('error');
+
+            // Show detailed error if available
+            const errorDetail = e.response?.data?.detail || e.message;
+            if (errorDetail) {
+                alert(`Failed to save settings: ${errorDetail}`);
+            }
         } finally {
             setLoading(false);
         }
