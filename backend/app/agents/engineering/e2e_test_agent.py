@@ -1,18 +1,13 @@
-from google.adk import Agent, Runner
-from google.adk.apps import App
-from google.adk.models import Gemini
 from google.genai.types import Content, Part
-from app.core.config import settings
-from app.core.services import session_service
+from app.core.base_agent import BaseAgent
+from app.core.model_config import ModelConfig
 from typing import Dict, Any, List
 import json
 
-class E2ETestAgent:
+class E2ETestAgent(BaseAgent):
     def __init__(self):
-        self.model = Gemini(model=settings.MODEL_NAME)
-        self.agent = Agent(
+        super().__init__(
             name="e2e_test_agent",
-            model=self.model,
             description="Creates and runs end-to-end integration tests.",
             instruction="""
             You are the E2E Testing Agent for SparkToShip AI.
@@ -83,8 +78,6 @@ class E2ETestAgent:
             }
             """
         )
-        self.app = App(name="zero_to_one", root_agent=self.agent)
-        self.runner = Runner(app=self.app, session_service=session_service)
 
     async def generate_test_plan(
         self, 
@@ -92,7 +85,8 @@ class E2ETestAgent:
         architecture: Dict[str, Any],
         backend_code: Dict[str, Any],
         frontend_code: Dict[str, Any],
-        session_id: str
+        session_id: str,
+        model_config: ModelConfig
     ) -> Dict[str, Any]:
         """
         Generate comprehensive E2E test plan based on user stories, architecture, and code.
@@ -128,9 +122,12 @@ class E2ETestAgent:
         
         from app.utils.adk_helper import collect_response, parse_json_response
         
+        # Get runner with current model configuration
+        runner = self._get_or_create_runner(model_config)
+        
         message = Content(parts=[Part(text=prompt)])
         
-        response = await collect_response(self.runner.run_async(
+        response = await collect_response(runner.run_async(
             user_id="user",
             session_id=session_id,
             new_message=message

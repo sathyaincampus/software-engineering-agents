@@ -36,11 +36,12 @@ app.add_middleware(
 )
 
 # Global settings (must be initialized before agents)
+# API key will be provided by users via UI settings
 app_settings = AppSettings(
     ai_model_config=ModelConfig(
         provider="google",
         model_name=settings.MODEL_NAME,
-        api_key=settings.GOOGLE_API_KEY
+        api_key=settings.GOOGLE_API_KEY or "PLACEHOLDER_KEY"  # Will be replaced by user's key
     )
 )
 
@@ -124,7 +125,7 @@ async def run_engineering_manager(session_id: str, request: CreateSprintPlanRequ
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Creating Sprint Plan...")
-    result = await eng_manager_agent.create_sprint_plan(request.user_stories, request.architecture, session_id)
+    result = await eng_manager_agent.create_sprint_plan(request.user_stories, request.architecture, session_id, app_settings.ai_model_config)
     session.add_log("Sprint Plan created")
     
     # Save sprint plan to filesystem
@@ -226,7 +227,7 @@ async def run_backend_dev(session_id: str, request: WriteCodeRequest):
     
     # Wrap the agent call with error handler
     async def execute_task():
-        return await backend_dev_agent.write_code(request.task, request.context, session_id)
+        return await backend_dev_agent.write_code(request.task, request.context, session_id, app_settings.ai_model_config)
     
     result = await handle_adk_errors(execute_task)
     
@@ -283,7 +284,7 @@ async def run_frontend_dev(session_id: str, request: WriteCodeRequest):
     
     # Wrap the agent call with error handler
     async def execute_task():
-        return await frontend_dev_agent.write_code(request.task, request.context, session_id)
+        return await frontend_dev_agent.write_code(request.task, request.context, session_id, app_settings.ai_model_config)
     
     result = await handle_adk_errors(execute_task)
     
@@ -335,7 +336,7 @@ async def run_qa_agent(session_id: str, request: ReviewCodeRequest):
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Reviewing Code...")
-    result = await qa_agent.review_code(request.code_files, session_id)
+    result = await qa_agent.review_code(request.code_files, session_id, app_settings.ai_model_config)
     session.add_log("Code Review complete")
     return result
 
@@ -369,7 +370,8 @@ async def generate_e2e_tests(session_id: str):
             architecture=architecture,
             backend_code=backend_code,
             frontend_code=frontend_code,
-            session_id=session_id
+            session_id=session_id,
+            model_config=app_settings.ai_model_config
         )
         
         session.add_log(f"✓ Generated {result.get('coverage_summary', {}).get('total_test_cases', 0)} test cases")
@@ -431,7 +433,8 @@ async def generate_walkthrough(session_id: str, type: str = "text"):
         result = await walkthrough_agent.generate_walkthrough(
             walkthrough_type=type,
             project_data=project_data,
-            session_id=session_id
+            session_id=session_id,
+            model_config=app_settings.ai_model_config
         )
         
         session.add_log(f"✓ Generated {type} walkthrough with {len(result.get('sections', []))} sections")
@@ -458,7 +461,7 @@ async def run_software_architect(session_id: str, request: DesignArchitectureReq
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Designing architecture...")
-    result = await architect_agent.design_architecture(request.requirements, session_id)
+    result = await architect_agent.design_architecture(request.requirements, session_id, app_settings.ai_model_config)
     session.add_log("Architecture design complete")
     
     # Save to filesystem
@@ -477,7 +480,7 @@ async def run_ux_designer(session_id: str, request: DesignUIRequest):
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Designing UI...")
-    result = await ux_agent.design_ui(request.requirements, session_id)
+    result = await ux_agent.design_ui(request.requirements, session_id, app_settings.ai_model_config)
     session.add_log("UI design complete")
     return result
 
@@ -515,7 +518,7 @@ async def run_idea_generator(session_id: str, request: GenerateIdeasRequest):
     try:
         # Add timeout to prevent hanging
         result = await asyncio.wait_for(
-            idea_agent.generate_ideas(request.keywords, session_id),
+            idea_agent.generate_ideas(request.keywords, session_id, app_settings.ai_model_config),
             timeout=app_settings.ai_model_config.timeout
         )
         
@@ -562,7 +565,7 @@ async def run_product_requirements(session_id: str, request: GeneratePRDRequest)
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Generating PRD...")
-    result = await prd_agent.generate_prd(request.idea_context, session_id)
+    result = await prd_agent.generate_prd(request.idea_context, session_id, app_settings.ai_model_config)
     session.add_log("PRD generated successfully")
     
     # Save to filesystem
@@ -630,7 +633,7 @@ async def run_requirement_analysis(session_id: str, request: AnalyzePRDRequest):
         raise HTTPException(status_code=404, detail="Session not found")
     
     session.add_log("Analyzing PRD...")
-    result = await analysis_agent.analyze_prd(request.prd_content, session_id)
+    result = await analysis_agent.analyze_prd(request.prd_content, session_id, app_settings.ai_model_config)
     session.add_log("PRD analysis complete")
     
     # Save to filesystem
@@ -722,7 +725,8 @@ async def debug_code(session_id: str, request: DebugCodeRequest):
         error_message=request.error_message,
         code_files=request.code_files,
         context=request.context,
-        session_id=session_id
+        session_id=session_id,
+        model_config=app_settings.ai_model_config
     )
     
     session.add_log("Debugger analysis complete")
@@ -753,7 +757,8 @@ async def lint_code(session_id: str, request: LintCodeRequest):
     
     result = await debugger_agent.lint_code(
         code_files=request.code_files,
-        session_id=session_id
+        session_id=session_id,
+        model_config=app_settings.ai_model_config
     )
     
     session.add_log("Static analysis complete")

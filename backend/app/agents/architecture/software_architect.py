@@ -1,18 +1,13 @@
-from google.adk import Agent, Runner
-from google.adk.apps import App
-from google.adk.models import Gemini
 from google.genai.types import Content, Part
-from app.core.config import settings
-from app.core.services import session_service
+from app.core.base_agent import BaseAgent
+from app.core.model_config import ModelConfig
 from typing import Dict, Any
 import json
 
-class SoftwareArchitectAgent:
+class SoftwareArchitectAgent(BaseAgent):
     def __init__(self):
-        self.model = Gemini(model=settings.MODEL_NAME)
-        self.agent = Agent(
+        super().__init__(
             name="software_architect",
-            model=self.model,
             description="Designs system architecture.",
             instruction="""
             You are the Software Architect for SparkToShip AI.
@@ -365,16 +360,17 @@ class SoftwareArchitectAgent:
             9. Output ONLY valid JSON, no markdown code blocks
             """
         )
-        self.app = App(name="zero_to_one", root_agent=self.agent)
-        self.runner = Runner(app=self.app, session_service=session_service)
 
-    async def design_architecture(self, requirements: Dict[str, Any], session_id: str) -> Dict[str, Any]:
+    async def design_architecture(self, requirements: Dict[str, Any], session_id: str, model_config: ModelConfig) -> Dict[str, Any]:
         prompt = f"Design the software architecture for these requirements: {json.dumps(requirements)}"
         from app.utils.adk_helper import collect_response, parse_json_response
         
+        # Get runner with current model configuration
+        runner = self._get_or_create_runner(model_config)
+        
         message = Content(parts=[Part(text=prompt)])
         
-        response = await collect_response(self.runner.run_async(
+        response = await collect_response(runner.run_async(
             user_id="user",
             session_id=session_id,
             new_message=message
