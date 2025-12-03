@@ -44,9 +44,26 @@ class BaseAgent:
             
         Returns:
             Runner instance
+            
+        Raises:
+            ValueError: If API key is invalid or missing
         """
+        from app.utils.security import mask_api_key, validate_api_key
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        
+        # Validate API key
+        is_valid, error_msg = validate_api_key(model_config.api_key)
+        if not is_valid:
+            logger.error(f"[{self.name}] {error_msg}")
+            raise ValueError(error_msg)
+        
         # Check if we need to recreate the runner (API key changed)
         if self._runner is None or self._current_api_key != model_config.api_key:
+            masked_key = mask_api_key(model_config.api_key)
+            logger.info(f"[{self.name}] Using API key: {masked_key} (user-provided)")
+            
             # Set the API key in environment for Gemini
             os.environ["GOOGLE_API_KEY"] = model_config.api_key
             
@@ -68,10 +85,11 @@ class BaseAgent:
             )
             
             # Create new app and runner
-            self._app = App(name="sparktoship", root_agent=self._agent)
+            self._app = App(name="spark_to_ship", root_agent=self._agent)
             self._runner = Runner(app=self._app, session_service=session_service)
             
             # Remember current API key
             self._current_api_key = model_config.api_key
+            logger.info(f"[{self.name}] Runner created successfully with model: {model_config.model_name}")
         
         return self._runner

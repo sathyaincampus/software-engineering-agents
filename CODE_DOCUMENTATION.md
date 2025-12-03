@@ -132,7 +132,7 @@ class Orchestrator:
         # Create ADK Session
         from app.core.services import session_service
         session_service.create_session_sync(
-            app_name="zero_to_one",
+            app_name="spark_to_ship",
             user_id="user",
             session_id=session_id
         )
@@ -370,7 +370,7 @@ class IdeaGeneratorAgent:
             }
             """
         )
-        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.app = App(name="spark_to_ship", root_agent=self.agent)
         self.runner = Runner(app=self.app, session_service=session_service)
 
     async def generate_ideas(self, keywords: str, session_id: str) -> Dict[str, Any]:
@@ -472,7 +472,7 @@ class BackendDevAgent:
             }
             """
         )
-        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.app = App(name="spark_to_ship", root_agent=self.agent)
         self.runner = Runner(app=self.app, session_service=session_service)
 
     async def write_code(self, task: Dict[str, Any], 
@@ -1007,7 +1007,7 @@ class MyCustomAgent:
             }
             """
         )
-        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.app = App(name="spark_to_ship", root_agent=self.agent)
         self.runner = Runner(app=self.app, session_service=session_service)
 
     async def execute_task(self, input_data: Dict[str, Any], 

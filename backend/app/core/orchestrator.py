@@ -26,7 +26,7 @@ class Orchestrator:
         # Create ADK Session
         from app.core.services import session_service
         session_service.create_session_sync(
-            app_name="zero_to_one",
+            app_name="spark_to_ship",
             user_id="user",
             session_id=session_id
         )
@@ -60,7 +60,7 @@ class Orchestrator:
         # Restore ADK session first
         try:
             session_service.create_session_sync(
-                app_name="zero_to_one",
+                app_name="spark_to_ship",
                 user_id="user",
                 session_id=session_id
             )

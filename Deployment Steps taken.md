@@ -20,7 +20,7 @@ gcloud run deploy sparktoship-api \
   --source . \
   --region=us-west1 \
   --allow-unauthenticated \
-  --set-env-vars="GOOGLE_API_KEY=REDACTED_API_KEY"
+  --set-env-vars="GOOGLE_API_KEY=MY_API_KEY"
 
 zsh: unknown username ' from backe'
 Building using Dockerfile and deploying container to Cloud Run service [sparktoship-api] in project [sparktoship] region [us-west1]

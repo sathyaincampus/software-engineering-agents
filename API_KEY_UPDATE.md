@@ -113,6 +113,31 @@ You can verify the API key being used by:
 2. Monitoring your Google Cloud Console - API calls should appear under the user's project, not yours
 3. Checking the Settings UI - it should show "API key set: true" when a key is configured
 
+## Troubleshooting
+
+### "Session not found" Error
+If you see an error like:
+```json
+{
+    "error": "Failed to collect response",
+    "details": "Session not found: <session-id>"
+}
+```
+
+**Solution**: This was fixed by ensuring the app name in `BaseAgent` matches the orchestrator's app name (`"spark_to_ship"`). If you still see this error:
+1. Restart the backend server
+2. Create a new session (don't reuse old session IDs)
+3. Make sure you've saved your API key in Settings before starting any operations
+
+See `SESSION_FIX.md` for more details.
+
+### API Key Not Being Used
+If the system seems to be using the .env API key instead of yours:
+1. Check that you've clicked "Save Settings" after entering your API key
+2. Verify in the browser console that the POST /settings request succeeded
+3. Restart the backend to clear any cached settings
+4. Re-enter your API key in the UI
+
 ## Rollback
 
 If you need to rollback to using `.env` file:

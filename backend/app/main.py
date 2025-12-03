@@ -36,12 +36,13 @@ app.add_middleware(
 )
 
 # Global settings (must be initialized before agents)
-# API key will be provided by users via UI settings
+# SECURITY: Users MUST provide their own API key via UI settings
+# No fallback to .env file to prevent using developer's key
 app_settings = AppSettings(
     ai_model_config=ModelConfig(
         provider="google",
         model_name=settings.MODEL_NAME,
-        api_key=settings.GOOGLE_API_KEY or "PLACEHOLDER_KEY"  # Will be replaced by user's key
+        api_key=""  # Empty - users MUST set via UI
     )
 )
 
@@ -586,19 +587,30 @@ class SettingsRequest(BaseModel):
 
 @app.get("/settings")
 async def get_settings():
-    """Get current application settings (API key masked)"""
+    """Get current application settings"""
+    from app.utils.security import mask_api_key
+    
     return {
         "provider": app_settings.ai_model_config.provider,
         "model_name": app_settings.ai_model_config.model_name,
         "temperature": app_settings.ai_model_config.temperature,
         "timeout": app_settings.ai_model_config.timeout,
         "debug_mode": app_settings.debug_mode,
-        "api_key_set": bool(app_settings.ai_model_config.api_key)
+        "api_key_set": bool(app_settings.ai_model_config.api_key),
+        "api_key_masked": mask_api_key(app_settings.ai_model_config.api_key) if app_settings.ai_model_config.api_key else "****"
     }
 
 @app.post("/settings")
 async def update_settings(request: SettingsRequest):
     """Update application settings"""
+    from app.utils.security import mask_api_key, validate_api_key
+    
+    # Validate API key
+    is_valid, error_msg = validate_api_key(request.api_key)
+    if not is_valid:
+        logger.error(f"Settings update failed: {error_msg}")
+        raise HTTPException(status_code=400, detail=error_msg)
+    
     global app_settings
     app_settings.ai_model_config = ModelConfig(
         provider=request.provider,
@@ -607,8 +619,15 @@ async def update_settings(request: SettingsRequest):
         temperature=request.temperature,
         timeout=request.timeout
     )
-    logger.info(f"Settings updated: {request.provider} / {request.model_name}")
-    return {"status": "success", "message": "Settings updated. Please restart agents for changes to take effect."}
+    
+    masked_key = mask_api_key(request.api_key)
+    logger.info(f"✅ Settings updated: {request.provider} / {request.model_name} / API Key: {masked_key}")
+    
+    return {
+        "status": "success", 
+        "message": "Settings updated successfully. Using your API key.",
+        "api_key_masked": masked_key
+    }
 
 @app.get("/models/{provider}")
 async def get_available_models(provider: str):
