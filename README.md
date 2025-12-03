@@ -8,6 +8,135 @@ SparkToShip is an autonomous software engineering platform powered by Google's A
 **Competition**: [Google ADK Hackathon on Kaggle](https://www.kaggle.com/)  
 **Track**: Enterprise Agents - Automating the software development lifecycle to improve developer productivity and business workflows.
 
+## 🌐 Live Demo
+
+**Try it now**: [https://www.sparktoship.dev](https://www.sparktoship.dev)
+
+### Quick Start Guide
+
+1. **Configure Settings** ⚙️
+   - Click the settings icon (top right)
+   - Select your model (recommended: **Gemini 2.5 Flash** - tested and works well)
+   - Add your Gemini API key
+   - Save settings
+
+2. **Start a New Project** 🚀
+   - Go to **Mission Control**
+   - Enter a project name (e.g., "Recipe Sharing App")
+
+3. **Brainstorm Ideas** 💡
+   - Enter your project idea in the text box
+   - Click **"Brainstorm"**
+   - The Idea Generator Agent will create 5 detailed product concepts
+
+4. **Generate Product Requirements** 📋
+   - Select your favorite idea
+   - Click **"Generate PRD"**
+   - The Product Requirements Agent creates a complete PRD with user stories
+
+5. **Analyze Requirements** 🔍
+   - Click **"Analyze Requirements"**
+   - The Requirement Analysis Agent identifies constraints and dependencies
+
+6. **Design Architecture** 🏗️
+   - Click **"Generate Architecture"**
+   - The Software Architect Agent creates:
+     - System architecture diagrams (Mermaid flowcharts)
+     - Sequence diagrams (API flows)
+     - Tech stack recommendations
+
+7. **Create Sprint Plan & Start Coding** 📊💻
+   - Click **"Create Sprint Plan"**
+   - The Engineering Manager Agent breaks down features into atomic tasks
+   - Sprint execution **automatically begins**
+   - Backend and Frontend Developer Agents start writing production-ready code
+   - Monitor task progress in real-time in the System Logs
+
+8. **Resume Sprint (If Needed)** 🔄
+   - If sprint pauses due to:
+     - API rate limits
+     - Token exhaustion
+     - Network errors
+   - Click **"Resume Sprint Execution"** to continue where it left off
+   - Or click **"Run"** on individual tasks to execute them one by one
+   - View generated files in the **"View & Debug Code"** section
+
+9. **Generate E2E Tests** ✅
+   - After sprint completion, click **"Generate E2E Test Plan"**
+   - The E2E Test Agent automatically creates comprehensive test plans
+   - View test cases and execution plans
+
+10. **Generate Walkthrough** 📚
+    - Click **"Generate Code Walkthrough"**
+    - The Walkthrough Agent creates:
+      - Text-based code walkthrough
+      - Image-based visual guide
+      - Video script walkthrough
+
+11. **Download Your Code** 📦
+    - Go to **Projects** tab in the sidebar
+    - Select your project from the list
+    - Click **"Download"** to get a ZIP file with all generated code
+    - Extract and run locally!
+
+12. **Load Previous Projects** 💾
+    - Go to **Project History**
+    - Click on any previous project to resume work
+
+---
+
+### 🔒 Security & Privacy
+
+**API Key Safety**: Your Gemini API key is:
+- ✅ **Stored only in your browser** (localStorage)
+- ✅ **Never sent to our servers** (only to Google's Gemini API)
+- ✅ **Not saved across sessions** (cleared when you close the browser)
+- ✅ **Completely private** to you
+
+Your API key is safe and secure. We never see or store it.
+
+---
+
+### ⚠️ Important Notes
+
+**LLM Behavior**: Like all LLM-powered tools, SparkToShip agents may occasionally:
+- Generate code with syntax errors
+- Hallucinate non-existent APIs or libraries
+- Produce Mermaid diagrams with rendering issues
+
+We've implemented robust error handling and validation, but we recommend reviewing generated code before deployment. The platform is designed for rapid prototyping and learning, not production-critical systems without human review.
+
+---
+
+### 🚀 Future Roadmap
+
+We're actively working on exciting new features:
+
+1. **GitHub Integration** 🐙
+   - One-click repository creation
+   - Automatic code commit and push
+   - Branch management and PR creation
+
+2. **Live Code Preview** 👁️
+   - In-browser code execution
+   - Real-time output visualization
+   - Interactive debugging console
+
+3. **User Authentication & Privacy** 🔐
+   - Personal accounts with secure login
+   - Private project workspaces
+   - Team collaboration features
+   - Project sharing controls
+
+4. **Specialized Agent Teams** 🤖
+   - **ML/AI Agents**: TensorFlow, PyTorch, model training
+   - **Data Science Agents**: Pandas, NumPy, data analysis
+   - **Gen AI Agents**: LangChain, RAG, vector databases
+   - **DevOps Agents**: Docker, Kubernetes, CI/CD pipelines
+   - **Mobile Agents**: React Native, Flutter, iOS/Android
+
+Stay tuned for updates!
+
 ## 🌟 Why SparkToShip?
 
 Existing tools like **Cline**, **Google Jules**, or **Antigravity** are powerful but fragmented. They focus on individual coding tasks, often losing the "big picture" context.
@@ -189,6 +318,8 @@ Full control over your AI infrastructure.
     ```
 
 3.  Open your browser at `http://localhost:5173`.
+
+
 
 ## 🏗️ Architecture
 

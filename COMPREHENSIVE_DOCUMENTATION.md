@@ -154,7 +154,7 @@ class AgentName:
             description="Agent purpose",
             instruction="Detailed system prompt"
         )
-        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.app = App(name="spark_to_ship", root_agent=self.agent)
         self.runner = Runner(app=self.app, session_service=session_service)
     
     async def execute_task(self, input_data: Dict, session_id: str) -> Dict:

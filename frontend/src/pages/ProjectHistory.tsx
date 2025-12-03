@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useProject } from '../context/ProjectContext';
 import { FileText, Download, Clock, Folder, ChevronRight, FolderOpen } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:8050';
+import { API_BASE_URL } from '../config';
 
 interface Project {
     session_id: string;

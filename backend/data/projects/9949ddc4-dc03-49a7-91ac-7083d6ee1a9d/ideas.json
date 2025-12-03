@@ -1,0 +1,69 @@
+{
+  "app_ideas": [
+    {
+      "title": "IyenGen: Stories & Values",
+      "pitch": "A gamified storybook app teaching Iyengar Brahmin traditions and family values to children.",
+      "core_features": [
+        "Interactive stories featuring Iyengar Brahmin characters and traditions",
+        "Quizzes and games to reinforce learning of values and traditions",
+        "Parent dashboard to track progress and customize content",
+        "Audio narration in multiple languages (English, Tamil, etc.)",
+        "Recipes and cultural information sections"
+      ],
+      "target_audience": "Parents of children aged 8-12, particularly those of South Indian Iyengar Brahmin heritage, seeking to instill cultural values and traditions.",
+      "monetization_strategy": "Subscription-based model with premium content and features, optional in-app purchases for additional stories and customization options."
+    },
+    {
+      "title": "Tradition Quest: Iyengar Edition",
+      "pitch": "An augmented reality app that turns learning about Iyengar traditions into a scavenger hunt.",
+      "core_features": [
+        "AR-based scavenger hunts with tasks related to Iyengar traditions and values",
+        "Location-based challenges at home or at cultural events",
+        "Family activity suggestions with step-by-step instructions",
+        "Badges and rewards for completing quests",
+        "Integration with family calendars for scheduling activities"
+      ],
+      "target_audience": "Families with children aged 8-12 looking for an engaging and interactive way to learn about Iyengar Brahmin traditions.",
+      "monetization_strategy": "Freemium model with limited free quests, subscription for unlimited access and exclusive content, potential partnerships with cultural organizations."
+    },
+    {
+      "title": "Iyengar Values Storytime",
+      "pitch": "A daily audio story app with Iyengar Brahmin-themed stories that teach values and traditions.",
+      "core_features": [
+        "Daily audio stories narrated by professional storytellers",
+        "Stories focusing on family values, cultural practices, and mythological tales",
+        "Discussion prompts for families to engage with the stories",
+        "Sleep timer and background music options",
+        "Offline playback for listening on the go"
+      ],
+      "target_audience": "Busy parents who want to introduce Iyengar Brahmin values to their children through engaging audio content, even with limited time.",
+      "monetization_strategy": "Subscription-based model with daily story access, free trial period, and optional family sharing plan."
+    },
+    {
+      "title": "Little Iyengars: Create & Share",
+      "pitch": "A creative app where children can make their own stories and videos about Iyengar traditions.",
+      "core_features": [
+        "Storyboarding tools with Iyengar-themed characters and backgrounds",
+        "Video recording and editing features to create short films",
+        "Voice recording options for narration",
+        "Community platform to share stories and videos with other users",
+        "Moderated content to ensure safety and appropriateness"
+      ],
+      "target_audience": "Creative children aged 8-12 who enjoy storytelling and video creation, and parents seeking to encourage cultural expression.",
+      "monetization_strategy": "In-app purchases for premium assets (characters, backgrounds, music), subscription for ad-free experience and expanded storage, potential for user-generated content monetization."
+    },
+    {
+      "title": "Iyengar Family Tree & Values",
+      "pitch": "An app to build a family tree and record stories and values passed down through generations of Iyengar Brahmins.",
+      "core_features": [
+        "Family tree builder with customizable profiles and photos",
+        "Audio recording feature to capture stories and memories from family members",
+        "Sections for documenting family traditions and recipes",
+        "Value reflection prompts for users to identify and share their own values",
+        "Secure cloud storage for family data"
+      ],
+      "target_audience": "Families of Iyengar Brahmin heritage interested in preserving their history, traditions, and values for future generations.",
+      "monetization_strategy": "Freemium model with limited family member profiles, subscription for unlimited storage and premium features like video recording and enhanced privacy options."
+    }
+  ]
+}

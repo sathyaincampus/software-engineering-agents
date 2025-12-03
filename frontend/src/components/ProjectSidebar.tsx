@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Folder, FolderOpen, Clock, ChevronRight } from 'lucide-react';
 import { useProject } from '../context/ProjectContext';
+import { API_BASE_URL } from '../config';
 
 interface Project {
     session_id: string;
@@ -36,7 +37,7 @@ const ProjectSidebar = () => {
 
     const fetchProjects = async () => {
         try {
-            const response = await fetch('http://localhost:8050/projects');
+            const response = await fetch(`${API_BASE_URL}/projects`);
             if (response.ok) {
                 const data = await response.json();
                 // Sort by last modified, most recent first

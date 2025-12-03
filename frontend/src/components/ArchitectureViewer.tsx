@@ -64,6 +64,7 @@ const ArchitectureViewer: React.FC<ArchitectureViewerProps> = ({ data }) => {
             startOnLoad: false,
             theme: isDarkMode ? 'dark' : 'default',
             securityLevel: 'loose',
+            logLevel: 'error', // Only log errors, not warnings
             themeVariables: isDarkMode ? {} : {
                 primaryColor: '#3b82f6',
                 primaryTextColor: '#1f2937',

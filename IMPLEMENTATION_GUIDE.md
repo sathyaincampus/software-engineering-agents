@@ -257,7 +257,7 @@ class YourAgent:
         )
         
         # Create app and runner
-        self.app = App(name="zero_to_one", root_agent=self.agent)
+        self.app = App(name="spark_to_ship", root_agent=self.agent)
         self.runner = Runner(app=self.app, session_service=session_service)
     
     async def execute_task(self, input_data: Dict[str, Any], session_id: str) -> Dict[str, Any]:

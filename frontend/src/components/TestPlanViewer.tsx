@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, AlertCircle, Clock, ChevronDown, ChevronRight, Play, FileText } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 interface TestPlanViewerProps {
     sessionId: string;
@@ -55,7 +56,7 @@ const TestPlanViewer: React.FC<TestPlanViewerProps> = ({ sessionId }) => {
 
     const loadTestPlan = async () => {
         try {
-            const response = await fetch(`http://localhost:8050/projects/${sessionId}/e2e_test_plan`);
+            const response = await fetch(`${API_BASE_URL}/projects/${sessionId}/e2e_test_plan`);
             if (response.ok) {
                 const data = await response.json();
                 setTestPlan(data.data);
