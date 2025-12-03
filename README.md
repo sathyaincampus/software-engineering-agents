@@ -8,6 +8,248 @@ SparkToShip is an autonomous software engineering platform powered by Google's A
 **Competition**: [Google ADK Hackathon on Kaggle](https://www.kaggle.com/)  
 **Track**: Enterprise Agents - Automating the software development lifecycle to improve developer productivity and business workflows.
 
+## 🌟 Why SparkToShip?
+
+Existing tools like **Cline**, **Google Jules**, or **Antigravity** are powerful but fragmented. They focus on individual coding tasks, often losing the "big picture" context.
+
+**SparkToShip is different.** It offers a **coherent, end-to-end flow**:
+1.  **Context Aware**: It knows how your Database Schema relates to your Frontend Components.
+2.  **Lifecycle Managed**: It doesn't just write code; it plans (PRD), designs (Architecture), builds (Code), and verifies (E2E Tests).
+3.  **Visual**: It generates live diagrams (Flowcharts, Sequence, ERD) to help you understand the system.
+
+## ✨ Key Features
+
+### 🤖 The 12 Specialized Agents
+
+The system is composed of **12 Specialized Agents**, each expert in their domain:
+
+#### 1. Strategy Team
+
+*   **Idea Generator Agent**
+    *   **Role**: The Creative Director
+    *   **Model**: Gemini 2.5 Flash (speed-optimized)
+    *   **Function**: Takes vague user keywords (e.g., "Tinder for Cats") and expands them into 5 comprehensive product concepts, defining the target audience, core value proposition, key features, and monetization strategy
+    *   **Output**: Structured JSON with 5 complete app ideas
+
+*   **Product Requirements Agent**
+    *   **Role**: The Product Manager (PM)
+    *   **Model**: Gemini 2.5 Pro (reasoning-optimized)
+    *   **Function**: Translates the selected concept into a formal **Product Requirement Document (PRD)**. Defines User Stories, Acceptance Criteria, Functional Requirements, and Non-Functional Requirements in structured JSON format
+    *   **Output**: Complete PRD with 10-20 user stories
+
+*   **Requirement Analysis Agent**
+    *   **Role**: The Business Analyst
+    *   **Model**: Gemini 2.5 Pro
+    *   **Function**: Analyzes the PRD to identify technical constraints, dependencies, potential risks, and provides recommendations before any code is written
+    *   **Output**: Technical analysis with constraints and recommendations
+
+#### 2. Architecture Team
+
+*   **Software Architect Agent**
+    *   **Role**: The System Architect
+    *   **Model**: Gemini 2.5 Pro (complex reasoning)
+    *   **Function**: Designs the technical foundation. Generates live **Mermaid.js** code for System Architecture (flowcharts), Sequence Diagrams (API flows), ERD Schemas (database relationships), and Tech Stack recommendations
+    *   **Output**: Complete architecture specification with 3+ Mermaid diagrams
+
+*   **UX Designer Agent**
+    *   **Role**: The UI/UX Lead
+    *   **Model**: Gemini 2.5 Flash
+    *   **Function**: Plans the frontend component hierarchy, defines the color palette (TailwindCSS), creates wireframe descriptions, and establishes responsive design guidelines
+    *   **Output**: UI design specification with component tree and color system
+
+#### 3. Engineering Team
+
+*   **Engineering Manager Agent**
+    *   **Role**: The Team Lead / Scrum Master
+    *   **Model**: Gemini 2.5 Pro
+    *   **Function**: Reads the Architecture and PRD to create a **Sprint Plan**. Breaks down features into atomic tasks, assigns them to developers, establishes dependencies, estimates effort, and tracks status on a Kanban board
+    *   **Output**: Sprint plan with 20-50 atomic tasks, story-to-task mapping
+
+*   **Backend Developer Agent**
+    *   **Role**: Senior Python Engineer
+    *   **Model**: Gemini 2.5 Flash (code generation)
+    *   **Function**: Implements server-side logic using **FastAPI**. Writes clean, type-hinted Python code, sets up Pydantic models, implements API endpoints, adds error handling, and follows PEP 8 guidelines
+    *   **Output**: Production-ready FastAPI code with models, routes, and services
+
+*   **Frontend Developer Agent**
+    *   **Role**: Senior React Engineer
+    *   **Model**: Gemini 2.5 Flash
+    *   **Function**: Builds the user interface using **React, TypeScript, Vite, and TailwindCSS**. Creates responsive components, manages state with hooks, implements routing, and integrates with backend APIs
+    *   **Output**: Production-ready React/TypeScript components
+
+#### 4. Quality & Operations Team
+
+*   **QA Agent**
+    *   **Role**: Code Reviewer
+    *   **Model**: Gemini 2.5 Flash
+    *   **Function**: Performs static analysis and code reviews. Checks for best practices, potential bugs, security vulnerabilities, performance issues, and provides actionable feedback
+    *   **Output**: Comprehensive QA report with severity ratings
+
+*   **E2E Test Agent**
+    *   **Role**: Test Automation Engineer
+    *   **Model**: Gemini 2.5 Flash
+    *   **Function**: Automatically generates comprehensive **End-to-End (E2E)** test scripts based on User Stories. Covers user journeys, API integration, UI interaction, and edge cases
+    *   **Output**: Complete E2E test plan with 20-50 test cases
+
+*   **Debugger Agent** (Loop Agent)
+    *   **Role**: The "Fixer"
+    *   **Model**: Gemini 2.5 Pro (complex debugging)
+    *   **Function**: When errors occur, this agent intercepts stack traces, analyzes code context, proposes fixes, applies them, and re-runs verification in an **autonomous loop** until issues are resolved
+    *   **Output**: Debug report with root cause analysis and fixed code
+    *   **Loop Behavior**: Continues iterating until error is resolved or max iterations reached
+
+*   **Walkthrough Agent**
+    *   **Role**: The Developer Advocate
+    *   **Model**: Gemini 2.5 Pro
+    *   **Function**: Analyzes the final codebase and generates onboarding materials in three formats: **Text** (comprehensive markdown guide), **Image** (visual slides), and **Video** (scripted application tour)
+    *   **Output**: Living documentation in text, image, and video formats
+
+### 🔄 The Workflow
+1.  **Ideation**: Expands keywords into full product concepts.
+2.  **Planning**: Generates PRDs, User Stories, and **Task-to-Story Maps**.
+3.  **Design**: Creates **System Architecture**, **Sequence Diagrams**, and **ERDs** using Mermaid.js.
+4.  **Development**: Writes production-ready Backend (FastAPI) and Frontend (React/Vite) code.
+5.  **Quality Assurance**:
+    -   **E2E Test Generation**: Creates comprehensive test plans.
+    -   **Code Review**: Automated linting and best-practice checks.
+6.  **Debugging**: An intelligent **Debugger Agent** that analyzes errors and applies fixes automatically.
+
+### 🎓 Automated Walkthroughs (Onboarding)
+SparkToShip solves the "handover" problem with a dedicated `WalkthroughAgent`. It analyzes the final codebase and generates:
+-   **Text Walkthrough**: Detailed guides explaining the code structure.
+-   **Image Walkthrough**: Visual slides highlighting key components.
+-   **Video Walkthrough**: Scripted tours of the application logic.
+
+### ⚙️ Bring Your Own Model (BYOM)
+Full control over your AI infrastructure.
+-   **Custom API Keys**: Use your own Google Gemini API keys.
+-   **Model Selection**: Switch between **Gemini 2.5 pro** (for complex reasoning) and **Gemini 2.5 Flash** (for speed) directly from the settings.
+
+### 🚀 Advanced Capabilities
+-   **Project Persistence**: Save and **Load Projects** to resume work anytime.
+-   **Code Viewer**: Built-in IDE-like viewer to explore generated files.
+-   **Observability**: Real-time system logs and Kanban board for task tracking.
+
+## 🛠️ Technology Stack
+
+-   **Framework**: Google ADK (Agent Development Kit)
+-   **Models**: Google Gemini 2.5 pro / Flash
+-   **Backend**: Python, FastAPI
+-   **Frontend**: React, TypeScript, Vite, TailwindCSS
+-   **Visualization**: Mermaid.js
+
+## 🚀 Getting Started
+
+### Prerequisites
+-   Python 3.10+
+-   Node.js 18+
+-   Google Cloud Project with Gemini API enabled
+
+### Installation
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/yourusername/sparktoship.git
+    cd sparktoship
+    ```
+
+2.  **Backend Setup**
+    ```bash
+    cd backend
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    pip install -r requirements.txt
+    ```
+
+3.  **Frontend Setup**
+    ```bash
+    cd frontend
+    npm install
+    ```
+
+4.  **Environment Configuration**
+    Create a `.env` file in the `backend` directory:
+    ```env
+    GOOGLE_API_KEY=your_gemini_api_key
+    MODEL_NAME=gemini-2.5-flash-lite
+    ```
+
+### Running the Application
+
+1.  **Start the Backend**
+    ```bash
+    cd backend
+    uvicorn app.main:app --reload --port 8000
+    ```
+
+2.  **Start the Frontend**
+    ```bash
+    cd frontend
+    npm run dev
+    ```
+
+3.  Open your browser at `http://localhost:5173`.
+
+
+
+## 🏗️ Architecture
+
+SparkToShip uses a **Hub-and-Spoke** architecture where the `Orchestrator` manages the session and coordinates communication between agents.
+
+### Backend Architecture
+
+The backend is built with FastAPI and orchestrates 12 specialized AI agents powered by Google ADK and Gemini models.
+
+![SparkToShip Backend Architecture](./sparktoship_backend_architecture.png)
+
+**Key Components:**
+- **API Gateway**: FastAPI server exposing RESTful endpoints for agent interactions
+- **Orchestration Layer**: Session management and agent registry
+- **AI Services**: Google ADK Framework with Gemini 2.5 Flash and Gemini 2.5 Pro models
+- **Agent Teams**: 
+  - Strategy Team (Idea Generator, PRD, Analysis)
+  - Architecture Team (Software Architect, UX Designer)
+  - Engineering Team (Eng Manager, Backend/Frontend Devs, QA, Debugger, Walkthrough)
+- **Storage Layer**: SQLite DB and file system for project persistence
+
+### Frontend Architecture
+
+The frontend is a modern React application with TypeScript, providing an intuitive interface for the entire development workflow.
+
+![SparkToShip Frontend Architecture](./sparktoship_frontend_architecture.png)
+
+**Key Components:**
+- **Routing Layer**: React Router for client-side navigation
+- **Layout Layer**: Dashboard with sidebar, header, and project navigation
+- **Page Layer**: Mission Control, Project History, and Boardroom (Kanban)
+- **Component Layer**: Architecture Viewer, Code Viewer, Story Map, Test Plan, Walkthroughs
+- **State Management**: Context API for global state
+- **Service Layer**: Axios-based API client for backend communication
+
+---
+
+📚 **For detailed architecture diagrams** including system overview, agent ecosystem, data flow, deployment architecture, and sequence diagrams, see [ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md).
+
+## 📸 Demo Screenshots
+
+Want to see SparkToShip in action? Check out our comprehensive visual walkthrough showing the complete workflow from idea to production:
+
+👉 **[View Demo Screenshots](./DEMO.md)**
+
+The demo showcases:
+- Model configuration and mission control
+- Idea generation and brainstorming
+- Product requirements and user personas
+- Architecture diagrams and technology stack
+- Engineering sprint and agent collaboration
+- Code generation, testing, and walkthroughs
+
+### 🎥 Video Demo
+Watch the full demonstration on YouTube:  
+[![SparkToShip Demo](https://img.shields.io/badge/YouTube-Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/o1i64FRntTY)
+
+---
+
 ## 🌐 Live Demo
 
 **Try it now**: [https://www.sparktoship.dev](https://www.sparktoship.dev)
@@ -137,245 +379,7 @@ We're actively working on exciting new features:
 
 Stay tuned for updates!
 
-## 🌟 Why SparkToShip?
-
-Existing tools like **Cline**, **Google Jules**, or **Antigravity** are powerful but fragmented. They focus on individual coding tasks, often losing the "big picture" context.
-
-**SparkToShip is different.** It offers a **coherent, end-to-end flow**:
-1.  **Context Aware**: It knows how your Database Schema relates to your Frontend Components.
-2.  **Lifecycle Managed**: It doesn't just write code; it plans (PRD), designs (Architecture), builds (Code), and verifies (E2E Tests).
-3.  **Visual**: It generates live diagrams (Flowcharts, Sequence, ERD) to help you understand the system.
-
-## ✨ Key Features
-
-### 🤖 The 12 Specialized Agents
-
-The system is composed of **12 Specialized Agents**, each expert in their domain:
-
-#### 1. Strategy Team
-
-*   **Idea Generator Agent**
-    *   **Role**: The Creative Director
-    *   **Model**: Gemini 2.5 Flash (speed-optimized)
-    *   **Function**: Takes vague user keywords (e.g., "Tinder for Cats") and expands them into 5 comprehensive product concepts, defining the target audience, core value proposition, key features, and monetization strategy
-    *   **Output**: Structured JSON with 5 complete app ideas
-
-*   **Product Requirements Agent**
-    *   **Role**: The Product Manager (PM)
-    *   **Model**: Gemini 2.5 Pro (reasoning-optimized)
-    *   **Function**: Translates the selected concept into a formal **Product Requirement Document (PRD)**. Defines User Stories, Acceptance Criteria, Functional Requirements, and Non-Functional Requirements in structured JSON format
-    *   **Output**: Complete PRD with 10-20 user stories
-
-*   **Requirement Analysis Agent**
-    *   **Role**: The Business Analyst
-    *   **Model**: Gemini 2.5 Pro
-    *   **Function**: Analyzes the PRD to identify technical constraints, dependencies, potential risks, and provides recommendations before any code is written
-    *   **Output**: Technical analysis with constraints and recommendations
-
-#### 2. Architecture Team
-
-*   **Software Architect Agent**
-    *   **Role**: The System Architect
-    *   **Model**: Gemini 2.5 Pro (complex reasoning)
-    *   **Function**: Designs the technical foundation. Generates live **Mermaid.js** code for System Architecture (flowcharts), Sequence Diagrams (API flows), ERD Schemas (database relationships), and Tech Stack recommendations
-    *   **Output**: Complete architecture specification with 3+ Mermaid diagrams
-
-*   **UX Designer Agent**
-    *   **Role**: The UI/UX Lead
-    *   **Model**: Gemini 2.5 Flash
-    *   **Function**: Plans the frontend component hierarchy, defines the color palette (TailwindCSS), creates wireframe descriptions, and establishes responsive design guidelines
-    *   **Output**: UI design specification with component tree and color system
-
-#### 3. Engineering Team
-
-*   **Engineering Manager Agent**
-    *   **Role**: The Team Lead / Scrum Master
-    *   **Model**: Gemini 2.5 Pro
-    *   **Function**: Reads the Architecture and PRD to create a **Sprint Plan**. Breaks down features into atomic tasks, assigns them to developers, establishes dependencies, estimates effort, and tracks status on a Kanban board
-    *   **Output**: Sprint plan with 20-50 atomic tasks, story-to-task mapping
-
-*   **Backend Developer Agent**
-    *   **Role**: Senior Python Engineer
-    *   **Model**: Gemini 2.5 Flash (code generation)
-    *   **Function**: Implements server-side logic using **FastAPI**. Writes clean, type-hinted Python code, sets up Pydantic models, implements API endpoints, adds error handling, and follows PEP 8 guidelines
-    *   **Output**: Production-ready FastAPI code with models, routes, and services
-
-*   **Frontend Developer Agent**
-    *   **Role**: Senior React Engineer
-    *   **Model**: Gemini 2.5 Flash
-    *   **Function**: Builds the user interface using **React, TypeScript, Vite, and TailwindCSS**. Creates responsive components, manages state with hooks, implements routing, and integrates with backend APIs
-    *   **Output**: Production-ready React/TypeScript components
-
-#### 4. Quality & Operations Team
-
-*   **QA Agent**
-    *   **Role**: Code Reviewer
-    *   **Model**: Gemini 2.5 Flash
-    *   **Function**: Performs static analysis and code reviews. Checks for best practices, potential bugs, security vulnerabilities, performance issues, and provides actionable feedback
-    *   **Output**: Comprehensive QA report with severity ratings
-
-*   **E2E Test Agent**
-    *   **Role**: Test Automation Engineer
-    *   **Model**: Gemini 2.5 Flash
-    *   **Function**: Automatically generates comprehensive **End-to-End (E2E)** test scripts based on User Stories. Covers user journeys, API integration, UI interaction, and edge cases
-    *   **Output**: Complete E2E test plan with 20-50 test cases
-
-*   **Debugger Agent** (Loop Agent)
-    *   **Role**: The "Fixer"
-    *   **Model**: Gemini 2.5 Pro (complex debugging)
-    *   **Function**: When errors occur, this agent intercepts stack traces, analyzes code context, proposes fixes, applies them, and re-runs verification in an **autonomous loop** until issues are resolved
-    *   **Output**: Debug report with root cause analysis and fixed code
-    *   **Loop Behavior**: Continues iterating until error is resolved or max iterations reached
-
-*   **Walkthrough Agent**
-    *   **Role**: The Developer Advocate
-    *   **Model**: Gemini 2.5 Pro
-    *   **Function**: Analyzes the final codebase and generates onboarding materials in three formats: **Text** (comprehensive markdown guide), **Image** (visual slides), and **Video** (scripted application tour)
-    *   **Output**: Living documentation in text, image, and video formats
-
-### 🔄 The Workflow
-1.  **Ideation**: Expands keywords into full product concepts.
-2.  **Planning**: Generates PRDs, User Stories, and **Task-to-Story Maps**.
-3.  **Design**: Creates **System Architecture**, **Sequence Diagrams**, and **ERDs** using Mermaid.js.
-4.  **Development**: Writes production-ready Backend (FastAPI) and Frontend (React/Vite) code.
-5.  **Quality Assurance**:
-    -   **E2E Test Generation**: Creates comprehensive test plans.
-    -   **Code Review**: Automated linting and best-practice checks.
-6.  **Debugging**: An intelligent **Debugger Agent** that analyzes errors and applies fixes automatically.
-
-### 🎓 Automated Walkthroughs (Onboarding)
-SparkToShip solves the "handover" problem with a dedicated `WalkthroughAgent`. It analyzes the final codebase and generates:
--   **Text Walkthrough**: Detailed guides explaining the code structure.
--   **Image Walkthrough**: Visual slides highlighting key components.
--   **Video Walkthrough**: Scripted tours of the application logic.
-
-### ⚙️ Bring Your Own Model (BYOM)
-Full control over your AI infrastructure.
--   **Custom API Keys**: Use your own Google Gemini API keys.
--   **Model Selection**: Switch between **Gemini 2.5 pro** (for complex reasoning) and **Gemini 1.5 Flash** (for speed) directly from the settings.
-
-### 🚀 Advanced Capabilities
--   **Project Persistence**: Save and **Load Projects** to resume work anytime.
--   **Code Viewer**: Built-in IDE-like viewer to explore generated files.
--   **Observability**: Real-time system logs and Kanban board for task tracking.
-
-## 🛠️ Technology Stack
-
--   **Framework**: Google ADK (Agent Development Kit)
--   **Models**: Google Gemini 2.5 pro / Flash
--   **Backend**: Python, FastAPI
--   **Frontend**: React, TypeScript, Vite, TailwindCSS
--   **Visualization**: Mermaid.js
-
-## 🚀 Getting Started
-
-### Prerequisites
--   Python 3.10+
--   Node.js 18+
--   Google Cloud Project with Gemini API enabled
-
-### Installation
-
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/yourusername/sparktoship.git
-    cd sparktoship
-    ```
-
-2.  **Backend Setup**
-    ```bash
-    cd backend
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    pip install -r requirements.txt
-    ```
-
-3.  **Frontend Setup**
-    ```bash
-    cd frontend
-    npm install
-    ```
-
-4.  **Environment Configuration**
-    Create a `.env` file in the `backend` directory:
-    ```env
-    GOOGLE_API_KEY=your_gemini_api_key
-    MODEL_NAME=gemini-1.5-flash
-    ```
-
-### Running the Application
-
-1.  **Start the Backend**
-    ```bash
-    cd backend
-    uvicorn app.main:app --reload --port 8000
-    ```
-
-2.  **Start the Frontend**
-    ```bash
-    cd frontend
-    npm run dev
-    ```
-
-3.  Open your browser at `http://localhost:5173`.
-
-
-
-## 🏗️ Architecture
-
-SparkToShip uses a **Hub-and-Spoke** architecture where the `Orchestrator` manages the session and coordinates communication between agents.
-
-### Backend Architecture
-
-The backend is built with FastAPI and orchestrates 12 specialized AI agents powered by Google ADK and Gemini models.
-
-![SparkToShip Backend Architecture](./sparktoship_backend_architecture.png)
-
-**Key Components:**
-- **API Gateway**: FastAPI server exposing RESTful endpoints for agent interactions
-- **Orchestration Layer**: Session management and agent registry
-- **AI Services**: Google ADK Framework with Gemini 2.5 Flash and Gemini 2.5 Pro models
-- **Agent Teams**: 
-  - Strategy Team (Idea Generator, PRD, Analysis)
-  - Architecture Team (Software Architect, UX Designer)
-  - Engineering Team (Eng Manager, Backend/Frontend Devs, QA, Debugger, Walkthrough)
-- **Storage Layer**: SQLite DB and file system for project persistence
-
-### Frontend Architecture
-
-The frontend is a modern React application with TypeScript, providing an intuitive interface for the entire development workflow.
-
-![SparkToShip Frontend Architecture](./sparktoship_frontend_architecture.png)
-
-**Key Components:**
-- **Routing Layer**: React Router for client-side navigation
-- **Layout Layer**: Dashboard with sidebar, header, and project navigation
-- **Page Layer**: Mission Control, Project History, and Boardroom (Kanban)
-- **Component Layer**: Architecture Viewer, Code Viewer, Story Map, Test Plan, Walkthroughs
-- **State Management**: Context API for global state
-- **Service Layer**: Axios-based API client for backend communication
-
 ---
-
-📚 **For detailed architecture diagrams** including system overview, agent ecosystem, data flow, deployment architecture, and sequence diagrams, see [ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md).
-
-## 📸 Demo Screenshots
-
-Want to see SparkToShip in action? Check out our comprehensive visual walkthrough showing the complete workflow from idea to production:
-
-👉 **[View Demo Screenshots](./DEMO.md)**
-
-The demo showcases:
-- Model configuration and mission control
-- Idea generation and brainstorming
-- Product requirements and user personas
-- Architecture diagrams and technology stack
-- Engineering sprint and agent collaboration
-- Code generation, testing, and walkthroughs
-
-### 🎥 Video Demo
-Watch the full demonstration on YouTube:  
-[![SparkToShip Demo](https://img.shields.io/badge/YouTube-Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/o1i64FRntTY)
 
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
