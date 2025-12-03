@@ -192,9 +192,9 @@ Full control over your AI infrastructure.
 
 ## 🌐 Production Deployment
 
-Ready to deploy SparkToShip to production? We've prepared comprehensive guides for you!
+Ready to deploy SparkToShip to production? Follow our comprehensive deployment guide!
 
-### 🚀 **Quick Deploy** (Recommended for Regular Updates)
+### 🚀 **Quick Deploy**
 
 For quick deployments after code changes:
 
@@ -209,37 +209,19 @@ This script automatically:
 - ✅ Deploys frontend to Cloud Storage
 - ✅ Verifies deployment
 
-📖 **[Complete Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Full reference with all steps, configurations, and troubleshooting
+### 📖 **Complete Deployment Guide**
 
-### 🎯 **RECOMMENDED: Option 2 - FastAPI Gateway + Vertex AI** ⭐
+For detailed step-by-step instructions, configuration options, cost management, and troubleshooting:
 
-**Best of both worlds** - Keep all features, zero frontend changes, optional Vertex AI integration!
+👉 **[View Complete Deployment Guide](./DEPLOYMENT_GUIDE.md)**
 
-📦 **[START HERE: Deployment Package Summary](./DEPLOYMENT_PACKAGE_SUMMARY.md)** - Overview of all deployment materials
-
-🚀 **[Quick Start Guide](./DEPLOYMENT_QUICKSTART.md)** - Get started in 30 minutes
-
-📖 **[Complete Deployment Guide](./OPTION_2_DEPLOYMENT_GUIDE.md)** - Step-by-step instructions (2-3 hours)
-
-💰 **[Cost Optimization Guide](./COST_OPTIMIZATION_GUIDE.md)** - Make $300 credit last 12-25 months
-
-**Why Option 2?**
-- ✅ **Zero frontend changes** - Your UI works as-is
-- ✅ **All features preserved** - Project storage, debugging, code viewer
-- ✅ **Uses Vertex AI** - Optional integration for heavy workloads
-- ✅ **Flexible** - Start simple, add Vertex AI later
-- ✅ **Cost-effective** - $24/month (covered by free credit)
-- ✅ **Based on Kaggle notebooks** - Follows ADK best practices
-
-### 📊 Deployment Comparison
-
-Not sure which approach? Read the detailed comparison:
-
-📋 **[Deployment Comparison](./DEPLOYMENT_COMPARISON.md)** - Option 1 vs Option 2 analysis
-
-**Quick Summary:**
-- **Option 1** (Pure Vertex AI): $19/month, requires major refactor (4 weeks)
-- **Option 2** (FastAPI + Vertex AI): $24/month, zero changes (2 days) ⭐ **RECOMMENDED**
+The guide covers:
+- **Setup**: Google Cloud project configuration and prerequisites
+- **Backend Deployment**: Cloud Run setup with FastAPI
+- **Frontend Deployment**: Cloud Storage and CDN configuration
+- **Cost Optimization**: Make your $300 free credit last 12-25 months
+- **Helper Scripts**: Automated pause/resume for cost savings
+- **Troubleshooting**: Common issues and solutions
 
 ### 🛠️ Helper Scripts
 
@@ -270,21 +252,6 @@ With smart management, your **$300 free credit lasts 12-25 months**!
 | Paused (storage only) | $1 | 300 months! |
 
 **Recommended**: Pause overnight and weekends → $12/month → **25 months free!**
-
-### 📚 Additional Resources
-
-- 📖 **[Production Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Complete reference with troubleshooting ⭐ **NEW**
-- 📖 [Vertex AI Deployment Guide](./VERTEX_AI_DEPLOYMENT_GUIDE.md) - Pure Vertex AI approach (Option 1)
-- 📖 [Cloud Run Deployment Guide](./GOOGLE_CLOUD_DEPLOYMENT_GUIDE.md) - Cloud Run only
-- 📚 [ADK Deployment Knowledge](./ADK_DEPLOYMENT_KNOWLEDGE.md) - Best practices from Kaggle notebooks
-- 🎓 [Kaggle Notebooks](./Google-ADK-Kaggle-Notebooks/) - Learning materials
-
-### 🎯 Quick Start (Right Now!)
-
-1. **Read the overview** (5 min): [DEPLOYMENT_PACKAGE_SUMMARY.md](./DEPLOYMENT_PACKAGE_SUMMARY.md)
-2. **Follow the guide** (2-3 hours): [OPTION_2_DEPLOYMENT_GUIDE.md](./OPTION_2_DEPLOYMENT_GUIDE.md)
-3. **Set up cost management** (15 min): [COST_OPTIMIZATION_GUIDE.md](./COST_OPTIMIZATION_GUIDE.md)
-4. **Deploy and enjoy!** 🚀
 
 ## 🏗️ Architecture
 
