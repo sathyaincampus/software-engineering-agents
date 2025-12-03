@@ -16,7 +16,7 @@ import {
     ChevronDown
 } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:8050';
+import { API_BASE_URL } from '../config';
 
 interface CodeFile {
     path: string;

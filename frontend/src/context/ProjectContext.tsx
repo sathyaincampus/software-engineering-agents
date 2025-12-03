@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
+import { API_BASE_URL } from '../config';
 
 interface ProjectContextType {
     sessionId: string | null;
@@ -94,7 +95,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
 
     const loadProject = async (sessionId: string) => {
         try {
-            const API_BASE_URL = 'http://localhost:8050';
+
 
             // Load all saved steps (including keywords)
             const steps = ['keywords', 'ideas', 'prd', 'user_stories', 'architecture', 'ui_design', 'sprint_plan', 'backend_code', 'frontend_code', 'qa_review'];

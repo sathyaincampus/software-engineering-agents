@@ -26,7 +26,7 @@ import {
     ChevronRight
 } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:8050';
+import { API_BASE_URL } from '../config';
 
 // --- Types ---
 interface Idea {

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { FileText, Image, Video, Eye, Loader2, ChevronDown, ChevronRight, Copy, Check, Maximize2, X } from 'lucide-react';
 import axios from 'axios';
 import mermaid from 'mermaid';
+import { API_BASE_URL } from '../config';
 
 interface WalkthroughGeneratorProps {
     sessionId: string;
@@ -34,7 +35,7 @@ const WalkthroughGenerator: React.FC<WalkthroughGeneratorProps> = ({ sessionId }
     const [copiedDiagram, setCopiedDiagram] = useState<string | null>(null);
     const [zoomedDiagram, setZoomedDiagram] = useState<{ sectionId: string, diagramIndex: number } | null>(null);
 
-    const API_BASE_URL = 'http://localhost:8050';
+
 
     // Initialize mermaid - fit diagrams by default
     useEffect(() => {

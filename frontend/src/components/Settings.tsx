@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Settings as SettingsIcon, Save, X, Key, Zap, Clock, AlertCircle } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:8050';
+import { API_BASE_URL } from '../config';
 
 interface ModelSettings {
     provider: string;

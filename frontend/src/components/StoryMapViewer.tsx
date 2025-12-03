@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, Circle, AlertCircle, Clock, ChevronDown, ChevronRight } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 interface StoryMapProps {
     sessionId: string;
@@ -37,7 +38,7 @@ const StoryMapViewer: React.FC<StoryMapProps> = ({ sessionId }) => {
 
     const loadStoryMap = async () => {
         try {
-            const response = await fetch(`http://localhost:8050/projects/${sessionId}/story_map`);
+            const response = await fetch(`${API_BASE_URL}/projects/${sessionId}/story_map`);
             if (response.ok) {
                 const data = await response.json();
                 setStoryMap(data.data);
@@ -51,7 +52,7 @@ const StoryMapViewer: React.FC<StoryMapProps> = ({ sessionId }) => {
 
     const loadTaskStatuses = async () => {
         try {
-            const response = await fetch(`http://localhost:8050/projects/${sessionId}/task_statuses`);
+            const response = await fetch(`${API_BASE_URL}/projects/${sessionId}/task_statuses`);
             if (response.ok) {
                 const data = await response.json();
                 setTaskStatuses(data.task_statuses || {});
@@ -185,9 +186,9 @@ const StoryMapViewer: React.FC<StoryMapProps> = ({ sessionId }) => {
                                             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-3">
                                                 <div
                                                     className={`h-2 rounded-full transition-all ${status === 'complete' ? 'bg-green-500' :
-                                                            status === 'blocked' ? 'bg-red-500' :
-                                                                status === 'in-progress' ? 'bg-blue-500' :
-                                                                    'bg-gray-400'
+                                                        status === 'blocked' ? 'bg-red-500' :
+                                                            status === 'in-progress' ? 'bg-blue-500' :
+                                                                'bg-gray-400'
                                                         }`}
                                                     style={{ width: `${progress}%` }}
                                                 />

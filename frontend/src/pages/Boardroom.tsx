@@ -15,7 +15,7 @@ import { useProject } from '../context/ProjectContext';
 import axios from 'axios';
 import { Loader2, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:8050';
+import { API_BASE_URL } from '../config';
 
 const initialNodes: Node[] = [
     { id: '1', position: { x: 250, y: 0 }, data: { label: 'User' }, type: 'input', style: { background: 'var(--card)', color: 'var(--foreground)', border: '1px solid var(--border)' } },

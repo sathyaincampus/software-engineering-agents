@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FileText, Video, Image, Loader2, Download, Eye } from 'lucide-react';
 import MarkdownViewer from './MarkdownViewer';
 
-const API_BASE_URL = 'http://localhost:8050';
+import { API_BASE_URL } from '../config';
 
 interface CodeWalkthroughProps {
     sessionId: string;
@@ -54,8 +54,8 @@ const CodeWalkthrough: React.FC<CodeWalkthroughProps> = ({ sessionId }) => {
                     <button
                         onClick={() => setWalkthroughType('text')}
                         className={`p-4 rounded-lg border-2 transition-all ${walkthroughType === 'text'
-                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                             }`}
                     >
                         <FileText className="mx-auto mb-2 text-blue-500" size={32} />
@@ -66,8 +66,8 @@ const CodeWalkthrough: React.FC<CodeWalkthroughProps> = ({ sessionId }) => {
                     <button
                         onClick={() => setWalkthroughType('image')}
                         className={`p-4 rounded-lg border-2 transition-all ${walkthroughType === 'image'
-                                ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                            ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                             }`}
                     >
                         <Image className="mx-auto mb-2 text-purple-500" size={32} />
@@ -78,8 +78,8 @@ const CodeWalkthrough: React.FC<CodeWalkthroughProps> = ({ sessionId }) => {
                     <button
                         onClick={() => setWalkthroughType('video')}
                         className={`p-4 rounded-lg border-2 transition-all ${walkthroughType === 'video'
-                                ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                             }`}
                     >
                         <Video className="mx-auto mb-2 text-green-500" size={32} />
