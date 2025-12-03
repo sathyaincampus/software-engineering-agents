@@ -89,38 +89,49 @@ class SoftwareArchitectAgent(BaseAgent):
             - Activate: A->>+B: Message
             - Deactivate: B-->>-A: Response
             
-            **🔴 ACTIVATION RULES (CRITICAL):**
-            1. MUST activate (+) before deactivating (-)
-            2. Deactivate in REVERSE order of activation
-            3. Every + needs a matching -
+            **🔴 CRITICAL: ACTIVATION/DEACTIVATION RULES**
             
-            **🚫 FORBIDDEN IN SEQUENCE DIAGRAMS:**
-            - NO alt blocks
-            - NO else blocks
-            - NO loop blocks
-            - NO opt blocks
-            - NO complex branching
-            - ONLY simple linear message flows
+            The most common error is "Trying to inactivate an inactive participant". To avoid this:
             
-            **❌ WRONG EXAMPLE (DO NOT DO THIS):**
-            alt EventCreatedSuccessfully
-                Calendar-->>-API: Success
-            else EventCreationFailed
-                Calendar-->>-API: Failed
+            1. **Only use + on the FIRST message TO a participant**
+            2. **Only use - on the LAST message FROM that participant**
+            3. **Match every + with exactly one -**
+            4. **Deactivate in REVERSE order of activation**
+            
+            **❌ WRONG - Multiple activations:**
+            ```
+            Client->>+API: Request
+            API->>+AuthService: Validate
+            AuthService->>+DB: Query
+            DB-->>-AuthService: Data
+            AuthService-->>-API: Valid      ❌ This deactivates AuthService
+            AuthService->>AuthService: JWT  ❌ ERROR: AuthService already deactivated!
+            AuthService-->>-API: Token      ❌ ERROR: Can't deactivate again!
+            ```
+            
+            **✅ CORRECT - Proper activation:**
+            ```
+            Client->>+API: Request
+            API->>+AuthService: Validate
+            AuthService->>+DB: Query
+            DB-->>-AuthService: Data
+            AuthService->>AuthService: Generate JWT
+            AuthService-->>-API: Token      ✅ Only ONE deactivation
+            API-->>-Client: Response        ✅ Deactivate in reverse order
+            ```
+            
+            **Using alt/else blocks (ALLOWED):**
+            ```
+            alt Success Case
+                Service-->>API: Success
+            else Error Case
+                Service-->>API: Error
             end
+            ```
             
-            **✅ CORRECT EXAMPLE (DO THIS):**
-            sequenceDiagram
-                participant Client
-                participant API
-                participant DB
-                
-                Client->>+API: POST /events
-                API->>+DB: Insert Event
-                DB-->>-API: Event Created
-                API-->>-Client: Success Response
-            
-            Keep it SIMPLE. Show ONE happy path only.
+            **⚠️ IMPORTANT:** When using alt/else, be careful with activation markers:
+            - Don't activate (+) before alt if you deactivate (-) inside alt
+            - Keep activations/deactivations balanced within each branch
             
             ### ✅ VALIDATION CHECKLIST
             
@@ -131,9 +142,12 @@ class SoftwareArchitectAgent(BaseAgent):
             - NO special characters in labels
             - One connection per line
             - All activations (+) have matching deactivations (-)
+            - Only ONE activation (+) per participant
+            - Only ONE deactivation (-) per participant
+            - Deactivate in REVERSE order of activation
             - Simple node IDs (letters and numbers only)
-            - NO alt, loop, opt, or else keywords ANYWHERE
-            - Sequence shows ONLY the happy path (success case)
+            - If using alt/else, balance activations within each branch
+
             
             ### 🎯 CRITICAL: DIAGRAM FIELD MAPPING
             
@@ -378,3 +392,4 @@ class SoftwareArchitectAgent(BaseAgent):
         
         # Use robust JSON parsing
         return parse_json_response(response)
+

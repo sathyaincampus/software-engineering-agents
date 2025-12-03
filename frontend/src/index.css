@@ -138,3 +138,44 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-400 dark:bg-gray-600;
 }
+
+/* Hide Mermaid's default error messages - we show errors in custom error boxes */
+/* Target the entire SVG container when it's an error diagram */
+svg[aria-roledescription="error"],
+svg[role*="error"],
+div:has(> svg[aria-roledescription="error"]) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: absolute !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Also hide individual error elements */
+.mermaid-error,
+.error-icon,
+.error-text,
+#d2graph>text[class*="error"],
+svg>g>text[fill="red"],
+svg>text[fill="red"],
+text.error-text,
+path.error-icon {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+/* Hide any parent containers that might be holding error space */
+svg:has(> text[fill="red"]),
+svg:has(> g > text[fill="red"]),
+svg:has(text.error-text),
+svg:has(path.error-icon) {
+  display: none !important;
+  min-height: 0 !important;
+  height: 0 !important;
+}
