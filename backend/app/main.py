@@ -25,7 +25,11 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="SparkToShip AI API", version="1.0")
+app = FastAPI(
+    title="SparkToShip AI API", 
+    version="1.0",
+    root_path="/api"  # Handle requests from load balancer with /api prefix
+)
 
 app.add_middleware(
     CORSMiddleware,

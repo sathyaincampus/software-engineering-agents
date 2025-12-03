@@ -194,6 +194,23 @@ Full control over your AI infrastructure.
 
 Ready to deploy SparkToShip to production? We've prepared comprehensive guides for you!
 
+### 🚀 **Quick Deploy** (Recommended for Regular Updates)
+
+For quick deployments after code changes:
+
+```bash
+# One-command deployment
+./deploy.sh
+```
+
+This script automatically:
+- ✅ Deploys backend to Cloud Run
+- ✅ Builds frontend with production config
+- ✅ Deploys frontend to Cloud Storage
+- ✅ Verifies deployment
+
+📖 **[Complete Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Full reference with all steps, configurations, and troubleshooting
+
 ### 🎯 **RECOMMENDED: Option 2 - FastAPI Gateway + Vertex AI** ⭐
 
 **Best of both worlds** - Keep all features, zero frontend changes, optional Vertex AI integration!
@@ -229,6 +246,9 @@ Not sure which approach? Read the detailed comparison:
 We've included scripts to help you manage costs:
 
 ```bash
+# Quick deployment (backend + frontend)
+./deploy.sh
+
 # Pause resources when not using (saves ~$18/month)
 ./pause-sparktoship.sh
 
@@ -253,6 +273,7 @@ With smart management, your **$300 free credit lasts 12-25 months**!
 
 ### 📚 Additional Resources
 
+- 📖 **[Production Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Complete reference with troubleshooting ⭐ **NEW**
 - 📖 [Vertex AI Deployment Guide](./VERTEX_AI_DEPLOYMENT_GUIDE.md) - Pure Vertex AI approach (Option 1)
 - 📖 [Cloud Run Deployment Guide](./GOOGLE_CLOUD_DEPLOYMENT_GUIDE.md) - Cloud Run only
 - 📚 [ADK Deployment Knowledge](./ADK_DEPLOYMENT_KNOWLEDGE.md) - Best practices from Kaggle notebooks
