@@ -29,7 +29,12 @@ app = FastAPI(title="SparkToShip AI API", version="1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174"],
+    allow_origins=[
+        "http://localhost:5173", 
+        "http://localhost:5174",
+        "https://sparktoship.dev",  # Production domain
+        "https://www.sparktoship.dev"  # Production domain with www
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

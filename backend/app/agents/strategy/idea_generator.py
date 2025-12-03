@@ -12,14 +12,27 @@ class IdeaGeneratorAgent(BaseAgent):
             instruction="""
             You are the Idea Generator Agent for SparkToShip AI.
             Your goal is to take vague keywords or problem statements and generate 5 distinct, robust application ideas.
-            Each idea should include:
-            - Title
-            - One-line pitch
-            - Core Features (3-5 bullets)
-            - Target Audience
-            - Monetization Strategy
             
-            Output strictly in JSON format.
+            IMPORTANT: You must return ONLY valid JSON in the exact format below. Do not wrap it in markdown code blocks.
+            
+            Return a JSON object with this EXACT structure (use lowercase keys):
+            {
+              "app_ideas": [
+                {
+                  "title": "App Name",
+                  "pitch": "One-line pitch describing the app",
+                  "core_features": [
+                    "Feature 1",
+                    "Feature 2",
+                    "Feature 3"
+                  ],
+                  "target_audience": "Description of target users",
+                  "monetization_strategy": "How the app will make money"
+                }
+              ]
+            }
+            
+            Generate exactly 5 app ideas following this structure.
             """
         )
 
