@@ -1,0 +1,69 @@
+{
+  "app_ideas": [
+    {
+      "title": "AI Navigator",
+      "pitch": "Your interactive journey from basic ML to advanced Generative AI concepts, with clear visuals, analogies, and code.",
+      "core_features": [
+        "Modular learning paths covering ML, LLM basics, advanced GenAI (agents, LangGraph), and building LLMs from scratch.",
+        "Interactive visualizations for mathematical concepts and AI model architectures.",
+        "Bite-sized explanations with real-world analogies and integrated code snippets.",
+        "Spaced repetition flashcard system for knowledge reinforcement.",
+        "Progress tracking and personalized learning recommendations."
+      ],
+      "target_audience": "Students, aspiring AI/ML engineers, developers looking to upskill in AI, and curious individuals interested in understanding AI deeply.",
+      "monetization_strategy": "Freemium model: basic modules are free, advanced courses and certifications require a subscription. One-time purchase options for specific deep-dive modules."
+    },
+    {
+      "title": "ConceptCanvas AI",
+      "pitch": "Visualize and understand complex AI theories from fundamental ML to cutting-edge LLM architectures with interactive diagrams and analogies.",
+      "core_features": [
+        "Drag-and-drop interface to build conceptual models of AI algorithms.",
+        "Animated explanations of tokenization, attention mechanisms, and agentic workflows.",
+        "Contextual math breakdowns with visual aids and simplified examples.",
+        "\"Build-an-LLM\" simulator where users can tweak parameters and observe outcomes.",
+        "Integrated flashcards and quizzes for concept recall."
+      ],
+      "target_audience": "Visual learners, educators, AI researchers seeking intuitive understanding, and developers who prefer hands-on concept exploration.",
+      "monetization_strategy": "Subscription-based access to advanced visualization tools and simulation environments. Educational institution licenses."
+    },
+    {
+      "title": "LLM Lab & Learn",
+      "pitch": "Demystify LLMs by learning theory, exploring math, and even attempting to build one from scratch, all within an engaging, visual interface.",
+      "core_features": [
+        "Step-by-step tutorials for building basic LLM components from scratch (e.g., tokenizers, simple neural networks).",
+        "Interactive explorers for LLM concepts like embeddings, attention, and prompt engineering.",
+        "Visual explanations of underlying mathematical principles (linear algebra, calculus) with AI applications.",
+        "Code playgrounds with pre-written examples and challenges for LangChain, LangGraph, and ADK.",
+        "Gamified learning with points, badges, and leaderboards for completing modules and challenges."
+      ],
+      "target_audience": "Enthusiastic coders, ML students, AI hobbyists, and anyone who wants a practical, hands-on approach to LLM understanding.",
+      "monetization_strategy": "Tiered subscription: basic access, premium access with advanced LLM building tools and datasets, and a professional tier with mentorship and community support."
+    },
+    {
+      "title": "AI Tutor Pro",
+      "pitch": "Master AI from A to Z with personalized learning paths, clear mathematical explanations, and interactive flashcards for ultimate retention.",
+      "core_features": [
+        "Adaptive learning paths that adjust difficulty based on user performance.",
+        "Detailed explanations of math concepts with intuitive analogies for ML and LLM algorithms.",
+        "High-quality visuals and diagrams illustrating data flow, model training, and agentic systems.",
+        "Curated code examples for implementing ML algorithms and using LLM frameworks (LangChain, etc.).",
+        "AI-powered flashcard generation based on learned material for efficient review."
+      ],
+      "target_audience": "Individuals seeking structured learning, professionals aiming for AI certifications, and self-taught developers needing comprehensive guidance.",
+      "monetization_strategy": "Monthly or annual subscription for full access to all courses and features. Certificate programs for completing learning paths."
+    },
+    {
+      "title": "The AI Rosetta Stone",
+      "pitch": "Decode the complexities of AI, from the foundational math of linear regression to the intricate workings of GenAI agents and LLM construction.",
+      "core_features": [
+        "Parallel explanations: core concepts alongside their underlying mathematical foundations and practical code examples.",
+        "\"Explain Like I'm 5\" mode for quick understanding of difficult topics.",
+        "Interactive simulations of LLM agent interactions and Strands-like frameworks.",
+        "Visual breakdown of LLM architecture and training pipelines.",
+        "Robust flashcard system with customizable decks and spaced repetition algorithms."
+      ],
+      "target_audience": "Beginners struggling with the math of AI, experienced developers wanting to bridge theory and practice, and educators looking for clear teaching resources.",
+      "monetization_strategy": "One-time purchase for lifetime access to all content. Premium support and community forums for subscribers."
+    }
+  ]
+}

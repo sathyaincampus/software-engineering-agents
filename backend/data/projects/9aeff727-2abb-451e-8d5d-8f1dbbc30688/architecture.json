@@ -1,0 +1,347 @@
+{
+  "tech_stack": {
+    "frontend": {
+      "framework": "React",
+      "language": "TypeScript",
+      "state_management": "Redux Toolkit",
+      "ui_library": "Material-UI"
+    },
+    "backend": {
+      "language": "Python",
+      "framework": "FastAPI",
+      "authentication": "JWT with OAuth (Google, GitHub)",
+      "realtime": "WebSockets (for potential future features like live coding or community interaction)",
+      "cloud_provider": "AWS",
+      "deployment": "Docker & Kubernetes"
+    },
+    "database": {
+      "primary": "PostgreSQL",
+      "caching": "Redis"
+    },
+    "devops": {
+      "ci_cd": "GitHub Actions",
+      "containerization": "Docker",
+      "cloud_infrastructure": "AWS (EC2, RDS, S3, Elasticache)",
+      "monitoring": "Prometheus & Grafana",
+      "testing": "Jest (Frontend), Pytest (Backend)"
+    }
+  },
+  "system_diagram": {
+    "format": "mermaid",
+    "code": "flowchart TD\n    subgraph User Interaction\n        Client[Web Browser/Mobile App]\n    end\n    subgraph Core Platform\n        API[API Gateway]\n        Auth[Authentication Service]\n        Content[Content Service]\n        Progress[Progress Tracking Service]\n        Flashcards[Flashcard Service]\n        Recs[Recommendation Service]\n        Quiz[Quiz Service]\n        Simulator[LLM Simulator Service]\n        Glossary[Glossary Service]\n        Cert[Certificate Service]\n        Community[Community Service]\n    end\n    subgraph Data Stores\n        UserDB[(User Database)]\n        ContentDB[(Content Database)]\n        ProgressDB[(Progress Database)]\n        FlashcardDB[(Flashcard Database)]\n        RecsCache[(Recommendation Cache)]\n        GlossaryDB[(Glossary Database)]\n        CertDB[(Certificate Database)]\n        CommunityDB[(Community Database)]\n    end\n    subgraph External Services\n        OAuth[OAuth Providers - Google/GitHub]\n        VisualizationLib[Visualization Libraries - D3js/Chartjs]\n        CodeSandbox[Code Sandbox Environment]\n        Payment[Payment Gateway]\n    end\n\n    Client --> API\n    API --> Auth\n    API --> Content\n    API --> Progress\n    API --> Flashcards\n    API --> Recs\n    API --> Quiz\n    API --> Simulator\n    API --> Glossary\n    API --> Cert\n    API --> Community\n\n    Auth --> UserDB\n    UserDB --> OAuth\n\n    Content --> ContentDB\n    Progress --> ProgressDB\n    Flashcards --> FlashcardDB\n    Recs --> RecsCache\n    Quiz --> ProgressDB\n    Glossary --> GlossaryDB\n    Cert --> CertDB\n    Community --> CommunityDB\n\n    Client -.->|Embeds| VisualizationLib\n    Client -.->|Uses| CodeSandbox\n    API -.->|Handles| Payment\n"
+  },
+  "backend_diagram": {
+    "format": "mermaid",
+    "code": "flowchart TD\n    subgraph API Gateway\n        APIServer[FastAPI Server]\n    end\n    subgraph Microservices\n        AuthSvc[Authentication Service]\n        ContentSvc[Content Service]\n        ProgressSvc[Progress Tracking Service]\n        FlashcardSvc[Flashcard Service]\n        RecoSvc[Recommendation Service]\n        QuizSvc[Quiz Service]\n        SimulatorSvc[LLM Simulator Service]\n        GlossarySvc[Glossary Service]\n        CertSvc[Certificate Service]\n        CommunitySvc[Community Service]\n    end\n    subgraph Data Layer\n        UserDB[(User DB - PostgreSQL)]\n        ContentDB[(Content DB - PostgreSQL)]\n        ProgressDB[(Progress DB - PostgreSQL)]\n        FlashcardDB[(Flashcard DB - PostgreSQL)]\n        RecoCahce[(Reco Cache - Redis)]\n        GlossaryDB[(Glossary DB - PostgreSQL)]\n        CertDB[(Certificate DB - PostgreSQL)]\n        CommunityDB[(Community DB - PostgreSQL)]\n    end\n    subgraph External Integrations\n        OAuthProv[OAuth Providers]\n        PayGateway[Payment Gateway]\n    end\n\n    APIServer --> AuthSvc\n    APIServer --> ContentSvc\n    APIServer --> ProgressSvc\n    APIServer --> FlashcardSvc\n    APIServer --> RecoSvc\n    APIServer --> QuizSvc\n    APIServer --> SimulatorSvc\n    APIServer --> GlossarySvc\n    APIServer --> CertSvc\n    APIServer --> CommunitySvc\n\n    AuthSvc --> UserDB\n    AuthSvc --> OAuthProv\n\n    ContentSvc --> ContentDB\n\n    ProgressSvc --> ProgressDB\n    QuizSvc --> ProgressDB\n\n    FlashcardSvc --> FlashcardDB\n\n    RecoSvc --> RecoCahce\n\n    GlossarySvc --> GlossaryDB\n\n    CertSvc --> CertDB\n\n    CommunitySvc --> CommunityDB\n\n    APIServer --> PayGateway\n"
+  },
+  "frontend_diagram": {
+    "format": "mermaid",
+    "code": "flowchart TD\n    subgraph User Interface (React)\n        App[App Component]\n        Layout[Main Layout]\n        Navbar[Navigation Bar]\n        Footer[Footer]\n    end\n    subgraph Pages\n        HomePage[Home Page]\n        DashboardPage[Dashboard Page]\n        ModulesPage[Modules Page]\n        ModuleDetailPage[Module Detail Page]\n        FlashcardsPage[Flashcards Page]\n        AccountPage[Account Settings Page]\n        QuizPage[Quiz Page]\n        GlossaryPage[Glossary Page]\n        SimulatorPage[LLM Simulator Page]\n    end\n    subgraph Core Components\n        ModuleList[Module List]\n        ModuleCard[Module Card]\n        LessonViewer[Lesson Viewer]\n        VisualizationWrapper[Visualization Wrapper]\n        CodeSnippet[Code Snippet]\n        FlashcardViewer[Flashcard Viewer]\n        FlashcardControls[Flashcard Controls]\n        ProgressBar[Progress Bar]\n        RecommendationList[Recommendation List]\n        QuizComponent[Quiz Component]\n        GlossarySearch[Glossary Search]\n        SimulatorUI[Simulator UI]\n    end\n    subgraph State Management (Redux)\n        AuthState[Auth State]\n        ContentState[Content State]\n        ProgressState[Progress State]\n        FlashcardState[Flashcard State]\n        RecosState[Recommendations State]\n        QuizState[Quiz State]\n        GlossaryState[Glossary State]\n        SimulatorState[Simulator State]\n    end\n    subgraph API Interaction\n        APIClient[API Client Utility]\n    end\n\n    App --> Layout\n    Layout --> Navbar\n    Layout --> Footer\n    Layout --> HomePage\n    Layout --> DashboardPage\n    Layout --> ModulesPage\n    Layout --> ModuleDetailPage\n    Layout --> FlashcardsPage\n    Layout --> AccountPage\n    Layout --> QuizPage\n    Layout --> GlossaryPage\n    Layout --> SimulatorPage\n\n    ModulesPage --> ModuleList\n    ModuleList --> ModuleCard\n    ModuleDetailPage --> LessonViewer\n    LessonViewer --> VisualizationWrapper\n    LessonViewer --> CodeSnippet\n    FlashcardsPage --> FlashcardViewer\n    FlashcardViewer --> FlashcardControls\n    DashboardPage --> ProgressBar\n    DashboardPage --> RecommendationList\n    QuizPage --> QuizComponent\n    GlossaryPage --> GlossarySearch\n    SimulatorPage --> SimulatorUI\n\n    App --> AuthState\n    App --> ContentState\n    App --> ProgressState\n    App --> FlashcardState\n    App --> RecosState\n    App --> QuizState\n    App --> GlossaryState\n    App --> SimulatorState\n\n    AuthState --> APIClient\n    ContentState --> APIClient\n    ProgressState --> APIClient\n    FlashcardState --> APIClient\n    RecosState --> APIClient\n    QuizState --> APIClient\n    GlossaryState --> APIClient\n    SimulatorState --> APIClient\n\n    VisualizationWrapper -.->|Uses| VisualizationLib\n    CodeSnippet -.->|Uses| CodeSandboxIntegration\n"
+  },
+  "sequence_diagrams": [
+    {
+      "name": "User Login Flow",
+      "description": "User logs in using email and password.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant AuthService\n    participant UserDB\n\n    Client->>+APIGateway: POST /auth/login\n    APIGateway->>+AuthService: AuthenticateUser(email, password)\n    AuthService->>+UserDB: FindUserByEmail(email)\n    UserDB-->>-AuthService: UserData (hashedPassword)\n    AuthService->>AuthService: ComparePassword(password, hashedPassword)\n    alt Password Match\n        AuthService->>AuthService: Generate JWT\n        AuthService-->>-APIGateway: JWT Token\n        APIGateway-->>-Client: Login Success (JWT)\n    else Password Mismatch\n        AuthService-->>-APIGateway: Authentication Error\n        APIGateway-->>-Client: Login Failed\n    end"
+    },
+    {
+      "name": "Access Module Content Flow",
+      "description": "User selects a module and views its content.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant ContentService\n    participant ContentDB\n    participant ProgressService\n    participant ProgressDB\n\n    Client->>+APIGateway: GET /content/modules/{moduleId}\n    APIGateway->>+ContentService: GetModuleContent(moduleId)\n    ContentService->>+ContentDB: FetchModule(moduleId)\n    ContentDB-->>-ContentService: ModuleData (lessons, text, visuals)\n    ContentService->>+ProgressService: GetUserProgress(userId, moduleId)\n    ProgressService->>+ProgressDB: FetchProgress(userId, moduleId)\n    ProgressDB-->>-ProgressService: ProgressData (completedLessons)\n    ProgressService-->>-ContentService: EnrichedModuleData\n    ContentService-->>-APIGateway: Module Content\n    APIGateway-->>-Client: Module Content (with progress info)\n"
+    },
+    {
+      "name": "Create and Review Flashcard Flow",
+      "description": "User creates a flashcard from lesson content and later reviews it.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant FlashcardService\n    participant FlashcardDB\n    participant ProgressService\n    participant ProgressDB\n\n    Client->>+APIGateway: POST /flashcards\n    APIGateway->>+FlashcardService: CreateFlashcard(userId, cardData)\n    FlashcardService->>+FlashcardDB: InsertFlashcard(userId, cardData)\n    FlashcardDB-->>-FlashcardService: CardID\n    FlashcardService->>+ProgressService: UpdateFlashcardHistory(userId, CardID, type=created)\n    ProgressService->>+ProgressDB: LogFlashcardCreation(userId, CardID)\n    ProgressDB-->>-ProgressService: Success\n    ProgressService-->>-FlashcardService: Update Status\n    FlashcardService-->>-APIGateway: Flashcard Created Confirmation\n    APIGateway-->>-Client: Success Response\n\n    Client->>+APIGateway: POST /flashcards/review\n    APIGateway->>+FlashcardService: StartReviewSession(userId)\n    FlashcardService->>+FlashcardDB: GetNextFlashcards(userId, schedule)\n    FlashcardDB-->>-FlashcardService: ScheduledFlashcards\n    FlashcardService-->>-APIGateway: Review Session Data\n    APIGateway-->>-Client: Flashcards for Review\n\n    Client->>+APIGateway: POST /flashcards/rate\n    APIGateway->>+FlashcardService: RateFlashcard(userId, cardId, rating)\n    FlashcardService->>+FlashcardDB: UpdateFlashcard(cardId, rating, nextReviewDate)\n    FlashcardDB-->>-FlashcardService: Update Status\n    FlashcardService->>+ProgressService: UpdateFlashcardHistory(userId, cardId, type=rated, rating)\n    ProgressService->>+ProgressDB: LogFlashcardRating(userId, cardId, rating)\n    ProgressDB-->>-ProgressService: Success\n    ProgressService-->>-FlashcardService: Update Status\n    FlashcardService-->>-APIGateway: Rating Confirmation\n    APIGateway-->>-Client: Success Response\n"
+    },
+    {
+      "name": "View Personalized Recommendations Flow",
+      "description": "User visits their dashboard and sees personalized learning recommendations.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant RecommendationService\n    participant ProgressService\n    participant ContentService\n    participant RecoCache\n\n    Client->>+APIGateway: GET /dashboard\n    APIGateway->>+RecommendationService: GetRecommendations(userId)\n    RecommendationService->>+ProgressService: GetUserProgressData(userId)\n    ProgressService->>+ProgressDB: FetchCompletedModules(userId)\n    ProgressDB-->>-ProgressService: CompletedModulesList\n    ProgressService-->>-RecommendationService: UserProgress\n    alt Recommendations Cached\n        RecommendationService->>+RecoCache: GetCachedRecommendations(userId)\n        RecoCache-->>-RecommendationService: CachedRecos\n        RecommendationService-->>-APIGateway: Recommendations\n    else Cache Miss\n        RecommendationService->>+ContentService: GetAllModules()\n        ContentService->>+ContentDB: FetchAllModules()\n        ContentDB-->>-ContentService: AllModuleData\n        ContentService-->>-RecommendationService: ModuleList\n        RecommendationService->>RecommendationService: GenerateRecos(UserProgress, ModuleList)\n        RecommendationService->>+RecoCache: StoreRecommendations(userId, GeneratedRecos)\n        RecoCache-->>-RecommendationService: Store Success\n        RecommendationService-->>-APIGateway: Recommendations\n    end\n    APIGateway-->>-Client: Dashboard Data (including recommendations)\n"
+    },
+    {
+      "name": "Upgrade to Premium Flow",
+      "description": "User attempts to access a premium module and is prompted to upgrade.",
+      "format": "mermaid",
+      "code": "sequenceDiagram\n    participant Client\n    participant APIGateway\n    participant AuthService\n    participant ContentService\n    participant PaymentService\n    participant PaymentGateway\n\n    Client->>+APIGateway: GET /content/modules/{premiumModuleId}\n    APIGateway->>+AuthService: ValidateToken(jwt)\n    AuthService-->>-APIGateway: Valid Token\n    APIGateway->>+ContentService: GetModule(premiumModuleId)\n    ContentService-->>-APIGateway: ModuleDetails (isPremium=true)\n\n    alt User Has Premium Access\n        APIGateway-->>-Client: Module Content\n    else User Does Not Have Premium Access\n        APIGateway-->>-Client: Access Denied (Premium Required)\n    end\n\n    Client->>+APIGateway: POST /payment/subscribe (or buyModule)\n    APIGateway->>+AuthService: ValidateToken(jwt)\n    AuthService-->>-APIGateway: Valid Token\n    APIGateway->>+PaymentService: InitiateSubscription(userId, plan)\n    PaymentService->>+PaymentGateway: CreateCheckoutSession(userId, plan)\n    PaymentGateway-->>-PaymentService: Checkout URL\n    PaymentService-->>-APIGateway: Checkout URL\n    APIGateway-->>-Client: Redirect to Checkout URL\n\n    Client -->> PaymentGateway: Completes Payment\n\n    PaymentGateway->>+PaymentService: Payment Success Webhook\n    PaymentService->>+AuthService: UpdateUserSubscription(userId, status=active)\n    AuthService-->>-PaymentService: Success\n    PaymentService-->>-APIGateway: Webhook Confirmation\n    APIGateway-->>-Client: Subscription Activated Confirmation (optional)\n"
+    }
+  ],
+  "api_design_principles": [
+    {
+      "principle": "RESTful Design",
+      "description": "Utilize standard HTTP methods (GET, POST, PUT, DELETE) and resource-based URLs for clear and predictable API interactions."
+    },
+    {
+      "principle": "Statelessness",
+      "description": "Each request from a client to the server must contain all the information needed to understand and process the request. The server should not store client context between requests."
+    },
+    {
+      "principle": "Consistent Error Handling",
+      "description": "Provide meaningful error messages and standard HTTP status codes (e.g., 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error) for predictable error responses."
+    },
+    {
+      "principle": "Versioning",
+      "description": "Implement API versioning (e.g., via URL path like /v1/modules) to manage changes and ensure backward compatibility for older clients."
+    },
+    {
+      "principle": "JSON for Data Exchange",
+      "description": "Use JSON as the standard format for request and response payloads."
+    }
+  ],
+  "data_model": {
+    "schema": [
+      {
+        "table": "users",
+        "columns": [
+          {
+            "name": "user_id",
+            "type": "UUID",
+            "primary_key": true
+          },
+          {
+            "name": "email",
+            "type": "VARCHAR(255)",
+            "unique": true,
+            "not_null": true
+          },
+          {
+            "name": "hashed_password",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "oauth_provider",
+            "type": "VARCHAR(50)"
+          },
+          {
+            "name": "oauth_id",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "default": "NOW()"
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "default": "NOW()"
+          },
+          {
+            "name": "subscription_tier",
+            "type": "VARCHAR(50)",
+            "default": "'free'"
+          },
+          {
+            "name": "subscription_expires_at",
+            "type": "TIMESTAMP"
+          }
+        ]
+      },
+      {
+        "table": "modules",
+        "columns": [
+          {
+            "name": "module_id",
+            "type": "UUID",
+            "primary_key": true
+          },
+          {
+            "name": "title",
+            "type": "VARCHAR(255)",
+            "not_null": true
+          },
+          {
+            "name": "description",
+            "type": "TEXT"
+          },
+          {
+            "name": "category",
+            "type": "VARCHAR(100)"
+          },
+          {
+            "name": "difficulty",
+            "type": "VARCHAR(50)"
+          },
+          {
+            "name": "is_premium",
+            "type": "BOOLEAN",
+            "default": false
+          },
+          {
+            "name": "prerequisites",
+            "type": "JSONB"
+          }
+        ]
+      },
+      {
+        "table": "lessons",
+        "columns": [
+          {
+            "name": "lesson_id",
+            "type": "UUID",
+            "primary_key": true
+          },
+          {
+            "name": "module_id",
+            "type": "UUID",
+            "foreign_key": "modules(module_id)"
+          },
+          {
+            "name": "title",
+            "type": "VARCHAR(255)",
+            "not_null": true
+          },
+          {
+            "name": "content",
+            "type": "TEXT"
+          },
+          {
+            "name": "content_type",
+            "type": "VARCHAR(50)",
+            "comment": "e.g., text, visualization, code"
+          },
+          {
+            "name": "order_in_module",
+            "type": "INTEGER"
+          }
+        ]
+      },
+      {
+        "table": "user_progress",
+        "columns": [
+          {
+            "name": "progress_id",
+            "type": "UUID",
+            "primary_key": true
+          },
+          {
+            "name": "user_id",
+            "type": "UUID",
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "module_id",
+            "type": "UUID",
+            "foreign_key": "modules(module_id)"
+          },
+          {
+            "name": "lesson_id",
+            "type": "UUID",
+            "foreign_key": "lessons(lesson_id)"
+          },
+          {
+            "name": "completed_at",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "quiz_score",
+            "type": "FLOAT"
+          },
+          {
+            "name": "last_accessed",
+            "type": "TIMESTAMP",
+            "default": "NOW()"
+          }
+        ]
+      },
+      {
+        "table": "flashcards",
+        "columns": [
+          {
+            "name": "card_id",
+            "type": "UUID",
+            "primary_key": true
+          },
+          {
+            "name": "user_id",
+            "type": "UUID",
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "lesson_id",
+            "type": "UUID",
+            "foreign_key": "lessons(lesson_id)"
+          },
+          {
+            "name": "question",
+            "type": "TEXT",
+            "not_null": true
+          },
+          {
+            "name": "answer",
+            "type": "TEXT",
+            "not_null": true
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "default": "NOW()"
+          }
+        ]
+      },
+      {
+        "table": "flashcard_reviews",
+        "columns": [
+          {
+            "name": "review_id",
+            "type": "UUID",
+            "primary_key": true
+          },
+          {
+            "name": "card_id",
+            "type": "UUID",
+            "foreign_key": "flashcards(card_id)"
+          },
+          {
+            "name": "user_id",
+            "type": "UUID",
+            "foreign_key": "users(user_id)"
+          },
+          {
+            "name": "review_date",
+            "type": "TIMESTAMP",
+            "default": "NOW()"
+          },
+          {
+            "name": "rating",
+            "type": "VARCHAR(10)"
+          },
+          {
+            "name": "next_review_date",
+            "type": "TIMESTAMP",
+            "not_null": true
+          }
+        ]
+      },
+      {
+        "table": "glossary_terms",
+        "columns": [
+          {
+            "name": "term_id",
+            "type": "UUID",
+            "primary_key": true
+          },
+          {
+            "name": "term",
+            "type": "VARCHAR(255)",
+            "unique": true,
+            "not_null": true
+          },
+          {
+            "name": "definition",
+            "type": "TEXT",
+            "not_null": true
+          },
+          {
+            "name": "related_lesson_ids",
+            "type": "JSONB"
+          }
+        ]
+      }
+    ]
+  }
+}

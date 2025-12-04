@@ -125,6 +125,15 @@ class DebugCodeRequest(BaseModel):
 class LintCodeRequest(BaseModel):
     code_files: Dict[str, str]
 
+class UpdatePRDRequest(BaseModel):
+    prd_content: str
+
+class UpdateArchitectureRequest(BaseModel):
+    architecture_data: Dict[str, Any]
+
+class UpdateUserStoriesRequest(BaseModel):
+    user_stories: List[Dict[str, Any]]
+
 # ... (previous endpoints)
 
 
@@ -792,4 +801,71 @@ async def lint_code(session_id: str, request: LintCodeRequest):
     session.add_log("Static analysis complete")
     
     return result
+
+
+# Update Endpoints - Allow editing before code generation
+@app.put("/projects/{session_id}/prd")
+async def update_prd(session_id: str, request: UpdatePRDRequest):
+    """Update the PRD content for a project"""
+    session = orchestrator.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    try:
+        # Save updated PRD
+        file_path = project_storage.save_step(session_id, "prd", {"prd": request.prd_content})
+        session.add_log(f"✏️ PRD updated and saved to {file_path}")
+        
+        return {
+            "status": "success",
+            "message": "PRD updated successfully",
+            "file_path": str(file_path)
+        }
+    except Exception as e:
+        logger.error(f"Failed to update PRD: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/projects/{session_id}/architecture")
+async def update_architecture(session_id: str, request: UpdateArchitectureRequest):
+    """Update the architecture data for a project"""
+    session = orchestrator.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    try:
+        # Save updated architecture
+        file_path = project_storage.save_step(session_id, "architecture", request.architecture_data)
+        session.add_log(f"✏️ Architecture updated and saved to {file_path}")
+        
+        return {
+            "status": "success",
+            "message": "Architecture updated successfully",
+            "file_path": str(file_path)
+        }
+    except Exception as e:
+        logger.error(f"Failed to update architecture: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/projects/{session_id}/user_stories")
+async def update_user_stories(session_id: str, request: UpdateUserStoriesRequest):
+    """Update the user stories for a project"""
+    session = orchestrator.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    try:
+        # Save updated user stories
+        file_path = project_storage.save_step(session_id, "user_stories", request.user_stories)
+        session.add_log(f"✏️ User stories updated and saved to {file_path}")
+        
+        return {
+            "status": "success",
+            "message": "User stories updated successfully",
+            "file_path": str(file_path)
+        }
+    except Exception as e:
+        logger.error(f"Failed to update user stories: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 

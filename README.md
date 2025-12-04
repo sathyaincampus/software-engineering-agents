@@ -130,6 +130,15 @@ Full control over your AI infrastructure.
 -   **Code Viewer**: Built-in IDE-like viewer to explore generated files.
 -   **Observability**: Real-time system logs and Kanban board for task tracking.
 
+### ✏️ **Edit Before You Build** (New!)
+Take full control of the AI-generated content before code generation:
+-   **Edit PRD**: Refine product requirements, add missing features, clarify specifications
+-   **Edit User Stories**: Add, remove, or modify user stories with a visual editor
+-   **Edit Architecture**: Customize tech stack, modify diagrams, adjust database schemas
+-   **All Changes Saved**: Your edits persist and are used for code generation
+
+👉 **[Read the Editing Guide](./EDITING_GUIDE.md)** for detailed instructions.
+
 ## 🛠️ Technology Stack
 
 -   **Framework**: Google ADK (Agent Development Kit)

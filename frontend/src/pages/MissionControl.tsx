@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import MarkdownViewer from '../components/MarkdownViewer';
-import ArchitectureViewer from '../components/ArchitectureViewer';
+import EditableMarkdownViewer from '../components/EditableMarkdownViewer';
+import EditableArchitectureViewer from '../components/EditableArchitectureViewer';
+import EditableUserStories from '../components/EditableUserStories';
 import CodeViewer from '../components/CodeViewer';
 import StoryMapViewer from '../components/StoryMapViewer';
 import TestPlanViewer from '../components/TestPlanViewer';
@@ -641,6 +642,49 @@ const MissionControl: React.FC = () => {
         }
     };
 
+    // Save handlers for editable content
+    const handleSavePRD = async (newContent: string) => {
+        if (!sessionId) return;
+        try {
+            await axios.put(`${API_BASE_URL}/projects/${sessionId}/prd`, {
+                prd_content: newContent
+            });
+            setPrd(newContent);
+            addLog("✏️ PRD updated successfully");
+        } catch (error) {
+            console.error("Failed to save PRD:", error);
+            throw error;
+        }
+    };
+
+    const handleSaveArchitecture = async (newData: any) => {
+        if (!sessionId) return;
+        try {
+            await axios.put(`${API_BASE_URL}/projects/${sessionId}/architecture`, {
+                architecture_data: newData
+            });
+            setArchitecture(newData);
+            addLog("✏️ Architecture updated successfully");
+        } catch (error) {
+            console.error("Failed to save architecture:", error);
+            throw error;
+        }
+    };
+
+    const handleSaveUserStories = async (newStories: any[]) => {
+        if (!sessionId) return;
+        try {
+            await axios.put(`${API_BASE_URL}/projects/${sessionId}/user_stories`, {
+                user_stories: newStories
+            });
+            setUserStories(newStories);
+            addLog("✏️ User stories updated successfully");
+        } catch (error) {
+            console.error("Failed to save user stories:", error);
+            throw error;
+        }
+    };
+
     return (
         <div className="relative h-[calc(100vh-8rem)]">
             <div className={`grid gap-8 h-full transition-all duration-300 ${logsCollapsed ? 'grid-cols-1' : 'grid-cols-12'}`}>
@@ -787,7 +831,12 @@ const MissionControl: React.FC = () => {
                             </button>
                         )}
                     >
-                        <MarkdownViewer content={prd || ''} title="Product Requirements Document" />
+                        <EditableMarkdownViewer
+                            content={prd || ''}
+                            title="Product Requirements Document"
+                            onSave={handleSavePRD}
+                            editable={activeStep >= 2}
+                        />
                     </StepCard>
 
                     {/* Step 3: Analysis */}
@@ -803,18 +852,11 @@ const MissionControl: React.FC = () => {
                             </button>
                         )}
                     >
-                        <div className="grid grid-cols-2 gap-4">
-                            {userStories?.map((story, i) => (
-                                <div key={i} className="p-4 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] hover:shadow-md transition-shadow">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="text-xs font-mono text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">{story.id}</span>
-                                        <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${story.priority === 'High' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'
-                                            }`}>{story.priority}</span>
-                                    </div>
-                                    <p className="font-medium text-sm">{story.title}</p>
-                                </div>
-                            ))}
-                        </div>
+                        <EditableUserStories
+                            userStories={userStories || []}
+                            onSave={handleSaveUserStories}
+                            editable={activeStep >= 3}
+                        />
                     </StepCard>
 
                     {/* Step 4: Architecture */}
@@ -831,7 +873,11 @@ const MissionControl: React.FC = () => {
                         )}
                     >
                         {architecture && (
-                            <ArchitectureViewer data={architecture} />
+                            <EditableArchitectureViewer
+                                data={architecture}
+                                onSave={handleSaveArchitecture}
+                                editable={activeStep >= 4}
+                            />
                         )}
                     </StepCard>
 

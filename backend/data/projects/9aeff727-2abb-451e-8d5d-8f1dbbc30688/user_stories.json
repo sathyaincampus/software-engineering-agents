@@ -1,0 +1,180 @@
+[
+  {
+    "title": "Access Learning Modules",
+    "description": "As a user, I want to be able to browse and select different learning modules based on my interests and current knowledge level so that I can follow a structured path to learn AI concepts.",
+    "acceptance_criteria": [
+      "User can view a list of available learning modules categorized by topic (e.g., ML Basics, LLM Basics, Advanced GenAI, Building LLMs from Scratch).",
+      "Each module displays a brief description and an indicator of its difficulty level or prerequisite knowledge.",
+      "User can click on a module to view its detailed content.",
+      "Users can filter or search for specific modules."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "View Concept Explanations and Visualizations",
+    "description": "As a learner, I want to view clear, bite-sized explanations of AI concepts accompanied by interactive visualizations and real-world analogies so that I can understand complex topics easily.",
+    "acceptance_criteria": [
+      "When viewing a module, concepts are broken down into small, digestible sections.",
+      "Each core concept includes a simple, relatable analogy.",
+      "Interactive visualizations (e.g., graphs, diagrams, animations) are displayed for relevant mathematical concepts and AI model architectures.",
+      "Visualizations allow for basic user interaction like hovering for details or zooming.",
+      "Explanations avoid overly technical jargon where possible."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Integrate Code Examples",
+    "description": "As a user learning AI, I want to see relevant code snippets within the learning modules, with clear explanations, so that I can understand how theoretical concepts are implemented in practice.",
+    "acceptance_criteria": [
+      "Code examples (primarily Python) are embedded directly within the relevant learning content.",
+      "Each code snippet is accompanied by a brief explanation of what the code does.",
+      "Users can easily copy the code snippets.",
+      "Code examples use common AI/ML libraries (e.g., Scikit-learn, TensorFlow, PyTorch, LangChain)."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Utilize Flashcards for Review",
+    "description": "As a learner, I want to create and review flashcards using a spaced repetition system so that I can effectively reinforce my learning and improve knowledge retention.",
+    "acceptance_criteria": [
+      "Users can select text or concepts within modules to create flashcards.",
+      "The system automatically generates flashcards for key terms and definitions.",
+      "Users can initiate a flashcard review session.",
+      "The system presents flashcards based on a spaced repetition algorithm.",
+      "Users can rate their recall difficulty (e.g., 'Easy', 'Good', 'Hard') to influence future review scheduling.",
+      "Review history is tracked."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Track Learning Progress",
+    "description": "As a user, I want to track my progress through the learning modules and review history so that I can see my achievements and stay motivated.",
+    "acceptance_criteria": [
+      "The system tracks which modules and lessons a user has completed.",
+      "Quiz scores (if implemented) are recorded.",
+      "Flashcard review activity is logged.",
+      "A dashboard visually displays the user's overall progress, completed modules, and any earned badges or milestones.",
+      "Users can easily resume learning from where they left off."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Create and Manage User Account",
+    "description": "As a user, I want to create an account to save my progress and preferences across different sessions and devices.",
+    "acceptance_criteria": [
+      "Users can sign up using email/password or OAuth providers (Google, GitHub).",
+      "Users can log in to their existing accounts.",
+      "User progress, flashcard data, and settings are securely stored and associated with their account.",
+      "Password reset functionality is available."
+    ],
+    "priority": "High"
+  },
+  {
+    "title": "Receive Personalized Recommendations",
+    "description": "As a user, I want to receive personalized recommendations for the next modules or topics to learn so that I can optimize my learning path.",
+    "acceptance_criteria": [
+      "The system analyzes user's completed modules, quiz performance, and stated interests.",
+      "Personalized recommendations for subsequent learning content are presented on the user's dashboard.",
+      "Recommendations aim to guide users towards their stated goals (e.g., job readiness, specific AI areas)."
+    ],
+    "priority": "Medium"
+  },
+  {
+    "title": "Take Module Quizzes",
+    "description": "As a learner, I want to take quizzes at the end of modules to test my understanding so that I can confirm my comprehension before moving on.",
+    "acceptance_criteria": [
+      "Each learning module or a group of related modules concludes with a short quiz.",
+      "Quizzes consist of multiple-choice or short-answer questions based on the module content.",
+      "Users receive immediate feedback on their quiz performance.",
+      "Quiz scores are recorded and contribute to the user's overall progress tracking."
+    ],
+    "priority": "Medium"
+  },
+  {
+    "title": "Access Glossary of AI Terms",
+    "description": "As a user, I want to easily look up definitions of AI terms I encounter so that I can clarify any jargon or unfamiliar concepts.",
+    "acceptance_criteria": [
+      "A dedicated glossary section is available within the platform.",
+      "The glossary contains definitions for key AI terms used across the modules.",
+      "Terms within the learning content are hyperlinked to their corresponding glossary definitions.",
+      "Users can search the glossary."
+    ],
+    "priority": "Medium"
+  },
+  {
+    "title": "Access Content on Mobile Devices",
+    "description": "As a user, I want to access AI Navigator on my mobile phone or tablet so that I can learn on the go.",
+    "acceptance_criteria": [
+      "The web application interface is fully responsive and adapts to different screen sizes (desktop, tablet, mobile).",
+      "All features and content are accessible and usable on mobile devices.",
+      "Interactive visualizations perform well on smaller screens."
+    ],
+    "priority": "Medium"
+  },
+  {
+    "title": "Experience a Simplified LLM Simulator",
+    "description": "As a user exploring advanced LLM concepts, I want to interact with a simplified simulator to understand the impact of different parameters so that I can grasp the intuition behind LLM architecture.",
+    "acceptance_criteria": [
+      "A conceptual simulator is available for specific LLM-related modules.",
+      "Users can adjust a limited set of high-level parameters (e.g., 'creativity', 'model size' - represented abstractly).",
+      "The simulator provides visual or textual feedback demonstrating the *conceptual* impact of parameter changes on LLM behavior.",
+      "The focus is on understanding relationships, not on actual model training or complex math."
+    ],
+    "priority": "Medium"
+  },
+  {
+    "title": "Use Interactive Coding Sandboxes",
+    "description": "As a user, I want to run and modify code examples directly within the platform in an interactive sandbox so that I can experiment with code hands-on without setting up a local environment.",
+    "acceptance_criteria": [
+      "Code examples are presented within an integrated code editor/sandbox environment.",
+      "Users can execute the code directly from the sandbox.",
+      "Users can modify the code and re-run it to observe changes.",
+      "The environment supports the necessary libraries for the provided code snippets."
+    ],
+    "priority": "Low"
+  },
+  {
+    "title": "Participate in Community Forums",
+    "description": "As a user, I want to connect with other learners and ask questions in a community forum so that I can get help and share insights.",
+    "acceptance_criteria": [
+      "A forum or Q&A section is available for users to post questions and comments.",
+      "Users can reply to posts and engage in discussions.",
+      "Content can be categorized or tagged for easier navigation.",
+      "Moderation tools are in place."
+    ],
+    "priority": "Low"
+  },
+  {
+    "title": "Obtain Certificates",
+    "description": "As a user who has completed a learning path, I want to receive a verifiable certificate so that I can showcase my acquired knowledge.",
+    "acceptance_criteria": [
+      "Specific learning paths or course bundles are designated for certification.",
+      "Upon successful completion (e.g., passing all quizzes), users are issued a digital certificate.",
+      "Certificates contain unique identifiers and can be shared (e.g., via URL or PDF).",
+      "Certification may be part of a premium subscription or a one-time purchase."
+    ],
+    "priority": "Low"
+  },
+  {
+    "title": "Access Advanced Math Explanations",
+    "description": "As a user interested in the deep theoretical underpinnings, I want to access more detailed mathematical explanations linked from core concepts.",
+    "acceptance_criteria": [
+      "Specific concepts within the modules have links to 'Advanced Math Details'.",
+      "These sections provide deeper dives into the mathematical theorems, proofs, or derivations.",
+      "Explanations are clearly marked as optional and supplementary.",
+      "Content is well-formatted for mathematical notation."
+    ],
+    "priority": "Low"
+  },
+  {
+    "title": "Access Multi-language Content",
+    "description": "As a global user, I want to access the learning content in my preferred language so that I can learn more effectively.",
+    "acceptance_criteria": [
+      "The platform supports multiple languages.",
+      "Users can select their preferred language from a settings menu.",
+      "Core learning module content, UI elements, and potentially explanations are translated.",
+      "Language switching is seamless."
+    ],
+    "priority": "Low"
+  }
+]
