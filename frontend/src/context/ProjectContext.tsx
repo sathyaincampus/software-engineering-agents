@@ -144,8 +144,18 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
                                 }
                                 break;
                             case 'prd':
-                                loadedPrd = data.data;
-                                setPrd(loadedPrd);
+                                // Handle both formats: {prd: "content"} or just "content"
+                                if (data.data) {
+                                    if (typeof data.data === 'string') {
+                                        loadedPrd = data.data;
+                                    } else if (typeof data.data === 'object' && 'prd' in data.data) {
+                                        loadedPrd = data.data.prd;
+                                    } else if (typeof data.data === 'object') {
+                                        // If it's an object but doesn't have prd key, stringify it
+                                        loadedPrd = JSON.stringify(data.data, null, 2);
+                                    }
+                                    setPrd(loadedPrd);
+                                }
                                 break;
                             case 'user_stories':
                                 // Ensure it's an array

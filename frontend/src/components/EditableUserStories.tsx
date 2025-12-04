@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Edit2, Save, X, Plus, Trash2, AlertCircle } from 'lucide-react';
 
 interface UserStory {
@@ -23,6 +23,13 @@ const EditableUserStories: React.FC<EditableUserStoriesProps> = ({
     const [editedStories, setEditedStories] = useState<UserStory[]>(userStories);
     const [saving, setSaving] = useState(false);
 
+    // Sync with prop changes when not editing
+    useEffect(() => {
+        if (!isEditing) {
+            setEditedStories(userStories);
+        }
+    }, [userStories, isEditing]);
+
     const handleSave = async () => {
         if (!onSave) return;
 
@@ -45,7 +52,7 @@ const EditableUserStories: React.FC<EditableUserStoriesProps> = ({
 
     const handleAddStory = () => {
         const newStory: UserStory = {
-            id: `US-${editedStories.length + 1}`.padStart(6, '0'),
+            id: `US-${String(editedStories.length + 1).padStart(3, '0')}`,
             title: 'New User Story',
             description: 'Description of the user story',
             priority: 'Medium'
@@ -177,11 +184,13 @@ const EditableUserStories: React.FC<EditableUserStoriesProps> = ({
                     {userStories?.map((story, i) => (
                         <div key={i} className="p-4 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] hover:shadow-md transition-shadow">
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-xs font-mono text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">{story.id}</span>
+                                <span className="text-xs font-mono text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">
+                                    {story.id || `Story-${i + 1}`}
+                                </span>
                                 <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${story.priority === 'High' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'
-                                    }`}>{story.priority}</span>
+                                    }`}>{story.priority || 'Medium'}</span>
                             </div>
-                            <p className="font-medium text-sm">{story.title}</p>
+                            <p className="font-medium text-sm">{story.title || 'Untitled Story'}</p>
                             {story.description && (
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{story.description}</p>
                             )}
